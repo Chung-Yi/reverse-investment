@@ -15,7 +15,7 @@ export function AppShell({ route, navigate, openAssistant, children }: PropsWith
   return (
     <>
       <a className="skip-link" href="#main-content">跳至主要內容</a>
-      <div className="demo-banner"><strong>Version 1 競賽 Demo</strong><span>畫面中的金融內容均為固定假資料，非即時資訊或投資建議</span></div>
+      <div className="demo-banner"><strong>Version 1 競賽 Demo</strong><span>市場資料均標示來源與截止日；個人規劃為 Demo 情境，不構成投資建議</span></div>
       <div className="app-shell">
         <aside className={`sidebar ${menuOpen ? "open" : ""}`} aria-label="主要導覽">
           <button className="brand" onClick={() => go("welcome")} aria-label="回到產品介紹"><span className="brand-mark">逆</span><span><strong>逆思投資</strong><small>AI 決策陪伴</small></span></button>

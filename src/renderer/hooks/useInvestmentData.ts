@@ -33,7 +33,7 @@ export function useInvestmentData(repository: InvestmentRepository) {
         if (active) setData({ goal, profile, allocations, candidates, thesis });
       })
       .catch(() => {
-        if (active) setError("示範資料載入失敗，請重新開啟應用程式。");
+        if (active) setError("投資研究資料載入失敗，請重新開啟應用程式。");
       });
     return () => { active = false; };
   }, [repository]);

@@ -35,59 +35,63 @@ export const demoAllocations: AllocationItem[] = [
 
 export const demoCandidates: CandidateInstrument[] = [
   {
-    id: "demo-global-quality",
-    symbol: "DEMO-Q1",
-    name: "全球品質成長組合（示範）",
-    category: "成長配置",
-    rationale: "用來展示如何從長期成長、企業品質與分散程度建立研究方向。",
+    id: "tw-2330",
+    symbol: "2330",
+    name: "台積電",
+    category: "個股・半導體",
+    rationale: "以官方季度財報檢視先進製程需求、獲利品質與單一個股風險是否符合長期成長目標。",
     researchFit: 78,
     suitability: 71,
-    summary: "示範資料顯示此組合具備中長期成長題材，但估值與產業集中仍需持續驗證。",
+    summary: "2026 年第二季營收與獲利維持成長，先進製程需求提供支持，但半導體循環、客戶需求與產能執行仍需持續驗證。",
     metrics: [
-      { label: "營收趨勢", value: "穩定成長", note: "競賽假資料" },
-      { label: "估值位置", value: "中度偏高", note: "競賽假資料" },
-      { label: "產業集中", value: "38%", note: "競賽假資料" },
-      { label: "資料完整度", value: "82%", note: "Demo fixture" },
+      { label: "Q2 合併營收", value: "NT$1.270 兆", note: "年增 36.0%" },
+      { label: "毛利率", value: "67.7%", note: "2026 Q2" },
+      { label: "稀釋 EPS", value: "NT$27.25", note: "年增 77.4%" },
+      { label: "先進製程占比", value: "77%", note: "7 奈米及更先進" },
     ],
-    evidence: ["示範企業獲利品質維持穩定", "長期需求假設仍有多項資料支持"],
-    counterEvidence: ["估值已反映部分樂觀預期", "產業集中可能放大短期波動"],
-    assumptions: ["獲利品質未明顯惡化", "產業集中維持在規劃上限內"],
-  },
-  {
-    id: "demo-balanced-core",
-    symbol: "DEMO-C1",
-    name: "多資產核心組合（示範）",
-    category: "核心配置",
-    rationale: "用來展示較分散的核心配置如何連結目標期限與波動承受能力。",
-    researchFit: 84,
-    suitability: 86,
-    summary: "示範資料呈現較佳分散度與較低波動，但預期成長性相對溫和。",
-    metrics: [
-      { label: "資產類別", value: "4 類", note: "競賽假資料" },
-      { label: "波動程度", value: "中低", note: "競賽假資料" },
-      { label: "集中度", value: "18%", note: "競賽假資料" },
-      { label: "資料完整度", value: "88%", note: "Demo fixture" },
+    evidence: [
+      "2026 Q2 合併營收新台幣 1.27038 兆元，年增 36.0%",
+      "2026 Q2 毛利率 67.7%，營業利益率 60.3%",
+      "7 奈米及更先進製程占全季晶圓營收 77%",
     ],
-    evidence: ["資產來源較分散", "波動特徵符合核心配置定位"],
-    counterEvidence: ["強勢市場中可能落後單一成長資產", "再平衡規則需要明確化"],
-    assumptions: ["資產間相關性沒有同步大幅升高", "定期再平衡可以被持續執行"],
+    counterEvidence: [
+      "半導體景氣循環與市場供需變化可能影響營運",
+      "主要客戶訂單、產能管理與匯率變動仍是重要風險",
+    ],
+    assumptions: ["先進製程需求能持續支撐營收", "公司能維持技術領先並妥善管理產能"],
+    dataStatus: "官方公開資料",
+    dataAsOf: "2026-06-30",
+    sources: [
+      {
+        title: "台積公司 2026 年第二季財務報告",
+        publisher: "台灣積體電路製造股份有限公司",
+        publishedAt: "2026-07-16",
+        url: "https://investor.tsmc.com/chinese/quarterly-results/2026/q2",
+      },
+    ],
   },
 ];
 
 export const demoThesis: ThesisCard = {
   id: "thesis-demo-001",
-  instrumentId: "demo-global-quality",
-  reason: "我關注它，是因為八年目標需要適度成長，但部位必須受集中度上限約束。",
+  instrumentId: "tw-2330",
+  reason: "我關注台積電，是因為先進製程需求與獲利成長支持八年成長目標，但單一個股部位仍須受集中度上限約束。",
   validityScore: 78,
   suitabilityScore: 71,
   status: "追蹤中",
   updatedAt: "2026-08-08",
 };
 
-export const demoImportantChange = {
+export const importantChangeSnapshot = {
   severity: "注意" as const,
-  title: "產業集中度接近原先設定的觀察門檻",
-  happened: "示範組合的單一產業占比由 34% 上升至 38%。",
-  assumption: "產業集中維持在規劃上限內",
-  goalImpact: "尚未改變八年目標，但可能提高短期波動。",
+  title: "第三季毛利率展望低於第二季實際值",
+  happened: "2026 Q2 毛利率為 67.7%；公司對 Q3 的毛利率展望為 65% 至 67%。",
+  assumption: "公司能維持技術領先並妥善管理產能",
+  goalImpact: "尚未改變八年目標，但單一個股配置需要持續觀察獲利率與執行情況。",
+  dataAsOf: "2026-07-16",
+  source: {
+    title: "台積公司 2026 年第二季財務報告",
+    publisher: "台灣積體電路製造股份有限公司",
+    url: "https://investor.tsmc.com/chinese/quarterly-results/2026/q2",
+  },
 };

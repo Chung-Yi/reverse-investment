@@ -35,6 +35,14 @@ export interface CandidateInstrument {
   evidence: string[];
   counterEvidence: string[];
   assumptions: string[];
+  dataStatus: string;
+  dataAsOf: string;
+  sources: Array<{
+    title: string;
+    publisher: string;
+    publishedAt: string;
+    url: string;
+  }>;
 }
 
 export interface ThesisCard {

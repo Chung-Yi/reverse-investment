@@ -32,7 +32,7 @@ export function App() {
 
   let content: React.ReactNode;
   if (error) content = <div className="feedback-state error"><h1>目前無法載入 Demo</h1><p>{error}</p></div>;
-  else if (!data) content = <div className="feedback-state"><span className="loader" /><h1>正在準備你的投資旅程</h1><p>載入固定示範資料中…</p></div>;
+  else if (!data) content = <div className="feedback-state"><span className="loader" /><h1>正在準備你的投資旅程</h1><p>載入投資研究資料中…</p></div>;
   else {
     const pages: Record<RouteId, React.ReactNode> = {
       welcome: <WelcomePage />, home: <HomePage data={data} />, onboarding: <OnboardingPage />,

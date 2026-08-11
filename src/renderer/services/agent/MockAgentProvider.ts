@@ -2,10 +2,10 @@ import type { AgentEvent, AgentMessagePayload } from "@shared/contracts/agent";
 import type { AgentProvider } from "./AgentProvider";
 
 const demoReplies: Record<string, string> = {
-  plan: "這份示範規劃以八年期限、每月投入能力與波動承受條件共同整理。核心、成長與彈性資金分開，是為了讓目標與風險各自有清楚的位置。",
-  instrument: "這個示範標的目前的支持證據是獲利品質與長期需求；反方證據是估值偏高與產業集中。兩者都需要持續追蹤。",
+  plan: "這份規劃草案以八年期限、每月投入能力與波動承受條件共同整理。核心、成長與彈性資金分開，是為了讓目標與風險各自有清楚的位置。",
+  instrument: "台積電 2026 年第二季的支持證據包括營收成長、毛利率與先進製程占比；反方觀點則包括半導體景氣循環、客戶需求與產能執行風險。這些資訊需要隨最新官方資料持續更新。",
   decision: "我會先把你的理由拆成支持證據、反方觀點、關鍵假設與觀察條件，再分別評估標的成立度與個人適合度。",
-  default: "我會承接目前畫面的脈絡協助你理解。Version 1 使用固定示範回答，不會連線外部 AI，也不會替你做投資決定。",
+  default: "我會承接目前畫面的脈絡協助你理解。Version 1 使用前端 Demo 回覆，尚未連線外部 AI，也不會替你做投資決定。",
 };
 
 export class MockAgentProvider implements AgentProvider {
