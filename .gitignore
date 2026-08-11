@@ -1,0 +1,47 @@
+# Dependencies
+node_modules/
+
+# Build output
+out/
+dist/
+release/
+coverage/
+*.tsbuildinfo
+
+# Local development state
+.next/
+.wrangler/
+*.log
+npm-debug.log*
+
+# Environment variables and secrets
+.env
+.env.*
+!.env.example
+
+# macOS and editors
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local review and temporary artifacts
+.new-plan-review.*/
+.pptx-review.*/
+tmp/
+
+# Inactive Sites / Next.js starter retained locally for reference
+.openai/
+app/
+build/
+db/
+drizzle/
+examples/
+public/
+worker/
+drizzle.config.ts
+eslint.config.mjs
+next.config.ts
+postcss.config.mjs
+server.mjs
+vite.config.ts

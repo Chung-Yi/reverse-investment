@@ -1,0 +1,718 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Electron + Codex App Server 技術架構規劃報告</title>
+  <style>
+    :root {
+      --ink: #18212f;
+      --muted: #647084;
+      --line: #d9e0ea;
+      --bg: #f6f7f9;
+      --panel: #ffffff;
+      --blue: #2f6fed;
+      --teal: #159a9c;
+      --green: #2d8a5f;
+      --amber: #b26b00;
+      --red: #b44343;
+      --soft-blue: #eaf1ff;
+      --soft-teal: #e8f7f7;
+      --soft-green: #eaf6ef;
+      --soft-amber: #fff3dd;
+      --shadow: 0 14px 36px rgba(24, 33, 47, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background: var(--bg);
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", "Microsoft JhengHei", Arial, sans-serif;
+      line-height: 1.65;
+    }
+
+    main {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 48px 24px 72px;
+    }
+
+    header {
+      padding: 36px 0 28px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .eyebrow {
+      color: var(--blue);
+      font-weight: 700;
+      letter-spacing: 0;
+      margin: 0 0 8px;
+      font-size: 14px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: clamp(32px, 5vw, 52px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .subtitle {
+      margin: 18px 0 0;
+      max-width: 820px;
+      color: var(--muted);
+      font-size: 18px;
+    }
+
+    section {
+      margin-top: 36px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      padding: 28px;
+    }
+
+    h2 {
+      margin: 0 0 16px;
+      font-size: 24px;
+      line-height: 1.3;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin: 24px 0 10px;
+      font-size: 18px;
+      line-height: 1.3;
+    }
+
+    p {
+      margin: 0 0 14px;
+    }
+
+    ul {
+      margin: 8px 0 0;
+      padding-left: 22px;
+    }
+
+    li {
+      margin: 6px 0;
+    }
+
+    code {
+      padding: 2px 6px;
+      border-radius: 5px;
+      background: #eef2f7;
+      color: #22314a;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 0.92em;
+    }
+
+    .summary {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 24px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 16px;
+      background: #fbfcfe;
+      min-height: 136px;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .decision-list {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 12px;
+    }
+
+    .decision {
+      border-left: 4px solid var(--blue);
+      background: var(--soft-blue);
+      border-radius: 8px;
+      padding: 14px 16px;
+      min-height: 86px;
+    }
+
+    .decision:nth-child(2) {
+      border-left-color: var(--teal);
+      background: var(--soft-teal);
+    }
+
+    .decision:nth-child(3) {
+      border-left-color: var(--green);
+      background: var(--soft-green);
+    }
+
+    .decision:nth-child(4) {
+      border-left-color: var(--amber);
+      background: var(--soft-amber);
+    }
+
+    .decision strong {
+      display: block;
+      margin-bottom: 4px;
+    }
+
+    .diagram {
+      overflow-x: auto;
+      padding: 12px 0 2px;
+    }
+
+    .arch {
+      min-width: 900px;
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .layer {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 18px;
+      background: #fbfcfe;
+      position: relative;
+    }
+
+    .layer h3 {
+      margin-top: 0;
+    }
+
+    .layer.blue {
+      border-top: 5px solid var(--blue);
+    }
+
+    .layer.teal {
+      border-top: 5px solid var(--teal);
+    }
+
+    .layer.green {
+      border-top: 5px solid var(--green);
+    }
+
+    .box {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      margin-top: 12px;
+      background: white;
+    }
+
+    .box-title {
+      font-weight: 700;
+      margin-bottom: 4px;
+    }
+
+    .box-desc {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0;
+    }
+
+    .flow-row {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(140px, 1fr));
+      gap: 12px;
+      align-items: center;
+      min-width: 880px;
+    }
+
+    .flow-step {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: white;
+      padding: 14px;
+      min-height: 120px;
+      position: relative;
+    }
+
+    .flow-step::after {
+      content: "→";
+      position: absolute;
+      top: 42px;
+      right: -21px;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 24px;
+    }
+
+    .flow-step:last-child::after {
+      display: none;
+    }
+
+    .step-no {
+      display: inline-flex;
+      width: 26px;
+      height: 26px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 50%;
+      color: white;
+      background: var(--blue);
+      font-weight: 700;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+
+    .table-wrap {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 760px;
+      font-size: 15px;
+    }
+
+    th,
+    td {
+      text-align: left;
+      border-bottom: 1px solid var(--line);
+      padding: 12px 10px;
+      vertical-align: top;
+    }
+
+    th {
+      color: #22314a;
+      background: #f1f4f8;
+      font-weight: 700;
+    }
+
+    .code-block {
+      margin: 12px 0 0;
+      padding: 16px;
+      border-radius: 8px;
+      background: #111827;
+      color: #e5edf7;
+      overflow-x: auto;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 14px;
+      line-height: 1.55;
+      white-space: pre;
+    }
+
+    .note {
+      border-left: 4px solid var(--amber);
+      background: var(--soft-amber);
+      border-radius: 8px;
+      padding: 14px 16px;
+      margin-top: 16px;
+    }
+
+    .badge {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 13px;
+      font-weight: 700;
+      background: #eef2f7;
+      color: #35445c;
+      margin-right: 6px;
+      margin-bottom: 6px;
+    }
+
+    footer {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 28px;
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+    }
+
+    @media (max-width: 860px) {
+      main {
+        padding: 28px 16px 52px;
+      }
+
+      section {
+        padding: 20px;
+      }
+
+      .summary,
+      .decision-list {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      main {
+        max-width: none;
+        padding: 24px;
+      }
+
+      section {
+        break-inside: avoid;
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <p class="eyebrow">技術架構規劃報告</p>
+      <h1>Electron + Bundled Codex App Server</h1>
+      <p class="subtitle">
+        本報告規劃一套簡化、本機優先的桌面 AI 應用架構：前台使用 Electron 包版，
+        AI agent 能力由 bundled <code>codex app-server</code> 提供，thread / message 歷史完全交由 Codex 管理，
+        App 僅保留必要的本機 UI 設定與 workspace 記錄。
+      </p>
+
+      <div class="summary">
+        <div class="summary-card">
+          <strong>前台技術</strong>
+          <span>Electron + React + TypeScript + Vite，負責桌面 UI 與互動體驗。</span>
+        </div>
+        <div class="summary-card">
+          <strong>AI 核心</strong>
+          <span><code>codex app-server</code> 隨 App bundled，作為本機 AI agent engine。</span>
+        </div>
+        <div class="summary-card">
+          <strong>資料保存</strong>
+          <span>thread / message 由 Codex 管理；App 只存 settings、workspace 與 UI state。</span>
+        </div>
+        <div class="summary-card">
+          <strong>系統串接</strong>
+          <span>第一版不做外部系統串接、不做雲端後端、不做資料庫服務。</span>
+        </div>
+      </div>
+    </header>
+
+    <section>
+      <h2>一、核心決策</h2>
+      <div class="decision-list">
+        <div class="decision">
+          <strong>Codex App Server 與 App 一起打包</strong>
+          Electron 安裝後即可啟動內建 Codex binary，不要求使用者額外安裝 CLI。
+        </div>
+        <div class="decision">
+          <strong>歷史紀錄交給 Codex 管</strong>
+          thread、turn、item、message history 不自建資料表，不重複保存。
+        </div>
+        <div class="decision">
+          <strong>Local Workspace 優先</strong>
+          Codex 的工作目錄指定為使用者選擇的 workspace，檔案讀寫都在本機發生。
+        </div>
+        <div class="decision">
+          <strong>第一版不做外部整合</strong>
+          暫不接 PostgreSQL、Redis、GitHub、Jira、雲端 storage 或企業 SSO。
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>二、整體技術架構</h2>
+      <p>
+        本架構不另外建立傳統後端服務。Electron Main Process 作為本機控制層，
+        透過 stdio JSON-RPC 與 bundled <code>codex app-server</code> 溝通。
+      </p>
+
+      <div class="diagram">
+        <div class="arch">
+          <div class="layer blue">
+            <h3>Electron Renderer</h3>
+            <div class="box">
+              <div class="box-title">React UI</div>
+              <p class="box-desc">對話畫面、任務列表、workspace 選擇、設定頁。</p>
+            </div>
+            <div class="box">
+              <div class="box-title">State Management</div>
+              <p class="box-desc">只管理前端狀態與畫面狀態，不保存 AI 歷史主資料。</p>
+            </div>
+          </div>
+
+          <div class="layer teal">
+            <h3>Electron Main Process</h3>
+            <div class="box">
+              <div class="box-title">Preload / IPC Bridge</div>
+              <p class="box-desc">提供安全白名單 API，Renderer 不直接碰 Node.js。</p>
+            </div>
+            <div class="box">
+              <div class="box-title">Codex Process Manager</div>
+              <p class="box-desc">啟動、監控、關閉 bundled codex app-server。</p>
+            </div>
+            <div class="box">
+              <div class="box-title">JSON-RPC Client</div>
+              <p class="box-desc">呼叫 initialize、thread/list、thread/start、turn/start 等 API。</p>
+            </div>
+          </div>
+
+          <div class="layer green">
+            <h3>Bundled Codex App Server</h3>
+            <div class="box">
+              <div class="box-title">AI Agent Engine</div>
+              <p class="box-desc">管理 thread、turn、item、streaming events、tool/file actions。</p>
+            </div>
+            <div class="box">
+              <div class="box-title">Codex Managed Storage</div>
+              <p class="box-desc">Codex 自行保存 thread / message history。</p>
+            </div>
+            <div class="box">
+              <div class="box-title">Local Workspace</div>
+              <p class="box-desc">以 cwd 指定工作目錄，在權限範圍內讀取與修改檔案。</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>三、模組責任邊界</h2>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>模組</th>
+              <th>負責內容</th>
+              <th>不負責內容</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>Electron Renderer</strong></td>
+              <td>畫面呈現、使用者輸入、串流訊息顯示、任務列表、workspace 操作入口。</td>
+              <td>不直接存取檔案、不直接啟動子程序、不直接呼叫 Codex binary。</td>
+            </tr>
+            <tr>
+              <td><strong>Preload Bridge</strong></td>
+              <td>暴露安全 IPC API，例如 <code>sendMessage</code>、<code>listThreads</code>、<code>selectWorkspace</code>。</td>
+              <td>不暴露完整 Node.js / Electron API 給 Renderer。</td>
+            </tr>
+            <tr>
+              <td><strong>Electron Main</strong></td>
+              <td>管理 Codex 子程序、JSON-RPC 通訊、workspace path、local app config、事件轉發。</td>
+              <td>不自行實作 AI agent、不自行保存完整 message database。</td>
+            </tr>
+            <tr>
+              <td><strong>Codex App Server</strong></td>
+              <td>AI 對話、thread / turn / item、串流事件、auth、sandbox、workspace 檔案操作。</td>
+              <td>不負責客製化 UI、不負責 Electron 視窗與桌面行為。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>四、資料保存策略</h2>
+      <p>
+        因為 thread / message 歷史完全交給 Codex 管理，所以 App 不需要設計 message table 或本機 SQLite。
+        App 僅保存 UI 與 workspace 相關的輕量設定。
+      </p>
+
+      <h3>App 自行保存</h3>
+      <div class="code-block">app-local-data/
+├── settings.json
+├── workspaces.json
+└── ui-state.json</div>
+
+      <h3>範例設定</h3>
+      <div class="code-block">{
+  "lastWorkspace": "/Users/user/project-a",
+  "recentWorkspaces": [
+    "/Users/user/project-a",
+    "/Users/user/project-b"
+  ],
+  "theme": "system"
+}</div>
+
+      <div class="note">
+        <strong>重點：</strong>
+        App 可以透過 <code>thread/list</code> 向 Codex 取得任務列表，不需要自行維護 thread / message 主資料。
+        若未來 UI 需要搜尋或分類，可以再補一層輕量 index，但第一版不建議先做。
+      </div>
+    </section>
+
+    <section>
+      <h2>五、啟動流程</h2>
+      <div class="diagram">
+        <div class="flow-row">
+          <div class="flow-step">
+            <span class="step-no">1</span>
+            <strong>App Ready</strong>
+            <p class="box-desc">Electron 啟動，Main Process 初始化。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">2</span>
+            <strong>Spawn Codex</strong>
+            <p class="box-desc">從 resources 目錄啟動 bundled <code>codex app-server --stdio</code>。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">3</span>
+            <strong>Initialize</strong>
+            <p class="box-desc">Main 送出 JSON-RPC <code>initialize</code>，建立連線上下文。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">4</span>
+            <strong>Read Account</strong>
+            <p class="box-desc">呼叫 <code>account/read</code> 確認登入與 auth 狀態。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">5</span>
+            <strong>UI Ready</strong>
+            <p class="box-desc">Renderer 顯示 workspace、thread list 與可操作狀態。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>六、AI 對話資料流程</h2>
+      <div class="diagram">
+        <div class="flow-row">
+          <div class="flow-step">
+            <span class="step-no">1</span>
+            <strong>使用者輸入</strong>
+            <p class="box-desc">Renderer 收到使用者訊息。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">2</span>
+            <strong>IPC Request</strong>
+            <p class="box-desc">Renderer 透過 Preload 呼叫 Main 的 <code>sendMessage</code>。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">3</span>
+            <strong>turn/start</strong>
+            <p class="box-desc">Main 對 Codex app-server 送出 <code>turn/start</code>。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">4</span>
+            <strong>Streaming Events</strong>
+            <p class="box-desc">Codex 回傳 delta、tool progress、completed 等事件。</p>
+          </div>
+          <div class="flow-step">
+            <span class="step-no">5</span>
+            <strong>畫面更新</strong>
+            <p class="box-desc">Main 將事件轉成 IPC stream，Renderer 即時顯示。</p>
+          </div>
+        </div>
+      </div>
+
+      <h3>Codex 常用 JSON-RPC 方法</h3>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>方法</th>
+              <th>用途</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>initialize</code></td>
+              <td>建立 client 與 app-server 連線上下文。</td>
+            </tr>
+            <tr>
+              <td><code>account/read</code></td>
+              <td>讀取目前登入與帳號狀態。</td>
+            </tr>
+            <tr>
+              <td><code>thread/list</code></td>
+              <td>取得 Codex 管理的 thread / task 清單。</td>
+            </tr>
+            <tr>
+              <td><code>thread/start</code></td>
+              <td>建立新的對話 / 任務，可指定 <code>cwd</code> 為 workspace。</td>
+            </tr>
+            <tr>
+              <td><code>thread/resume</code></td>
+              <td>恢復既有 thread，繼續對話。</td>
+            </tr>
+            <tr>
+              <td><code>turn/start</code></td>
+              <td>送出使用者輸入並開始 AI agent 執行。</td>
+            </tr>
+            <tr>
+              <td><code>turn/interrupt</code></td>
+              <td>中斷進行中的 AI 回合。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section>
+      <h2>七、Bundled Codex 注意事項</h2>
+      <p>
+        因為 Codex binary 會跟 App 一起包版，因此建置與更新流程要把 binary 視為 App runtime 的一部分。
+      </p>
+      <ul>
+        <li>macOS、Windows、Linux 需要放入各平台對應的 Codex binary。</li>
+        <li>Electron 打包時將 binary 放在 <code>resources</code> 或指定 unpacked 目錄。</li>
+        <li>App 啟動時以 <code>process.resourcesPath</code> 定位 binary。</li>
+        <li>macOS / Linux 需要確認 binary 具備可執行權限。</li>
+        <li>Windows 需要處理 <code>codex.exe</code> 路徑與防毒誤判風險。</li>
+        <li>auto update 時，App 與 Codex binary 版本應一起更新。</li>
+        <li>JSON-RPC schema 建議跟 bundled binary 版本綁定，避免 protocol mismatch。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>八、MVP 功能範圍</h2>
+      <div>
+        <span class="badge">Workspace 選擇</span>
+        <span class="badge">Codex 啟動</span>
+        <span class="badge">Auth 狀態</span>
+        <span class="badge">Thread List</span>
+        <span class="badge">Thread Start</span>
+        <span class="badge">Thread Resume</span>
+        <span class="badge">Turn Start</span>
+        <span class="badge">Streaming Reply</span>
+        <span class="badge">Turn Interrupt</span>
+        <span class="badge">Local Settings</span>
+      </div>
+
+      <h3>第一版不納入</h3>
+      <ul>
+        <li>外部系統串接，例如 GitHub、Jira、Slack、Drive。</li>
+        <li>雲端後端 API server。</li>
+        <li>PostgreSQL / Redis / S3。</li>
+        <li>自建 message database。</li>
+        <li>多人協作與企業管理後台。</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2>九、結論</h2>
+      <p>
+        本案建議採用 <strong>Electron UI + Electron Main 本機控制層 + bundled Codex App Server</strong> 的架構。
+        這樣可以最大化沿用 Codex 既有 AI agent 能力，並避免第一版過早導入後端系統、資料庫與外部整合。
+      </p>
+      <p>
+        最終定位是：Electron 負責包版與使用者體驗；Codex app-server 負責 AI agent、thread/message 歷史、
+        workspace 操作與 streaming events；所有專案資料保留在 local workspace。
+      </p>
+    </section>
+
+    <footer>
+      版本：v1.0 ｜ 日期：2026-07-27 ｜ 規劃主題：Electron 前台包版與 Codex App Server 本機 AI 架構
+    </footer>
+  </main>
+</body>
+</html>

@@ -1,0 +1,45 @@
+import { useState, type PropsWithChildren } from "react";
+import { primaryNavigation, routeMetadata, type RouteId } from "../../app/routeMetadata";
+import { Button } from "../ui/Button";
+
+interface AppShellProps {
+  route: RouteId;
+  navigate: (route: RouteId) => void;
+  openAssistant: () => void;
+}
+
+export function AppShell({ route, navigate, openAssistant, children }: PropsWithChildren<AppShellProps>) {
+  const [menuOpen, setMenuOpen] = useState(false);
+  const go = (next: RouteId) => { navigate(next); setMenuOpen(false); };
+
+  return (
+    <>
+      <a className="skip-link" href="#main-content">跳至主要內容</a>
+      <div className="demo-banner"><strong>Version 1 競賽 Demo</strong><span>畫面中的金融內容均為固定假資料，非即時資訊或投資建議</span></div>
+      <div className="app-shell">
+        <aside className={`sidebar ${menuOpen ? "open" : ""}`} aria-label="主要導覽">
+          <button className="brand" onClick={() => go("welcome")} aria-label="回到產品介紹"><span className="brand-mark">逆</span><span><strong>逆思投資</strong><small>AI 決策陪伴</small></span></button>
+          <nav className="nav-list">
+            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => go(item.id)}><span>{item.icon}</span>{item.label}</button>)}
+          </nav>
+          <div className="sidebar-footer">
+            <Button variant="secondary" full onClick={openAssistant}>✦ 問問 AI</Button>
+            <p>研究與決策整理工具<br />不構成投資建議</p>
+          </div>
+        </aside>
+        <div className="app-area">
+          <header className="topbar">
+            <button className="icon-button mobile-menu" onClick={() => setMenuOpen(true)} aria-label="開啟選單">☰</button>
+            <div className="breadcrumb"><span>我的投資旅程</span><b>/</b><strong>{routeMetadata[route].label}</strong></div>
+            <div className="top-actions"><button className="text-button" onClick={() => go("profile")}>投資輪廓</button><span className="avatar" aria-label="示範使用者">使</span></div>
+          </header>
+          <main id="main-content" tabIndex={-1}>{children}</main>
+          <nav className="bottom-nav" aria-label="手機版主要導覽">
+            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => go(item.id)}><span>{item.icon}</span>{item.label}</button>)}
+          </nav>
+        </div>
+      </div>
+      {menuOpen && <button className="menu-overlay" onClick={() => setMenuOpen(false)} aria-label="關閉選單" />}
+    </>
+  );
+}

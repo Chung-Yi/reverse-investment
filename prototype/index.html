@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="逆思投資 AI 智慧投資顧問 Web/App RWD 互動原型">
+  <title>逆思投資｜AI 智慧投資顧問</title>
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳至主要內容</a>
+  <div class="prototype-note">互動原型｜所有金融數值均待資料串接</div>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="主要導覽">
+      <button class="brand" data-route="welcome" aria-label="回到產品介紹">
+        <span class="brand-mark">逆</span>
+        <span><strong>逆思投資</strong><small>AI 決策陪伴</small></span>
+      </button>
+      <nav class="nav-list">
+        <button data-route="home"><span class="nav-icon">⌂</span>首頁／總覽</button>
+        <button data-route="plan"><span class="nav-icon">◎</span>我的規劃</button>
+        <button data-route="explore"><span class="nav-icon">◇</span>投資探索</button>
+        <button data-route="thesis"><span class="nav-icon">▤</span>我的論點</button>
+        <button data-route="tracking"><span class="nav-icon">⌁</span>心跳追蹤 <span class="nav-badge">—</span></button>
+      </nav>
+      <div class="sidebar-footer">
+        <button class="ai-entry" data-ai="general"><span class="ai-spark">✦</span><span><strong>問問 AI</strong><small>帶著目前情境提問</small></span></button>
+        <p>研究與決策整理工具<br>不構成投資建議</p>
+      </div>
+    </aside>
+
+    <div class="app-area">
+      <header class="topbar">
+        <button class="icon-button mobile-menu" id="menuToggle" aria-label="開啟選單">☰</button>
+        <div class="breadcrumb"><span id="journeyLabel">首頁</span><b>/</b><strong id="pageLabel">總覽</strong></div>
+        <div class="top-actions">
+          <button class="text-button" data-route="profile">投資輪廓</button>
+          <button class="icon-button" aria-label="通知">○</button>
+          <span class="avatar" aria-label="使用者">使</span>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <section class="screen" data-screen="welcome" data-story="01">
+          <div class="welcome-grid">
+            <div class="welcome-copy">
+              <span class="eyebrow">Screen 01｜歡迎／開始</span>
+              <h1>從你的目標開始，<br>建立屬於你的投資規劃。</h1>
+              <p class="lead">了解自己的投資輪廓，探索投資方向，驗證投資理由，持續掌握重要變化。</p>
+              <button class="button primary large" data-route="onboarding">開始建立我的目標 <span>→</span></button>
+              <p class="fine-print">不是從商品開始，也不替你做決定。</p>
+            </div>
+            <div class="journey-visual" aria-label="產品旅程">
+              <div class="journey-center"><span>你的目標</span><strong>理解自己</strong></div>
+              <ol>
+                <li><b>01</b><span>建立輪廓<small>條件與風險</small></span></li>
+                <li><b>02</b><span>形成規劃<small>目標與配置</small></span></li>
+                <li><b>03</b><span>驗證決策<small>理由與證據</small></span></li>
+                <li><b>04</b><span>持續追蹤<small>假設與變化</small></span></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="onboarding" data-story="02,03">
+          <div class="page-heading compact">
+            <div><span class="eyebrow">Screen 02–03｜建立目標與個人條件</span><h1>先從你想實現的事情開始</h1><p>每次只回答一個問題，答案之後都可以修改。</p></div>
+            <button class="ghost-button" data-ai="question">✦ 這題是什麼意思？</button>
+          </div>
+          <div class="question-layout">
+            <aside class="stepper" aria-label="問卷進度">
+              <button class="done" data-step="0"><span>✓</span>我的目標</button>
+              <button class="active" data-step="1"><span>2</span>目標期限</button>
+              <button data-step="2"><span>3</span>投入能力</button>
+              <button data-step="3"><span>4</span>投資經驗</button>
+              <button data-step="4"><span>5</span>波動感受</button>
+              <button data-step="5"><span>6</span>資金需求</button>
+            </aside>
+            <div class="question-card card">
+              <div class="progress-row"><span id="questionProgress">第 2 題，共 6 題</span><span>可稍後修改</span></div>
+              <div class="progress"><i id="progressBar"></i></div>
+              <div class="question-content">
+                <span class="question-kicker" id="questionKicker">我的目標</span>
+                <h2 id="questionTitle">希望多久後達成？</h2>
+                <p id="questionHelp">期限會影響資金可承受的波動與規劃方式。</p>
+                <div class="option-grid" id="questionOptions"></div>
+              </div>
+              <div class="card-actions"><button class="button secondary" id="prevQuestion">← 上一題</button><button class="button primary" id="nextQuestion">下一題 →</button></div>
+            </div>
+            <aside class="summary-panel card">
+              <span class="card-label">即時摘要</span><h3>我的目標</h3>
+              <dl><div><dt>目標金額</dt><dd>—</dd></div><div><dt>目標期限</dt><dd id="summaryTerm">—</dd></div><div><dt>目前可投入</dt><dd>—</dd></div><div><dt>每月投入</dt><dd>—</dd></div></dl>
+              <p class="data-note">完成輸入後由系統計算，不預填示意金額。</p>
+            </aside>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="profile" data-story="04,05">
+          <div class="page-heading"><div><span class="eyebrow">Screen 04–05｜投資風險與輪廓</span><h1>看懂我的投資輪廓</h1><p>這是條件摘要，不是能力排名或好壞評價。</p></div><button class="button secondary" data-route="onboarding">編輯我的條件</button></div>
+          <div class="profile-grid">
+            <div class="card profile-hero">
+              <div class="card-head"><div><span class="card-label">我的多維度特徵</span><h2>完成問卷後產生輪廓</h2></div><span class="status neutral">尚未完成</span></div>
+              <div class="radar-wrap"><div class="radar"><span>成長需求</span><span>投資期限</span><span>波動承受度</span><span>資金彈性</span><span>投資經驗</span><i></i></div></div>
+              <p class="empty-copy">目前沒有足夠資料建立雷達圖。完成目標與個人條件後，系統會呈現各維度的相對特徵。</p>
+            </div>
+            <div class="profile-side">
+              <article class="card"><span class="card-label">風險承受意願</span><h3>—</h3><p>由波動感受與可接受損失整理。</p></article>
+              <article class="card"><span class="card-label">風險承受能力</span><h3>—</h3><p>由期限、資金需求與投入能力整理。</p></article>
+              <article class="card"><span class="card-label">所需風險</span><h3>—</h3><p>由目標可行性計算，與意願分開呈現。</p></article>
+            </div>
+          </div>
+          <div class="section-title"><div><span>完整條件</span><h2>形成輪廓的四個面向</h2></div><button class="ghost-button" data-ai="profile">✦ 和 AI 一起理解</button></div>
+          <div class="four-cards"><article class="card"><b>01</b><h3>我的目標</h3><p>目標金額與期限</p><strong>資料待輸入</strong></article><article class="card"><b>02</b><h3>我的資源</h3><p>目前資金與每月投入</p><strong>資料待輸入</strong></article><article class="card"><b>03</b><h3>我的風險</h3><p>意願、能力與所需風險</p><strong>問卷完成後產生</strong></article><article class="card"><b>04</b><h3>我的經驗</h3><p>知識、部位與集中度</p><strong>資料待輸入</strong></article></div>
+          <div class="page-cta card"><div><span class="card-label">下一步</span><h3>把條件轉換為個人化投資規劃</h3></div><button class="button primary" data-route="plan">查看我的投資規劃 →</button></div>
+        </section>
+
+        <section class="screen" data-screen="plan" data-story="06">
+          <div class="page-heading"><div><span class="eyebrow">Screen 06｜我的投資規劃</span><h1>我的投資規劃</h1><p>由目標、資源與投資輪廓共同形成。</p></div><button class="ghost-button" data-ai="plan">✦ 為什麼這樣規劃？</button></div>
+          <div class="feasibility card">
+            <div><span class="card-label">目標可行性</span><h2>完成資料後開始評估</h2><p>規劃引擎需要目標金額、期限、目前資金及每月投入。</p></div>
+            <div class="feasibility-meter"><span>待評估</span><i></i><small>不以樂觀報酬率填補資料缺口</small></div>
+          </div>
+          <div class="plan-layout">
+            <div class="card allocation"><div class="card-head"><div><span class="card-label">配置方向</span><h2>三層資金結構</h2></div><span class="status neutral">比例待計算</span></div>
+              <div class="allocation-list"><div><i class="core"></i><span><strong>核心配置</strong><small>支撐主要目標的長期配置</small></span><b>—</b></div><div><i class="growth"></i><span><strong>成長配置</strong><small>依輪廓與期限評估的成長部位</small></span><b>—</b></div><div><i class="liquid"></i><span><strong>彈性資金</strong><small>因應短期需求與調整空間</small></span><b>—</b></div></div>
+            </div>
+            <div class="plan-conditions"><article class="card"><span class="card-label">部位條件</span><h3>單一部位上限</h3><strong>待規劃引擎計算</strong></article><article class="card"><span class="card-label">集中度</span><h3>整體配置限制</h3><strong>待現有部位資料</strong></article><article class="card"><span class="card-label">重要觀察</span><h3>規劃變動條件</h3><strong>完成規劃後建立</strong></article></div>
+          </div>
+          <div class="page-cta card"><div><span class="card-label">下一步</span><h3>從規劃出發，探索值得研究的方向</h3></div><button class="button primary" data-route="explore">探索投資方向 →</button></div>
+        </section>
+
+        <section class="screen" data-screen="home" data-story="dashboard">
+          <div class="page-heading"><div><span class="eyebrow">回訪首頁｜決策總覽</span><h1>今天，從最重要的下一步開始</h1><p>首頁聚焦你的目標、規劃、論點與重要變化，不呈現市場噪音。</p></div><button class="button primary" data-route="onboarding">建立我的第一個目標</button></div>
+          <div class="dashboard-grid">
+            <article class="card goal-card"><div class="card-head"><div><span class="card-label">我的目標</span><h2>尚未建立目標</h2></div><button class="text-button" data-route="onboarding">開始設定</button></div><div class="goal-ring"><span>—</span><small>進度</small></div><p>建立目標後，這裡會顯示期限、投入進度與可行性變化。</p></article>
+            <article class="card next-card"><span class="card-label">建議下一步</span><h2>完成目標與個人條件</h2><p>先建立足夠的個人脈絡，再產生規劃與研究方向。</p><button class="button primary" data-route="onboarding">繼續建立輪廓 →</button></article>
+            <article class="card"><div class="card-head"><div><span class="card-label">我的投資規劃</span><h3>等待建立</h3></div><span class="status neutral">未開始</span></div><p>完成輪廓後，規劃引擎會整理配置方向與重要條件。</p><button class="text-button" data-route="plan">查看規劃結構 →</button></article>
+            <article class="card"><div class="card-head"><div><span class="card-label">我的論點</span><h3>尚無論點卡</h3></div><span class="status neutral">0</span></div><p>通過決策驗證後，才會建立可以持續追蹤的投資理由。</p><button class="text-button" data-route="thesis">查看論點卡 →</button></article>
+            <article class="card tracking-summary"><div class="card-head"><div><span class="card-label">心跳追蹤</span><h3>目前沒有追蹤項目</h3></div><span class="status stable">穩定</span></div><p>只提醒可能影響原始假設、投資理由或個人規劃的變化。</p><button class="text-button" data-route="tracking">前往追蹤中心 →</button></article>
+            <article class="card ai-home"><span class="ai-spark">✦</span><div><span class="card-label">AI 決策陪伴</span><h3>今天想了解什麼？</h3><p>AI 會承接你目前的畫面與資料，不會無故改變流程。</p></div><button class="button secondary" data-ai="home">開始對話</button></article>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="explore" data-story="07,08">
+          <div class="page-heading"><div><span class="eyebrow">Screen 07–08｜方向探索與候選標的</span><h1>從規劃出發，找到研究方向</h1><p>候選內容代表值得進一步研究，不代表系統要求購買。</p></div><button class="ghost-button" data-ai="explore">✦ 請 AI 協助比較</button></div>
+          <div class="tabs" role="tablist"><button class="active" data-explore-tab="directions">投資方向</button><button data-explore-tab="candidates">候選標的</button></div>
+          <div class="tab-panel active" data-explore-panel="directions">
+            <div class="filter-row"><button class="chip active">全部方向</button><button class="chip">核心配置</button><button class="chip">成長配置</button><button class="chip">彈性資金</button></div>
+            <div class="direction-grid"><article class="card direction-card"><span class="direction-code">方向 01</span><h2>方向名稱待規劃引擎產生</h2><p>完成個人投資規劃後，系統才會整理符合條件的研究方向。</p><dl><div><dt>與目標的關聯</dt><dd>—</dd></div><div><dt>適合度摘要</dt><dd>—</dd></div></dl><button class="button secondary" data-explore-next>查看候選標的 →</button></article><article class="card empty-card"><span>＋</span><h3>其他研究方向</h3><p>不使用固定熱門題材填充；等待規劃與研究資料。</p></article></div>
+          </div>
+          <div class="tab-panel" data-explore-panel="candidates">
+            <div class="candidate-toolbar"><div class="filter-row"><button class="chip active">全部</button><button class="chip">市場</button><button class="chip">類型</button><button class="chip">產業</button><button class="chip">波動</button></div><span>資料待串接</span></div>
+            <div class="candidate-list"><article class="card candidate"><div class="candidate-main"><span class="ticker">—</span><div><span class="card-label">候選標的</span><h2>標的名稱待研究資料</h2><p>系統尚未取得可驗證的標的資料，因此不顯示示意股票。</p></div></div><div class="candidate-reasons"><div><span>值得研究的原因</span><strong>待研究引擎產生</strong></div><div><span>研究條件符合度</span><strong>—</strong></div><div><span>個人初步關聯</span><strong>—</strong></div></div><button class="button primary" data-route="instrument">查看詳細分析 →</button></article></div>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="instrument" data-story="09">
+          <div class="page-heading"><div><span class="eyebrow">Screen 09｜標的詳細分析</span><h1>標的名稱待資料串接</h1><p>由核心摘要逐步深入到證據、不同觀點與關鍵假設。</p></div><div class="heading-actions"><button class="ghost-button" data-ai="instrument">✦ 詢問 AI</button><button class="button primary" data-route="decision">開始決策驗證 →</button></div></div>
+          <div class="instrument-hero card"><div><span class="card-label">核心摘要</span><h2>尚無足夠且可驗證的標的資料</h2><p>接入研究資料來源後，這裡會以白話呈現投資特色與需要注意的限制。</p></div><div class="data-quality"><span>資料狀態</span><strong>待串接</strong><small>不以虛構內容補齊</small></div></div>
+          <div class="metric-grid"><article class="card"><span>財務資料</span><strong>—</strong><small>資料來源待定</small></article><article class="card"><span>估值資訊</span><strong>—</strong><small>資料來源待定</small></article><article class="card"><span>基本面</span><strong>—</strong><small>研究模型待串接</small></article><article class="card"><span>個人適合度</span><strong>—</strong><small>完成個人規劃後計算</small></article></div>
+          <div class="analysis-sections"><details class="card" open><summary><span><b>01</b>支持證據</span><i>＋</i></summary><p>目前沒有可引用的證據。正式產品需顯示資料來源、更新時間與證據內容。</p></details><details class="card"><summary><span><b>02</b>不同觀點</span><i>＋</i></summary><p>呈現反方觀點與限制，不只提供支持資訊。</p></details><details class="card"><summary><span><b>03</b>關鍵假設</span><i>＋</i></summary><p>列出投資理由成立所依賴的條件，供後續心跳追蹤。</p></details></div>
+        </section>
+
+        <section class="screen" data-screen="decision" data-story="11,12">
+          <div class="page-heading"><div><span class="eyebrow">Screen 11–12｜決策驗證與雙重評分</span><h1>把「有興趣」整理成可檢驗的理由</h1><p>AI 協助整理你的想法，不會憑空替你建立投資理由。</p></div><button class="ghost-button" data-ai="decision">✦ 請 AI 協助整理</button></div>
+          <div class="decision-layout">
+            <div class="card thesis-builder"><label for="reason"><span class="card-label">我的投資理由</span><strong>你為什麼認為這個標的值得關注？</strong></label><textarea id="reason" placeholder="請用自己的話描述；原型不預填投資理由。"></textarea><div class="builder-steps"><button class="active"><span>1</span>投資理由</button><button><span>2</span>支持證據</button><button><span>3</span>不同觀點</button><button><span>4</span>關鍵假設</button><button><span>5</span>重要觀察</button></div><div class="card-actions"><span class="data-note">輸入後才能進行評分</span><button class="button primary" id="scoreButton" disabled>查看雙重評分 →</button></div></div>
+            <aside class="score-panel card" id="scorePanel"><span class="card-label">雙重評分</span><h2>兩個問題，分開回答</h2><div class="score-card"><div><span>標的成立度</span><strong>—</strong></div><p>標的本身是否具備值得持續研究的條件。</p></div><div class="score-card"><div><span>個人適合度</span><strong>—</strong></div><p>標的與你的目標、輪廓及規劃有何關聯。</p></div><p class="score-note">兩個分數不可合併成單一推薦分數。</p><button class="button primary full" data-route="thesis">建立我的論點卡 →</button></aside>
+          </div>
+        </section>
+
+        <section class="screen" data-screen="thesis" data-story="13">
+          <div class="page-heading"><div><span class="eyebrow">Screen 13｜我的論點卡</span><h1>保存的是你的判斷，不是買賣訊號</h1><p>把理由、證據、假設與觀察條件整理成可持續更新的內容。</p></div><button class="button secondary">編輯論點</button></div>
+          <div class="thesis-empty card"><div class="empty-symbol">▤</div><span class="card-label">尚無論點卡</span><h2>完成一個標的的決策驗證後建立</h2><p>論點卡會保留投資理由、與目標的關聯、支持證據、不同觀點、關鍵假設及雙重評分。</p><button class="button primary" data-route="explore">前往投資探索 →</button></div>
+          <div class="thesis-anatomy"><article class="card"><b>01</b><h3>我的投資理由</h3><p>由使用者自己提出並持續修正。</p></article><article class="card"><b>02</b><h3>支持與反方證據</h3><p>保留來源與更新時間。</p></article><article class="card"><b>03</b><h3>關鍵假設</h3><p>形成後續追蹤的核心。</p></article><article class="card"><b>04</b><h3>觀察條件</h3><p>定義什麼變化值得重新理解。</p></article></div>
+        </section>
+
+        <section class="screen" data-screen="tracking" data-story="14">
+          <div class="page-heading"><div><span class="eyebrow">Screen 14｜心跳追蹤</span><h1>只關注會影響判斷的重要變化</h1><p>追蹤標的、原始假設與個人條件，不是單純盯著價格。</p></div><button class="button secondary" id="previewChange">預覽重要變化流程</button></div>
+          <div class="tracking-status card"><div class="pulse"><i></i><span>穩定</span></div><div><span class="card-label">目前狀態</span><h2>目前沒有需要特別注意的重要變化</h2><p>尚未建立論點卡與追蹤條件；建立後系統才會判斷變化是否具有決策意義。</p></div></div>
+          <div class="section-title"><div><span>追蹤範圍</span><h2>三種脈絡一起看</h2></div></div>
+          <div class="three-cards"><article class="card monitoring"><span class="monitor-icon">標</span><h3>標的資訊</h3><p>營收、財報、估值、基本面與重要事件。</p><strong>尚無追蹤標的</strong></article><article class="card monitoring"><span class="monitor-icon">論</span><h3>投資理由</h3><p>關鍵假設、支持證據與觀察指標。</p><strong>尚無論點卡</strong></article><article class="card monitoring"><span class="monitor-icon">我</span><h3>個人條件</h3><p>目標、期限、投入、輪廓與投資部位。</p><strong>資料尚未完成</strong></article></div>
+          <div class="severity-guide card"><span class="card-label">提醒層級</span><div><span class="severity info">資訊</span><p>值得知道，不影響原始假設</p></div><div><span class="severity attention">注意</span><p>可能影響部分假設，需要理解</p></div><div><span class="severity critical">重要</span><p>具有決策意義，需要重新檢視</p></div></div>
+        </section>
+
+        <section class="screen" data-screen="change" data-story="15,16,17">
+          <div class="page-heading"><div><span class="eyebrow">Screen 15–17｜重要變化、AI 解讀與更新</span><h1>理解變化，再決定是否更新判斷</h1><p>此頁為流程結構預覽；沒有填入任何虛構事件。</p></div><button class="button secondary" data-route="tracking">返回心跳追蹤</button></div>
+          <div class="change-flow-tabs"><button class="active" data-change-step="0"><span>15</span>發生什麼</button><i></i><button data-change-step="1"><span>16</span>AI 解讀</button><i></i><button data-change-step="2"><span>17</span>更新理解</button></div>
+          <div class="change-stage card" data-change-panel="0"><span class="severity attention">注意層級</span><h2>重要變化內容待事件資料</h2><p>只有可能影響原始假設或投資理由的變化，才會進入這個流程。</p><div class="impact-chain"><div><span>發生什麼</span><strong>資料待串接</strong></div><b>↓</b><div><span>影響哪個原始假設</span><strong>待論點卡建立</strong></div><b>↓</b><div><span>與我的目標有何關聯</span><strong>待個人規劃完成</strong></div></div><button class="button primary" data-next-change>了解這項變化 →</button></div>
+          <div class="change-stage card" data-change-panel="1" hidden><span class="ai-spark">✦</span><span class="card-label">AI 解讀重要變化</span><h2>AI 將沿著原始脈絡解釋</h2><div class="ai-structure"><div><b>01</b><span><strong>重要變化</strong><small>先說明已確認的事實</small></span></div><div><b>02</b><span><strong>受到影響的假設</strong><small>連結原本論點卡</small></span></div><div><b>03</b><span><strong>投資理由與目標關聯</strong><small>分開標示標的與個人影響</small></span></div><div><b>04</b><span><strong>下一步觀察方向</strong><small>提供理解方向，不下交易指令</small></span></div></div><button class="button primary" data-next-change>更新我的投資理解 →</button></div>
+          <div class="change-stage card" data-change-panel="2" hidden><span class="card-label">更新選項</span><h2>根據新資訊，選擇如何更新</h2><div class="update-options"><label><input type="radio" name="update" checked><span><strong>維持目前判斷</strong><small>記錄已理解變化，繼續原有追蹤。</small></span></label><label><input type="radio" name="update"><span><strong>更新投資理由</strong><small>調整論點卡中的理由或證據。</small></span></label><label><input type="radio" name="update"><span><strong>更新觀察條件</strong><small>增加或修改後續監測指標。</small></span></label><label><input type="radio" name="update"><span><strong>調整投資規劃</strong><small>回到目標、配置與部位條件。</small></span></label></div><button class="button primary" data-route="tracking">完成更新並持續追蹤 →</button></div>
+        </section>
+      </main>
+
+      <nav class="bottom-nav" aria-label="手機版主要導覽"><button data-route="home"><span>⌂</span>首頁</button><button data-route="plan"><span>◎</span>規劃</button><button data-route="explore"><span>◇</span>探索</button><button data-route="thesis"><span>▤</span>論點</button><button data-route="tracking"><span>⌁</span>追蹤</button></nav>
+    </div>
+  </div>
+
+  <div class="overlay" id="overlay"></div>
+  <aside class="ai-drawer" id="aiDrawer" data-story="10" aria-hidden="true" aria-label="AI 對話助理">
+    <header><div><span class="ai-spark">✦</span><span><strong>AI 對話助理</strong><small id="aiContext">目前情境：首頁／總覽</small></span></div><button class="icon-button" id="closeAI" aria-label="關閉 AI 面板">×</button></header>
+    <div class="ai-body"><div class="ai-message"><span>AI</span><div><strong id="aiTitle">今天想了解什麼？</strong><p>我會使用目前畫面的脈絡協助你理解，不會替你做投資決定。</p></div></div><div class="suggestions" id="suggestions"></div></div>
+    <footer><label for="aiInput">輸入問題</label><div><input id="aiInput" placeholder="請輸入你想了解的問題"><button aria-label="送出問題">↑</button></div><p>AI 內容需要搭配資料來源與人工判斷。</p></footer>
+  </aside>
+
+  <script src="./app.js"></script>
+</body>
+</html>
