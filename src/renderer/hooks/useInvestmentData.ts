@@ -3,6 +3,8 @@ import type {
   AllocationItem,
   CandidateInstrument,
   InvestmentGoal,
+  PlanPolicy,
+  PlanResearchSuggestion,
   RiskProfile,
   ThesisCard,
 } from "@shared/domain/investment";
@@ -12,6 +14,8 @@ export interface InvestmentData {
   goal: InvestmentGoal;
   profile: RiskProfile;
   allocations: AllocationItem[];
+  planPolicy: PlanPolicy;
+  planResearchSuggestion: PlanResearchSuggestion;
   candidates: CandidateInstrument[];
   thesis: ThesisCard;
 }
@@ -26,11 +30,13 @@ export function useInvestmentData(repository: InvestmentRepository) {
       repository.getGoal(),
       repository.getRiskProfile(),
       repository.getAllocations(),
+      repository.getPlanPolicy(),
+      repository.getPlanResearchSuggestion(),
       repository.getCandidates(),
       repository.getThesis(),
     ])
-      .then(([goal, profile, allocations, candidates, thesis]) => {
-        if (active) setData({ goal, profile, allocations, candidates, thesis });
+      .then(([goal, profile, allocations, planPolicy, planResearchSuggestion, candidates, thesis]) => {
+        if (active) setData({ goal, profile, allocations, planPolicy, planResearchSuggestion, candidates, thesis });
       })
       .catch(() => {
         if (active) setError("投資研究資料載入失敗，請重新開啟應用程式。");

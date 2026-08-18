@@ -14,3 +14,12 @@ export const onboardingQuestions: OnboardingQuestion[] = [
   { id: "volatility", kicker: "波動感受", title: "若資產短期下跌 15%，你的感受是？", help: "風險意願與實際承受能力會分開評估。", options: ["會非常不安", "需要重新確認理由", "可以依原計畫觀察"] },
   { id: "liquidity", kicker: "資金需求", title: "這筆資金中途需要使用的可能性？", help: "資金彈性會影響可投入比例與配置方式。", options: ["很可能需要", "可能需要一部分", "短期不會使用"] },
 ];
+
+export const demoOnboardingAnswers: Record<string, string> = {
+  goal: "累積一筆資產",
+  term: "8–12 年",
+  contribution: "NT$ 18,000",
+  experience: "有定期投入經驗",
+  volatility: "需要重新確認理由",
+  liquidity: "可能需要一部分",
+};

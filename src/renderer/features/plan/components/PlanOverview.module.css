@@ -1,0 +1,342 @@
+.overview {
+  display: grid;
+  gap: 16px;
+}
+
+.readingGuide {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.readingGuide li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 15px;
+  border: 1px solid var(--brand-100);
+  border-radius: var(--radius-md);
+  background: var(--brand-50);
+}
+
+.readingGuide li > span {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--brand-700);
+  color: var(--surface);
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.readingGuide strong,
+.readingGuide small {
+  display: block;
+}
+
+.readingGuide strong {
+  font-size: 12px;
+}
+
+.readingGuide small {
+  margin-top: 2px;
+  color: var(--neutral-600);
+  font-size: 10px;
+}
+
+.feasibility {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 260px;
+  align-items: center;
+  gap: 28px;
+  padding: 26px;
+}
+
+.feasibilityCopy h2 {
+  margin: 7px 0;
+  font-size: 25px;
+}
+
+.feasibilityCopy p {
+  max-width: 820px;
+  margin-bottom: 14px;
+}
+
+.feasibilityCopy ul,
+.reviewSection ul {
+  display: grid;
+  gap: 7px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.feasibilityCopy li,
+.reviewSection li {
+  position: relative;
+  padding-left: 19px;
+  color: var(--neutral-800);
+  font-size: 11px;
+}
+
+.feasibilityCopy li::before,
+.reviewSection li::before {
+  content: "✓";
+  position: absolute;
+  left: 0;
+  color: var(--success);
+  font-weight: 850;
+}
+
+.feasibilityStatus {
+  padding: 20px;
+  border-radius: var(--radius-md);
+  background: var(--success-bg);
+}
+
+.feasibilityStatus span,
+.feasibilityStatus strong,
+.feasibilityStatus small {
+  display: block;
+}
+
+.feasibilityStatus span {
+  color: var(--success);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.feasibilityStatus strong {
+  margin: 5px 0 8px;
+  color: var(--success);
+  font-size: 28px;
+}
+
+.feasibilityStatus small {
+  color: var(--neutral-600);
+  font-size: 10px;
+  line-height: 1.55;
+}
+
+.section,
+.reviewSection {
+  padding: 26px;
+}
+
+.sectionHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.sectionHeader h2,
+.reviewSection h2 {
+  margin: 6px 0;
+  font-size: 22px;
+}
+
+.sectionHeader p,
+.reviewSection p {
+  margin: 0;
+}
+
+.stepLabel {
+  color: var(--brand-600);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .06em;
+}
+
+.totalBadge {
+  min-width: 108px;
+  padding: 11px 14px;
+  border-radius: 11px;
+  background: var(--brand-950);
+  color: var(--surface);
+  text-align: right;
+}
+
+.totalBadge span,
+.totalBadge strong {
+  display: block;
+}
+
+.totalBadge span {
+  color: var(--brand-100);
+  font-size: 9px;
+}
+
+.totalBadge strong {
+  margin-top: 2px;
+  font-size: 19px;
+}
+
+.allocationBar {
+  height: 13px;
+  display: flex;
+  gap: 3px;
+  margin: 22px 0 17px;
+  overflow: hidden;
+  border-radius: 99px;
+  background: var(--neutral-100);
+}
+
+.segment {
+  min-width: 0;
+}
+
+.core {
+  background: var(--brand-700);
+}
+
+.growth {
+  background: var(--brand-300);
+}
+
+.liquid {
+  background: var(--attention);
+}
+
+.exampleIntro {
+  color: var(--neutral-600);
+  font-size: 11px;
+}
+
+.allocationList {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 10px;
+}
+
+.allocationList article {
+  display: grid;
+  grid-template-columns: 7px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 11px;
+  padding: 15px;
+  border: 1px solid var(--neutral-200);
+  border-radius: 12px;
+  background: var(--surface);
+}
+
+.allocationList i {
+  width: 7px;
+  height: 46px;
+  border-radius: 99px;
+}
+
+.allocationList strong,
+.allocationList small {
+  display: block;
+}
+
+.allocationList small {
+  margin-top: 3px;
+  color: var(--neutral-600);
+  font-size: 9px;
+}
+
+.allocationValue {
+  text-align: right;
+}
+
+.allocationValue > strong {
+  font-size: 19px;
+}
+
+.guardrailGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.guardrailGrid article {
+  padding: 20px;
+  border: 1px solid var(--brand-100);
+  border-radius: var(--radius-md);
+  background: var(--brand-50);
+}
+
+.guardrailGrid article > span {
+  color: var(--brand-700);
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.guardrailGrid article > strong {
+  display: block;
+  margin: 7px 0;
+  font-size: 30px;
+}
+
+.guardrailGrid p {
+  margin: 0 0 13px;
+}
+
+.guardrailGrid small {
+  display: block;
+  padding-top: 11px;
+  border-top: 1px solid var(--brand-100);
+  color: var(--neutral-600);
+  font-size: 10px;
+}
+
+.reviewSection {
+  display: grid;
+  grid-template-columns: minmax(240px, .8fr) minmax(0, 1.2fr);
+  align-items: center;
+  gap: 26px;
+  border-color: var(--attention-bg);
+  background: var(--attention-bg);
+}
+
+.reviewSection li::before {
+  content: "!";
+  color: var(--attention);
+}
+
+@media (max-width: 960px) {
+  .readingGuide,
+  .allocationList {
+    grid-template-columns: 1fr;
+  }
+
+  .feasibility,
+  .reviewSection {
+    grid-template-columns: 1fr;
+  }
+
+  .feasibilityStatus {
+    max-width: none;
+  }
+}
+
+@media (max-width: 680px) {
+  .sectionHeader {
+    flex-direction: column;
+  }
+
+  .totalBadge {
+    width: 100%;
+    text-align: left;
+  }
+
+  .guardrailGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .feasibility,
+  .section,
+  .reviewSection {
+    padding: 18px;
+  }
+}

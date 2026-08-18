@@ -42,10 +42,10 @@ export function AiDrawer({ open, route, initialPrompt, provider, onClose }: AiDr
       <aside className={`ai-drawer ${open ? "open" : ""}`} aria-hidden={!open} aria-label="AI 對話助理">
         <header><div><span className="ai-spark">✦</span><span><strong>AI 對話助理</strong><small>目前情境：{routeMetadata[route].label}</small></span></div><button className="icon-button" onClick={onClose} aria-label="關閉 AI 面板">×</button></header>
         <div className="ai-body">
-          <div className="ai-message"><span>AI</span><div><strong>{answer ? "Demo 回覆" : "想先理解哪一部分？"}</strong><p>{answer || "我會承接目前畫面的脈絡。Version 1 尚未連線外部 AI。"}{running && <i className="typing-cursor" />}</p></div></div>
+          <div className="ai-message"><span>AI</span><div><strong>{answer ? "AI 整理" : "想先理解哪一部分？"}</strong><p>{answer || "我會承接目前畫面的脈絡，協助你整理重點與釐清問題。"}{running && <i className="typing-cursor" />}</p></div></div>
           <div className="suggestions"><button onClick={() => setInput("這和我的目標有什麼關係？")}>與我的目標有何關係？</button><button onClick={() => setInput("有哪些反方觀點？")}>有哪些反方觀點？</button></div>
         </div>
-        <footer><label htmlFor="ai-input">輸入問題</label><div><input id="ai-input" value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") void submit(); }} placeholder="輸入你想了解的問題" /><button onClick={() => void submit()} disabled={running} aria-label="送出問題">↑</button></div><p>Version 1 使用前端 Demo 回覆；正式版將串接 LLM 並附上資料來源。</p></footer>
+        <footer><label htmlFor="ai-input">輸入問題</label><div><input id="ai-input" value={input} onChange={(event) => setInput(event.target.value)} onKeyDown={(event) => { if (event.key === "Enter") void submit(); }} placeholder="輸入你想了解的問題" /><button onClick={() => void submit()} disabled={running} aria-label="送出問題">↑</button></div><p>回答會依目前畫面脈絡整理；重要資訊請回到原始資料確認。</p></footer>
       </aside>
     </>
   );

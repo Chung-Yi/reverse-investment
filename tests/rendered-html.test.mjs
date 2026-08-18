@@ -20,18 +20,31 @@ test("renderer has a product-specific React entry", async () => {
   assert.match(app, /mockInvestmentRepository/);
 });
 
-test("preserves 12 UI workspaces and 17 story-node traceability", async () => {
-  const [metadata, drawer, changePage] = await Promise.all([
+test("preserves 12 UI workspaces and 17 story-node traceability without exposing internal IDs", async () => {
+  const productPagePaths = [
+    "welcome/pages/WelcomePage.tsx",
+    "onboarding/pages/OnboardingPage.tsx",
+    "profile/pages/ProfilePage.tsx",
+    "plan/pages/PlanPage.tsx",
+    "explore/pages/ExplorePage.tsx",
+    "instrument/pages/InstrumentPage.tsx",
+    "decision/pages/DecisionPage.tsx",
+    "thesis/pages/ThesisPage.tsx",
+    "tracking/pages/TrackingPage.tsx",
+    "change/pages/ChangePage.tsx",
+  ];
+  const [metadata, drawer, ...productPages] = await Promise.all([
     readProjectFile("src/renderer/app/routeMetadata.ts"),
     readProjectFile("src/renderer/components/layout/AiDrawer.tsx"),
-    readProjectFile("src/renderer/features/change/pages/ChangePage.tsx"),
+    ...productPagePaths.map((path) => readProjectFile(`src/renderer/features/${path}`)),
   ]);
 
   for (const route of ["welcome", "home", "onboarding", "profile", "plan", "explore", "instrument", "decision", "thesis", "tracking", "change"]) {
     assert.match(metadata, new RegExp(`id: "${route}"`));
   }
   assert.match(drawer, /AI 對話助理/);
-  assert.match(changePage, /Screen 15–17/);
+  assert.match(metadata, /story: "15–17"/);
+  assert.doesNotMatch(productPages.join("\n"), /Screen\s+\d/i);
 });
 
 test("Electron renderer keeps privileged APIs behind preload", async () => {

@@ -6,6 +6,7 @@ import { AiDrawer } from "../components/layout/AiDrawer";
 import { mockInvestmentRepository } from "../data/repositories/mockInvestmentRepository";
 import { useInvestmentData } from "../hooks/useInvestmentData";
 import { MockAgentProvider } from "../services/agent/MockAgentProvider";
+import { demoOnboardingAnswers } from "../data/fixtures/onboardingQuestions";
 import { WelcomePage } from "../features/welcome/pages/WelcomePage";
 import { OnboardingPage } from "../features/onboarding/pages/OnboardingPage";
 import { HomePage } from "../features/home/pages/HomePage";
@@ -24,11 +25,13 @@ const initialRoute = location.hash.slice(1) as RouteId;
 export function App() {
   const [route, setRoute] = useState<RouteId>(validRoutes.has(initialRoute) ? initialRoute : "home");
   const [assistant, setAssistant] = useState({ open: false, prompt: "" });
+  const [onboardingAnswers, setOnboardingAnswers] = useState<Record<string, string>>(() => ({ ...demoOnboardingAnswers }));
   const agentProvider = useMemo(() => new MockAgentProvider(), []);
   const { data, error } = useInvestmentData(mockInvestmentRepository);
   const navigate = useCallback((next: RouteId) => { setRoute(next); location.hash = next; window.scrollTo({ top: 0 }); }, []);
   const openAssistant = useCallback((prompt = "") => setAssistant({ open: true, prompt }), []);
-  const context = useMemo(() => ({ route, navigate, openAssistant, agentProvider }), [route, navigate, openAssistant, agentProvider]);
+  const saveOnboardingAnswers = useCallback((answers: Record<string, string>) => setOnboardingAnswers({ ...answers }), []);
+  const context = useMemo(() => ({ route, navigate, openAssistant, agentProvider, onboardingAnswers, saveOnboardingAnswers }), [route, navigate, openAssistant, agentProvider, onboardingAnswers, saveOnboardingAnswers]);
 
   let content: React.ReactNode;
   if (error) content = <div className="feedback-state error"><h1>目前無法載入 Demo</h1><p>{error}</p></div>;

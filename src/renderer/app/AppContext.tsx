@@ -7,6 +7,8 @@ interface AppContextValue {
   navigate: (route: RouteId) => void;
   openAssistant: (prompt?: string) => void;
   agentProvider: AgentProvider;
+  onboardingAnswers: Record<string, string>;
+  saveOnboardingAnswers: (answers: Record<string, string>) => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);

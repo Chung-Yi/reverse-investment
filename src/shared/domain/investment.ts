@@ -22,6 +22,43 @@ export interface AllocationItem {
   tone: "core" | "growth" | "liquid";
 }
 
+export interface PlanPolicy {
+  feasibilityStatus: "可規劃" | "需要調整";
+  feasibilityHeadline: string;
+  feasibilitySummary: string;
+  feasibilityReasons: string[];
+  referenceAmount: number;
+  percentageBasis: "總投資資產";
+  singlePositionLimitPercentage: number;
+  industryReviewThresholdPercentage: number;
+  reviewTriggers: string[];
+}
+
+export interface PlanResearchDirection {
+  id: string;
+  category: string;
+  title: string;
+  allocationRole: "核心配置" | "成長配置" | "觀察清單";
+  rationale: string;
+  riskNote: string;
+}
+
+export interface PlanCandidateIdea {
+  id: string;
+  name: string;
+  symbol?: string;
+  category: string;
+  rationale: string;
+  dataStatus: "已有研究資料" | "待進一步篩選";
+  instrumentId?: string;
+}
+
+export interface PlanResearchSuggestion {
+  summary: string;
+  directions: PlanResearchDirection[];
+  candidates: PlanCandidateIdea[];
+}
+
 export interface CandidateInstrument {
   id: string;
   symbol: string;

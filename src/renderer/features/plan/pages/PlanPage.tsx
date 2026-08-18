@@ -2,8 +2,25 @@ import type { InvestmentData } from "../../../hooks/useInvestmentData";
 import { useAppContext } from "../../../app/AppContext";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Button } from "../../../components/ui/Button";
+import { PlanOverview } from "../components/PlanOverview";
+import { PlanResearchSuggestions } from "../components/PlanResearchSuggestions";
 
 export function PlanPage({ data }: { data: InvestmentData }) {
   const { navigate, openAssistant } = useAppContext();
-  return <section><PageHeader eyebrow="Screen 06｜我的投資規劃" title="我的投資規劃" description="由目標、資源與投資輪廓共同形成。" action={<Button variant="ghost" onClick={() => openAssistant("為什麼這樣規劃？")}>✦ 為什麼這樣規劃？</Button>} /><article className="feasibility card"><div><span className="card-label">目標可行性</span><h2>目前路徑具備調整空間</h2><p>依目前輸入的目標與資金條件整理；正式版將由規劃引擎重新計算並保留假設。</p></div><div className="feasibility-meter"><span>目前狀態：可規劃</span><i><b style={{ width: "74%" }} /></i><small>Demo 評估，不是達成保證或報酬預測</small></div></article><div className="plan-layout"><article className="card allocation"><div className="card-head"><div><span className="card-label">配置方向</span><h2>三層資金結構</h2></div><span className="status neutral">規劃草案</span></div><div className="allocation-list">{data.allocations.map((item) => <div key={item.label}><i className={item.tone} /><span><strong>{item.label}</strong><small>{item.description}</small></span><b>{item.percentage}%</b></div>)}</div></article><div className="plan-conditions"><article className="card"><span className="card-label">部位條件</span><h3>單一研究型部位上限</h3><strong>10%</strong></article><article className="card"><span className="card-label">集中度</span><h3>單一產業觀察門檻</h3><strong>40%</strong></article><article className="card"><span className="card-label">重要觀察</span><h3>目標或資金需求改變</h3><strong>重新檢視整體規劃</strong></article></div></div><div className="page-cta card"><div><span className="card-label">下一步</span><h3>從規劃出發，探索值得研究的方向</h3></div><Button onClick={() => navigate("explore")}>探索投資方向 →</Button></div></section>;
+  return (
+    <section>
+      <PageHeader
+        eyebrow="規劃總覽"
+        title="我的投資規劃"
+        description="先看懂資金如何分配，再確認配置限制與重新檢視條件。"
+        action={<Button variant="ghost" onClick={() => openAssistant("為什麼這樣規劃？")}>✦ 為什麼這樣規劃？</Button>}
+      />
+      <PlanOverview allocations={data.allocations} policy={data.planPolicy} />
+      <PlanResearchSuggestions goalName={data.goal.name} suggestion={data.planResearchSuggestion} onNavigate={navigate} />
+      <div className="page-cta card">
+        <div><span className="card-label">下一步</span><h3>從 AI 研究起點出發，驗證方向與候選標的</h3></div>
+        <Button onClick={() => navigate("explore")}>探索投資方向 →</Button>
+      </div>
+    </section>
+  );
 }
