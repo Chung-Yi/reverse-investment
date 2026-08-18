@@ -2,6 +2,8 @@ import type {
   AllocationItem,
   CandidateInstrument,
   InvestmentGoal,
+  PlanPolicy,
+  PlanResearchSuggestion,
   RiskProfile,
   ThesisCard,
 } from "@shared/domain/investment";
@@ -32,6 +34,82 @@ export const demoAllocations: AllocationItem[] = [
   { label: "成長配置", percentage: 25, description: "依成長需求保留的研究型部位", tone: "growth" },
   { label: "彈性資金", percentage: 15, description: "保留短期調整與生活資金彈性", tone: "liquid" },
 ];
+
+export const demoPlanPolicy: PlanPolicy = {
+  feasibilityStatus: "可規劃",
+  feasibilityHeadline: "依目前條件，這份規劃具備執行空間",
+  feasibilitySummary: "八年期限有助分散短期波動，但仍需要保留資金彈性並限制成長部位的集中程度。",
+  feasibilityReasons: [
+    "目標期限為八年，可用較長時間承受市場波動。",
+    "每月投入 NT$ 18,000，適合以固定節奏累積資產。",
+    "資金中途可能使用，因此保留 15% 彈性資金。",
+  ],
+  referenceAmount: 100000,
+  percentageBasis: "總投資資產",
+  singlePositionLimitPercentage: 10,
+  industryReviewThresholdPercentage: 40,
+  reviewTriggers: [
+    "財務目標或預計完成時間改變",
+    "每月可投入金額明顯增加或減少",
+    "資金需要提前使用",
+    "可承受的波動程度發生改變",
+  ],
+};
+
+export const demoPlanResearchSuggestion: PlanResearchSuggestion = {
+  summary: "依八年成長目標、每月投入與穩健風險意願，先建立分散核心，再以受限部位研究成長題材。",
+  directions: [
+    {
+      id: "diversified-core",
+      category: "分散型工具",
+      title: "市場型或多資產核心",
+      allocationRole: "核心配置",
+      rationale: "用分散工具支撐長期目標，降低單一公司或單一產業對整體路徑的影響。",
+      riskNote: "仍需比較費用、追蹤誤差、資產重疊與匯率風險。",
+    },
+    {
+      id: "semiconductor-ai",
+      category: "半導體・AI",
+      title: "AI 基礎設施與先進製程",
+      allocationRole: "成長配置",
+      rationale: "八年期限容許研究長期成長題材，但應受單一部位 10% 與產業集中度限制。",
+      riskNote: "需驗證景氣循環、估值、客戶集中與資本支出持續性。",
+    },
+    {
+      id: "financial-quality",
+      category: "金融類型",
+      title: "現金流與防禦型金融",
+      allocationRole: "觀察清單",
+      rationale: "可作為成長題材之外的研究方向，觀察收益來源與景氣敏感度是否有助分散。",
+      riskNote: "需比較利率敏感度、信用風險、資本適足率與股利穩定性。",
+    },
+  ],
+  candidates: [
+    {
+      id: "candidate-tsmc",
+      name: "台積電",
+      symbol: "2330",
+      category: "個股・半導體",
+      rationale: "作為先進製程方向的研究案例，進一步檢驗成長條件、估值、風險與個人適合度。",
+      dataStatus: "已有 Demo 研究資料",
+      instrumentId: "tw-2330",
+    },
+    {
+      id: "candidate-financial-etf",
+      name: "金融類型 ETF",
+      category: "ETF・金融",
+      rationale: "先比較成分集中度、費用與利率敏感度，再決定是否建立具名候選標的。",
+      dataStatus: "待進一步篩選",
+    },
+    {
+      id: "candidate-ai-basket",
+      name: "AI 基礎設施主題籃子",
+      category: "主題・AI",
+      rationale: "先拆解晶片、伺服器、網路與雲端供應鏈，避免只因熱門標籤形成投資結論。",
+      dataStatus: "待進一步篩選",
+    },
+  ],
+};
 
 export const demoCandidates: CandidateInstrument[] = [
   {
