@@ -5,10 +5,12 @@ import { Button } from "../ui/Button";
 interface AppShellProps {
   route: RouteId;
   navigate: (route: RouteId) => void;
+  backLabel?: string;
+  onBack: () => void;
   openAssistant: () => void;
 }
 
-export function AppShell({ route, navigate, openAssistant, children }: PropsWithChildren<AppShellProps>) {
+export function AppShell({ route, navigate, backLabel, onBack, openAssistant, children }: PropsWithChildren<AppShellProps>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const go = (next: RouteId) => { navigate(next); setMenuOpen(false); };
 
@@ -29,8 +31,13 @@ export function AppShell({ route, navigate, openAssistant, children }: PropsWith
         </aside>
         <div className="app-area">
           <header className="topbar">
-            <button className="icon-button mobile-menu" onClick={() => setMenuOpen(true)} aria-label="開啟選單">☰</button>
-            <div className="breadcrumb"><span>我的投資旅程</span><b>/</b><strong>{routeMetadata[route].label}</strong></div>
+            <div className="topbar-leading">
+              {backLabel
+                ? <button className="app-back-button" onClick={onBack} aria-label={backLabel} title={backLabel}><span aria-hidden="true">←</span><span className="back-button-label">{backLabel}</span></button>
+                : <button className="icon-button mobile-menu" onClick={() => setMenuOpen(true)} aria-label="開啟選單">☰</button>}
+              <div className="breadcrumb"><span>我的投資旅程</span><b>/</b><strong>{routeMetadata[route].label}</strong></div>
+              <strong className="mobile-page-title">{routeMetadata[route].label}</strong>
+            </div>
             <div className="top-actions"><button className="text-button" onClick={() => go("profile")}>投資輪廓</button><span className="avatar" aria-label="使用者">使</span></div>
           </header>
           <main id="main-content" tabIndex={-1}>{children}</main>

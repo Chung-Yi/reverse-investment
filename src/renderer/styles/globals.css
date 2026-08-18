@@ -22,10 +22,14 @@ ul { padding-left: 20px; color: var(--neutral-600); line-height: 1.8; }
 .sidebar-footer { margin-top: auto; }.sidebar-footer p { margin: 16px 8px 0; color: var(--brand-300); font-size: 10px; }
 .app-area { grid-column: 2; min-width: 0; }
 .topbar { position: sticky; z-index: 10; top: 30px; height: 64px; display: flex; align-items: center; justify-content: space-between; padding: 0 30px; background: rgba(255, 255, 255, .9); border-bottom: 1px solid var(--neutral-200); backdrop-filter: blur(14px); }
+.topbar-leading { min-width: 0; display: flex; align-items: center; gap: 10px; }
 .breadcrumb { display: flex; align-items: center; gap: 9px; color: var(--neutral-400); font-size: 12px; }.breadcrumb strong { color: var(--neutral-800); }.breadcrumb b { font-weight: 400; }
+.mobile-page-title { display: none; }
 .top-actions { display: flex; align-items: center; gap: 14px; }.avatar { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--brand-100); color: var(--brand-800); font-size: 12px; font-weight: 800; }
 .text-button { padding: 5px; border: 0; background: transparent; color: var(--brand-700); cursor: pointer; font-size: 12px; font-weight: 750; }
 .icon-button { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 10px; background: var(--neutral-100); cursor: pointer; font-size: 19px; }.mobile-menu { display: none; }
+.app-back-button { min-height: 36px; display: inline-flex; align-items: center; gap: 7px; padding: 0 9px; border: 0; border-radius: 10px; background: transparent; color: var(--brand-700); cursor: pointer; font-size: 12px; font-weight: 800; }
+.app-back-button:hover { background: var(--brand-50); }.app-back-button > span:first-child { font-size: 18px; line-height: 1; }
 main { width: 100%; max-width: 1480px; min-height: calc(100vh - 94px); margin: 0 auto; padding: 44px clamp(24px, 4vw, 64px) 90px; }
 .card { background: var(--surface); border: 1px solid var(--neutral-200); border-radius: var(--radius-md); box-shadow: var(--shadow-sm); }
 .button { min-height: 42px; padding: 9px 16px; border: 1px solid transparent; border-radius: 10px; cursor: pointer; font-size: 12px; font-weight: 800; transition: transform .15s, background .15s; }

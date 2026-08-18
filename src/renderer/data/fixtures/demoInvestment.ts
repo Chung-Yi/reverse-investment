@@ -30,9 +30,9 @@ export const demoRiskProfile: RiskProfile = {
 };
 
 export const demoAllocations: AllocationItem[] = [
-  { label: "核心配置", percentage: 60, description: "支撐八年目標的分散型長期配置", tone: "core" },
-  { label: "成長配置", percentage: 25, description: "依成長需求保留的研究型部位", tone: "growth" },
-  { label: "彈性資金", percentage: 15, description: "保留短期調整與生活資金彈性", tone: "liquid" },
+  { label: "長期投資", percentage: 60, description: "用分散方式支持八年目標", tone: "core" },
+  { label: "成長投資", percentage: 25, description: "保留給需要進一步研究的成長機會", tone: "growth" },
+  { label: "保留資金", percentage: 15, description: "保留短期調整與生活資金需求", tone: "liquid" },
 ];
 
 export const demoPlanPolicy: PlanPolicy = {
@@ -42,7 +42,7 @@ export const demoPlanPolicy: PlanPolicy = {
   feasibilityReasons: [
     "目標期限為八年，可用較長時間承受市場波動。",
     "每月投入 NT$ 18,000，適合以固定節奏累積資產。",
-    "資金中途可能使用，因此保留 15% 彈性資金。",
+    "資金中途可能使用，因此保留 15% 資金備用。",
   ],
   referenceAmount: 100000,
   percentageBasis: "總投資資產",
@@ -63,7 +63,7 @@ export const demoPlanResearchSuggestion: PlanResearchSuggestion = {
       id: "diversified-core",
       category: "分散型工具",
       title: "市場型或多資產核心",
-      allocationRole: "核心配置",
+      allocationRole: "長期投資",
       rationale: "用分散工具支撐長期目標，降低單一公司或單一產業對整體路徑的影響。",
       riskNote: "仍需比較費用、追蹤誤差、資產重疊與匯率風險。",
     },
@@ -71,7 +71,7 @@ export const demoPlanResearchSuggestion: PlanResearchSuggestion = {
       id: "semiconductor-ai",
       category: "半導體・AI",
       title: "AI 基礎設施與先進製程",
-      allocationRole: "成長配置",
+      allocationRole: "成長投資",
       rationale: "八年期限容許研究長期成長題材，但應受單一部位 10% 與產業集中度限制。",
       riskNote: "需驗證景氣循環、估值、客戶集中與資本支出持續性。",
     },
@@ -79,34 +79,25 @@ export const demoPlanResearchSuggestion: PlanResearchSuggestion = {
       id: "financial-quality",
       category: "金融類型",
       title: "現金流與防禦型金融",
-      allocationRole: "觀察清單",
+      allocationRole: "先觀察",
       rationale: "可作為成長題材之外的研究方向，觀察收益來源與景氣敏感度是否有助分散。",
       riskNote: "需比較利率敏感度、信用風險、資本適足率與股利穩定性。",
     },
-  ],
-  candidates: [
     {
-      id: "candidate-tsmc",
-      name: "台積電",
-      symbol: "2330",
-      category: "個股・半導體",
-      rationale: "作為先進製程方向的研究案例，進一步檢驗成長條件、估值、風險與個人適合度。",
-      dataStatus: "已有研究資料",
-      instrumentId: "tw-2330",
+      id: "power-efficiency",
+      category: "電力・自動化",
+      title: "電力效率與智慧基礎設施",
+      allocationRole: "成長投資",
+      rationale: "以受限部位研究資料中心、能源效率與自動化需求，同時維持長期投資的分散性。",
+      riskNote: "需驗證訂單能見度、資本支出循環、供應鏈執行與估值風險。",
     },
     {
-      id: "candidate-financial-etf",
-      name: "金融類型 ETF",
-      category: "ETF・金融",
-      rationale: "先比較成分集中度、費用與利率敏感度，再決定是否建立具名候選標的。",
-      dataStatus: "待進一步篩選",
-    },
-    {
-      id: "candidate-ai-basket",
-      name: "AI 基礎設施主題籃子",
-      category: "主題・AI",
-      rationale: "先拆解晶片、伺服器、網路與雲端供應鏈，避免只因熱門標籤形成投資結論。",
-      dataStatus: "待進一步篩選",
+      id: "display-materials",
+      category: "材料・顯示",
+      title: "低功耗顯示與材料應用",
+      allocationRole: "先觀察",
+      rationale: "作為既有科技方向之外的應用題材，先觀察產品滲透率與需求能否支持長期研究。",
+      riskNote: "需驗證終端需求、客戶集中、技術替代與獲利波動。",
     },
   ],
 };

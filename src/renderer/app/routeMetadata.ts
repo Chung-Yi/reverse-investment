@@ -16,6 +16,12 @@ export type RouteId = (typeof routes)[number]["id"];
 
 export const routeMetadata = Object.fromEntries(routes.map((route) => [route.id, route])) as Record<RouteId, (typeof routes)[number]>;
 
+export const secondaryRouteBackNavigation: Partial<Record<RouteId, { label: string; fallback: RouteId }>> = {
+  instrument: { label: "返回候選研究標的", fallback: "explore" },
+  decision: { label: "返回標的分析", fallback: "instrument" },
+  change: { label: "返回心跳追蹤", fallback: "tracking" },
+};
+
 export const primaryNavigation: Array<{ id: RouteId; label: string; icon: string }> = [
   { id: "home", label: "首頁", icon: "⌂" },
   { id: "plan", label: "規劃", icon: "◎" },

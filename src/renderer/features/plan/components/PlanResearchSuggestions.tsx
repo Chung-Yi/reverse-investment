@@ -1,22 +1,21 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { PlanResearchSuggestion } from "@shared/domain/investment";
-import { Button } from "../../../components/ui/Button";
 import styles from "./PlanResearchSuggestions.module.css";
 
-type ViewMode = "directions" | "candidates";
 const mobileResearchQuery = "(max-width: 820px)";
 
 interface PlanResearchSuggestionsProps {
   goalName: string;
   suggestion: PlanResearchSuggestion;
-  onNavigate: (route: "explore" | "instrument") => void;
 }
 
-export function PlanResearchSuggestions({ goalName, suggestion, onNavigate }: PlanResearchSuggestionsProps) {
-  const [view, setView] = useState<ViewMode>("directions");
+export function PlanResearchSuggestions({ goalName, suggestion }: PlanResearchSuggestionsProps) {
   const [expanded, setExpanded] = useState(() => (
     typeof window === "undefined" || !window.matchMedia(mobileResearchQuery).matches
   ));
+  const [canScrollBack, setCanScrollBack] = useState(false);
+  const [canScrollForward, setCanScrollForward] = useState(false);
+  const trackRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const mediaQuery = window.matchMedia(mobileResearchQuery);
@@ -25,11 +24,43 @@ export function PlanResearchSuggestions({ goalName, suggestion, onNavigate }: Pl
     return () => mediaQuery.removeEventListener("change", handleBreakpointChange);
   }, []);
 
+  const updateScrollControls = useCallback(() => {
+    const track = trackRef.current;
+    if (!track) return;
+    setCanScrollBack(track.scrollLeft > 4);
+    setCanScrollForward(track.scrollLeft + track.clientWidth < track.scrollWidth - 4);
+  }, []);
+
+  useEffect(() => {
+    if (!expanded) return;
+    const track = trackRef.current;
+    if (!track) return;
+    const frame = window.requestAnimationFrame(updateScrollControls);
+    const resizeObserver = new ResizeObserver(updateScrollControls);
+    resizeObserver.observe(track);
+    track.addEventListener("scroll", updateScrollControls, { passive: true });
+    return () => {
+      window.cancelAnimationFrame(frame);
+      resizeObserver.disconnect();
+      track.removeEventListener("scroll", updateScrollControls);
+    };
+  }, [expanded, suggestion.directions.length, updateScrollControls]);
+
+  const scrollDirections = (direction: -1 | 1) => {
+    const track = trackRef.current;
+    const firstCard = track?.querySelector<HTMLElement>(`[data-direction-card]`);
+    if (!track || !firstCard) return;
+    const gap = Number.parseFloat(window.getComputedStyle(track).columnGap) || 12;
+    track.scrollBy({ left: direction * (firstCard.offsetWidth + gap), behavior: "smooth" });
+  };
+
+  const hasOverflow = canScrollBack || canScrollForward;
+
   return (
     <section className={`card ${styles.panel}`} aria-labelledby="plan-research-title">
       <header className={styles.header}>
         <div>
-          <span className="card-label">AI 研究起點</span>
+          <span className="card-label">研究起點</span>
           <h2 id="plan-research-title">根據「{goalName}」整理可研究的方向</h2>
           <p>{suggestion.summary}</p>
         </div>
@@ -43,20 +74,28 @@ export function PlanResearchSuggestions({ goalName, suggestion, onNavigate }: Pl
         aria-controls="plan-research-content"
         onClick={() => setExpanded((current) => !current)}
       >
-        <span>{expanded ? "收合研究方向" : "展開研究方向"}</span>
+        <span>{expanded ? "收合研究方向" : `展開 ${suggestion.directions.length} 個研究方向`}</span>
         <b aria-hidden="true">{expanded ? "−" : "＋"}</b>
       </button>
 
       <div id="plan-research-content" hidden={!expanded}>
-        <div className={styles.viewSwitch} role="tablist" aria-label="AI 研究起點顯示方式">
-          <button type="button" role="tab" aria-selected={view === "directions"} className={view === "directions" ? styles.active : ""} onClick={() => setView("directions")}>產業與主題方向</button>
-          <button type="button" role="tab" aria-selected={view === "candidates"} className={view === "candidates" ? styles.active : ""} onClick={() => setView("candidates")}>候選標的與類型</button>
+        <div className={styles.directionSectionHeader}>
+          <div>
+            <strong>{suggestion.directions.length} 個研究方向</strong>
+            {hasOverflow && <small>可使用箭頭或左右滑動查看更多</small>}
+          </div>
+          {hasOverflow && (
+            <div className={styles.carouselControls} aria-label="切換研究方向">
+              <button type="button" disabled={!canScrollBack} onClick={() => scrollDirections(-1)} aria-label="查看上一個研究方向">←</button>
+              <button type="button" disabled={!canScrollForward} onClick={() => scrollDirections(1)} aria-label="查看下一個研究方向">→</button>
+            </div>
+          )}
         </div>
 
-        {view === "directions" ? (
-          <div className={styles.directionGrid} role="tabpanel">
+        <div className={styles.directionViewport}>
+          <div ref={trackRef} className={styles.directionTrack} aria-label="依目前規劃整理的研究方向">
             {suggestion.directions.map((direction) => (
-              <article className={styles.directionCard} key={direction.id}>
+              <article className={styles.directionCard} data-direction-card key={direction.id}>
                 <div className={styles.directionMeta}><span>{direction.category}</span><b>{direction.allocationRole}</b></div>
                 <h3>{direction.title}</h3>
                 <p>{direction.rationale}</p>
@@ -64,24 +103,7 @@ export function PlanResearchSuggestions({ goalName, suggestion, onNavigate }: Pl
               </article>
             ))}
           </div>
-        ) : (
-          <div className={styles.candidateList} role="tabpanel">
-            {suggestion.candidates.map((candidate) => (
-              <article className={styles.candidateRow} key={candidate.id}>
-                <div className={styles.symbol}>{candidate.symbol ?? "TYPE"}</div>
-                <div>
-                  <span className="card-label">{candidate.category}</span>
-                  <h3>{candidate.name}</h3>
-                  <p>{candidate.rationale}</p>
-                </div>
-                <div className={styles.candidateAction}>
-                  <span className={candidate.instrumentId ? "status stable" : "status neutral"}>{candidate.dataStatus}</span>
-                  <Button variant="secondary" onClick={() => onNavigate(candidate.instrumentId ? "instrument" : "explore")}>{candidate.instrumentId ? "查看標的研究" : "前往篩選"} →</Button>
-                </div>
-              </article>
-            ))}
-          </div>
-        )}
+        </div>
       </div>
     </section>
   );

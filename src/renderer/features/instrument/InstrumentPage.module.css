@@ -1,0 +1,48 @@
+.assessmentGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 15px 0;
+}
+
+.assessmentGrid article {
+  padding: 17px;
+}
+
+.assessmentGrid span,
+.assessmentGrid strong,
+.assessmentGrid small {
+  display: block;
+}
+
+.assessmentGrid span,
+.assessmentGrid small {
+  color: var(--neutral-600);
+  font-size: 9px;
+}
+
+.assessmentGrid strong {
+  margin: 4px 0;
+  font-size: 22px;
+}
+
+.availableAnalysis {
+  margin-top: 15px;
+  padding: 24px;
+}
+
+.availableAnalysis h2 {
+  margin: 7px 0;
+  font-size: 20px;
+}
+
+.availableAnalysis p {
+  max-width: 760px;
+  margin-bottom: 18px;
+}
+
+@media (max-width: 520px) {
+  .assessmentGrid { grid-template-columns: 1fr; }
+  .availableAnalysis { padding: 18px; }
+  .availableAnalysis button { width: 100%; }
+}

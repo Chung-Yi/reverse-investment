@@ -38,25 +38,45 @@ export interface PlanResearchDirection {
   id: string;
   category: string;
   title: string;
-  allocationRole: "核心配置" | "成長配置" | "觀察清單";
+  allocationRole: "長期投資" | "成長投資" | "先觀察";
   rationale: string;
   riskNote: string;
-}
-
-export interface PlanCandidateIdea {
-  id: string;
-  name: string;
-  symbol?: string;
-  category: string;
-  rationale: string;
-  dataStatus: "已有研究資料" | "待進一步篩選";
-  instrumentId?: string;
 }
 
 export interface PlanResearchSuggestion {
   summary: string;
   directions: PlanResearchDirection[];
-  candidates: PlanCandidateIdea[];
+}
+
+export type TaiwanMarket = "上市" | "上櫃";
+export type ResearchInstrumentType = "個股" | "ETF";
+export type ResearchCandidateOrigin = "plan" | "user";
+export type ResearchAnalysisStatus = "pending" | "ready";
+
+export interface ResearchInstrument {
+  id: string;
+  symbol: string;
+  name: string;
+  market: TaiwanMarket;
+  instrumentType: ResearchInstrumentType;
+  category: string;
+}
+
+export interface ResearchCandidate extends ResearchInstrument {
+  candidateId: string;
+  origin: ResearchCandidateOrigin;
+  directionId?: string;
+  directionTitle?: string;
+  rationale: string;
+  analysisStatus: ResearchAnalysisStatus;
+  researchFit?: number;
+  suitability?: number;
+  instrumentId?: string;
+}
+
+export interface InstrumentSearchFilters {
+  market?: TaiwanMarket;
+  instrumentType?: ResearchInstrumentType;
 }
 
 export interface CandidateInstrument {

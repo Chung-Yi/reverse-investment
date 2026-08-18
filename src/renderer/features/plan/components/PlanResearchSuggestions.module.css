@@ -25,50 +25,88 @@
   display: none;
 }
 
-.viewSwitch {
-  width: fit-content;
-  display: inline-flex;
-  gap: 4px;
-  margin: 20px 0 16px;
-  padding: 4px;
-  border-radius: 11px;
-  background: var(--neutral-100);
+.directionSectionHeader {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 20px 0 12px;
 }
 
-.viewSwitch button {
-  padding: 8px 14px;
-  border: 0;
-  border-radius: 8px;
-  background: transparent;
+.directionSectionHeader strong,
+.directionSectionHeader small {
+  display: block;
+}
+
+.directionSectionHeader strong {
+  font-size: 12px;
+}
+
+.directionSectionHeader small {
+  margin-top: 3px;
   color: var(--neutral-600);
-  cursor: pointer;
-  font: inherit;
-  font-size: 11px;
-  font-weight: 750;
+  font-size: 9px;
 }
 
-.viewSwitch button:focus-visible {
+.carouselControls {
+  display: flex;
+  gap: 7px;
+}
+
+.carouselControls button {
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--brand-100);
+  border-radius: 10px;
+  background: var(--surface);
+  color: var(--brand-800);
+  cursor: pointer;
+  font-size: 17px;
+}
+
+.carouselControls button:hover:not(:disabled) {
+  border-color: var(--brand-300);
+  background: var(--brand-50);
+}
+
+.carouselControls button:disabled {
+  cursor: not-allowed;
+  opacity: .35;
+}
+
+.carouselControls button:focus-visible {
   outline: 3px solid var(--brand-300);
   outline-offset: 2px;
 }
 
-.viewSwitch button.active {
-  background: var(--surface);
-  color: var(--brand-800);
-  box-shadow: var(--shadow-sm);
+.directionViewport {
+  overflow: hidden;
 }
 
-.directionGrid {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+.directionTrack {
+  display: flex;
   gap: 12px;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.directionTrack::-webkit-scrollbar {
+  display: none;
 }
 
 .directionCard {
+  flex: 0 0 calc((100% - 24px) / 3);
+  min-width: 0;
   padding: 18px;
   border: 1px solid var(--brand-100);
   border-radius: var(--radius-md);
   background: rgba(255, 255, 255, .9);
+  scroll-snap-align: start;
 }
 
 .directionMeta {
@@ -111,52 +149,8 @@
   color: var(--attention);
 }
 
-.candidateList {
-  display: grid;
-  gap: 10px;
-}
-
-.candidateRow {
-  display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) auto;
-  align-items: center;
-  gap: 14px;
-  padding: 14px;
-  border: 1px solid var(--neutral-200);
-  border-radius: 12px;
-  background: var(--surface);
-}
-
-.symbol {
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border-radius: 10px;
-  background: var(--brand-950);
-  color: #ffffff;
-  font-size: 10px;
-  font-weight: 850;
-}
-
-.candidateRow h3 {
-  margin: 3px 0;
-  font-size: 15px;
-}
-
-.candidateRow p {
-  margin: 0;
-  font-size: 10px;
-}
-
-.candidateAction {
-  min-width: 142px;
-  display: grid;
-  justify-items: end;
-  gap: 9px;
-}
-
 @media (max-width: 1160px) {
-  .directionGrid { grid-template-columns: 1fr 1fr; }
+  .directionCard { flex-basis: calc((100% - 12px) / 2); }
 }
 
 @media (max-width: 820px) {
@@ -179,14 +173,12 @@
   }
   .mobileToggle b { font-size: 18px; line-height: 1; }
   .mobileToggle:focus-visible { outline: 3px solid var(--brand-300); outline-offset: 2px; }
-  .directionGrid { grid-template-columns: 1fr; }
-  .candidateRow { grid-template-columns: 52px minmax(0, 1fr); }
-  .candidateAction { grid-column: 2; justify-items: stretch; }
-  .candidateAction button { width: 100%; }
+  .directionSectionHeader { align-items: center; }
+  .directionCard { flex-basis: 88%; }
+  .directionCard p { min-height: 0; }
 }
 
 @media (max-width: 480px) {
   .panel { padding: 18px; }
-  .viewSwitch { width: 100%; }
-  .viewSwitch button { flex: 1; padding-inline: 8px; }
+  .directionCard { flex-basis: 92%; }
 }

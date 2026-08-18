@@ -16,10 +16,10 @@ export function PlanPage({ data }: { data: InvestmentData }) {
         action={<Button variant="ghost" onClick={() => openAssistant("為什麼這樣規劃？")}>✦ 為什麼這樣規劃？</Button>}
       />
       <PlanOverview allocations={data.allocations} policy={data.planPolicy} />
-      <PlanResearchSuggestions goalName={data.goal.name} suggestion={data.planResearchSuggestion} onNavigate={navigate} />
+      <PlanResearchSuggestions goalName={data.goal.name} suggestion={data.planResearchSuggestion} />
       <div className="page-cta card">
-        <div><span className="card-label">下一步</span><h3>從 AI 研究起點出發，驗證方向與候選標的</h3></div>
-        <Button onClick={() => navigate("explore")}>探索投資方向 →</Button>
+        <div><span className="card-label">下一步</span><h3>查看與研究方向相關的候選標的</h3></div>
+        <Button onClick={() => navigate("explore")}>前往投資探索 →</Button>
       </div>
     </section>
   );
