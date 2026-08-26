@@ -52,6 +52,11 @@ function toY(volumeChange: number) {
 export function RotationPage() {
   const [refreshCount, setRefreshCount] = useState(0);
   const sectors = useMemo(() => sectorSeeds.map((seed, index) => seedFromIndex(refreshCount + index, seed)), [refreshCount]);
+  const rotatedSectors = useMemo(() => {
+    const offset = refreshCount % sectors.length;
+    return [...sectors.slice(offset), ...sectors.slice(0, offset)];
+  }, [refreshCount, sectors]);
+  const refreshLabel = refreshCount === 0 ? "尚未更新" : `已更新 ${refreshCount} 次`;
   const topRight = sectors.filter((item) => item.change >= 0 && item.volumeChange >= 0);
   const topLeft = sectors.filter((item) => item.change < 0 && item.volumeChange >= 0);
   const bottomRight = sectors.filter((item) => item.change >= 0 && item.volumeChange < 0);
@@ -73,6 +78,7 @@ export function RotationPage() {
             <span className="card-label">四象限解讀</span>
             <h2>一眼看出資金流向與市場熱度</h2>
             <p>這張圖不是報酬預測，而是幫你快速分辨：哪些板塊同時「價強量增」，哪些是「量增價弱」或「價弱量縮」。</p>
+            <span className="rotation-status-pill">{refreshLabel}</span>
             <small className="rotation-refresh-note">目前資料更新時間：{refreshedAt}</small>
           </div>
           <div className="rotation-legend">
@@ -105,7 +111,7 @@ export function RotationPage() {
               <line x1="50" y1="0" x2="50" y2="100" />
               <line x1="0" y1="50" x2="100" y2="50" />
             </svg>
-            {sectors.map((sector) => {
+            {rotatedSectors.map((sector) => {
               const x = toX(sector.change);
               const y = toY(sector.volumeChange);
               return (
@@ -148,9 +154,10 @@ export function RotationPage() {
             <span className="card-label">板塊清單</span>
             <h3>每個板塊的相對位置</h3>
           </div>
+          <small className="rotation-refresh-note">清單順序也會跟著更新，方便看出示意資料已變動。</small>
         </div>
         <div className="rotation-list">
-          {sectors.map((sector) => (
+          {rotatedSectors.map((sector) => (
             <div key={sector.id} className="rotation-row">
               <div>
                 <strong>{sector.name}</strong>
