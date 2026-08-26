@@ -8,6 +8,7 @@ import type { InvestmentData } from "../../../hooks/useInvestmentData";
 import styles from "../ExplorePage.module.css";
 import { AddInstrumentDialog } from "../components/AddInstrumentDialog";
 import { CandidateCard } from "../components/CandidateCard";
+import { CompactPagination } from "../components/CompactPagination";
 import { ResearchDirectionCard } from "../components/ResearchDirectionCard";
 import { useResearchCandidates } from "../hooks/useResearchCandidates";
 import type { ExploreViewState } from "../types";
@@ -112,26 +113,45 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
 
       {tab === "directions" ? (
         <>
-          <div className={`card ${styles.directionIntro}`}>
+          <section className={styles.directionContext} aria-labelledby="direction-context-title">
             <div>
-              <span className="card-label">依「{data.goal.name}」整理</span>
-              <h2>你的規劃目前形成 {researchDirections.length} 個研究方向</h2>
-              <p>{data.planResearchSuggestion.summary}</p>
+              <span className="card-label">依目前規劃整理</span>
+              <h2 id="direction-context-title">{data.goal.name}的研究方向</h2>
+              <p>研究方向會依目標、期限、投入金額與風險意願整理。</p>
             </div>
-            <Button variant="text" onClick={() => updateViewState({ tab: "candidates", selectedDirection: "all", candidatePage: 1 })}>查看全部候選標的 →</Button>
-          </div>
-          <nav className={styles.directionPagination} aria-label="投資方向分頁">
-            <p>
-              顯示第 {(currentDirectionPage - 1) * directionPageSize + 1}–{Math.min(currentDirectionPage * directionPageSize, researchDirections.length)} 個，共 {researchDirections.length} 個方向
-            </p>
-            {totalDirectionPages > 1 && (
+            <dl className={styles.directionFacts}>
               <div>
-                <Button variant="secondary" disabled={currentDirectionPage === 1} onClick={() => updateViewState({ directionPage: currentDirectionPage - 1 })}>← 上一組</Button>
-                <span aria-live="polite">第 {currentDirectionPage}／{totalDirectionPages} 頁</span>
-                <Button variant="secondary" disabled={currentDirectionPage === totalDirectionPages} onClick={() => updateViewState({ directionPage: currentDirectionPage + 1 })}>下一組 →</Button>
+                <dt>目標期限</dt>
+                <dd>{data.goal.years} 年</dd>
               </div>
-            )}
-          </nav>
+              <div>
+                <dt>每月投入</dt>
+                <dd>NT$ {data.goal.monthlyContribution.toLocaleString("zh-TW")}</dd>
+              </div>
+              <div>
+                <dt>風險意願</dt>
+                <dd>{data.profile.willingness}</dd>
+              </div>
+              <div>
+                <dt>研究方向</dt>
+                <dd>{researchDirections.length} 個</dd>
+              </div>
+            </dl>
+          </section>
+          <CompactPagination
+            ariaLabel="投資方向分頁"
+            first={(currentDirectionPage - 1) * directionPageSize + 1}
+            last={Math.min(currentDirectionPage * directionPageSize, researchDirections.length)}
+            total={researchDirections.length}
+            unit="個方向"
+            previousLabel="上一組研究方向"
+            nextLabel="下一組研究方向"
+            canGoPrevious={currentDirectionPage > 1}
+            canGoNext={currentDirectionPage < totalDirectionPages}
+            placement="directions"
+            onPrevious={() => updateViewState({ directionPage: currentDirectionPage - 1 })}
+            onNext={() => updateViewState({ directionPage: currentDirectionPage + 1 })}
+          />
           <div className={styles.directionGrid}>
             {pagedDirections.map((direction) => (
               <ResearchDirectionCard
@@ -191,18 +211,20 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
             </div>
           )}
           {!loading && !error && visibleCandidates.length > 0 && (
-            <nav className={styles.pagination} aria-label="候選研究標的分頁">
-              <p>
-                顯示第 {(currentCandidatePage - 1) * candidatesPerPage + 1}–{Math.min(currentCandidatePage * candidatesPerPage, visibleCandidates.length)} 筆，共 {visibleCandidates.length} 筆
-              </p>
-              {totalCandidatePages > 1 && (
-                <div>
-                  <Button variant="secondary" disabled={currentCandidatePage === 1} onClick={() => updateViewState({ candidatePage: currentCandidatePage - 1 })}>← 上一頁</Button>
-                  <span aria-live="polite">第 {currentCandidatePage}／{totalCandidatePages} 頁</span>
-                  <Button variant="secondary" disabled={currentCandidatePage === totalCandidatePages} onClick={() => updateViewState({ candidatePage: currentCandidatePage + 1 })}>下一頁 →</Button>
-                </div>
-              )}
-            </nav>
+            <CompactPagination
+              ariaLabel="候選研究標的分頁"
+              first={(currentCandidatePage - 1) * candidatesPerPage + 1}
+              last={Math.min(currentCandidatePage * candidatesPerPage, visibleCandidates.length)}
+              total={visibleCandidates.length}
+              unit="筆標的"
+              previousLabel="上一頁候選研究標的"
+              nextLabel="下一頁候選研究標的"
+              canGoPrevious={currentCandidatePage > 1}
+              canGoNext={currentCandidatePage < totalCandidatePages}
+              placement="candidates"
+              onPrevious={() => updateViewState({ candidatePage: currentCandidatePage - 1 })}
+              onNext={() => updateViewState({ candidatePage: currentCandidatePage + 1 })}
+            />
           )}
         </>
       )}

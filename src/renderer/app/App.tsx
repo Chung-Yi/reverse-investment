@@ -6,6 +6,7 @@ import { AppShell } from "../components/layout/AppShell";
 import { AiDrawer } from "../components/layout/AiDrawer";
 import { mockInvestmentRepository } from "../data/repositories/mockInvestmentRepository";
 import { mockResearchCandidateRepository } from "../data/repositories/mockResearchCandidateRepository";
+import { mockPortfolioRepository } from "../data/repositories/mockPortfolioRepository";
 import { localOnboardingProfileRepository } from "../data/repositories/localOnboardingProfileRepository";
 import { buildPersonalizedInvestmentData } from "../data/personalization/buildPersonalizedInvestmentData";
 import { useInvestmentData } from "../hooks/useInvestmentData";
@@ -18,6 +19,8 @@ import { ProfilePage } from "../features/profile/pages/ProfilePage";
 import { PlanPage } from "../features/plan/pages/PlanPage";
 import { ExplorePage } from "../features/explore/pages/ExplorePage";
 import { initialExploreViewState } from "../features/explore/types";
+import { PortfolioPage } from "../features/portfolio/pages/PortfolioPage";
+import { RotationPage } from "../features/rotation/pages/RotationPage";
 import { InstrumentPage } from "../features/instrument/pages/InstrumentPage";
 import { DecisionPage } from "../features/decision/pages/DecisionPage";
 import { ThesisPage } from "../features/thesis/pages/ThesisPage";
@@ -38,6 +41,7 @@ export function App() {
   const [onboardingAnswers, setOnboardingAnswers] = useState<Record<string, string>>(() => (
     localOnboardingProfileRepository.load()?.answers ?? { ...demoOnboardingAnswers }
   ));
+  const [thesisObservation, setThesisObservation] = useState("");
   const agentProvider = useMemo(() => new MockAgentProvider(), []);
   const { data, error } = useInvestmentData(mockInvestmentRepository);
   const navigate = useCallback((next: RouteId) => {
@@ -48,6 +52,10 @@ export function App() {
     window.history.replaceState(null, "", `#${next}`);
     window.scrollTo({ top: 0 });
   }, []);
+  const navigateFromPrimary = useCallback((next: RouteId) => {
+    if (next === "explore") setExploreViewState({ ...initialExploreViewState });
+    navigate(next);
+  }, [navigate]);
   const goBack = useCallback(() => {
     const currentRoute = routeRef.current;
     const fallback = secondaryRouteBackNavigation[currentRoute]?.fallback;
@@ -74,7 +82,7 @@ export function App() {
     setOnboardingAnswers(savedProfile.answers);
     setOnboardingMode("edit");
   }, []);
-  const context = useMemo(() => ({ route, navigate, openAssistant, agentProvider, onboardingMode, onboardingAnswers, startOnboarding, saveOnboardingAnswers }), [route, navigate, openAssistant, agentProvider, onboardingMode, onboardingAnswers, startOnboarding, saveOnboardingAnswers]);
+  const context = useMemo(() => ({ route, navigate, openAssistant, agentProvider, onboardingMode, onboardingAnswers, thesisObservation, startOnboarding, saveOnboardingAnswers, saveThesisObservation: setThesisObservation }), [route, navigate, openAssistant, agentProvider, onboardingMode, onboardingAnswers, thesisObservation, startOnboarding, saveOnboardingAnswers]);
   const personalizedData = useMemo(() => data ? buildPersonalizedInvestmentData(data, onboardingAnswers) : null, [data, onboardingAnswers]);
 
   let content: React.ReactNode;
@@ -84,11 +92,13 @@ export function App() {
     const pages: Record<RouteId, React.ReactNode> = {
       welcome: <WelcomePage />, home: <HomePage data={personalizedData} />, onboarding: <OnboardingPage key={onboardingMode} />,
       profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
+      portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
+      rotation: <RotationPage />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
-      tracking: <TrackingPage />, change: <ChangePage />,
+      tracking: <TrackingPage data={personalizedData} />, change: <ChangePage />,
     };
     content = pages[route];
   }
 
-  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /></AppContext.Provider>;
+  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /></AppContext.Provider>;
 }

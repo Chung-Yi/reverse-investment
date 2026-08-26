@@ -1,0 +1,47 @@
+import type { SimulatedPortfolio } from "@shared/domain/investment";
+
+export const demoSimulatedPortfolio: SimulatedPortfolio = {
+  cashBalance: 68_800,
+  priceAsOf: "2026-08-08",
+  positions: [
+    {
+      positionId: "position-twse-0050",
+      instrumentId: "twse-0050",
+      symbol: "0050",
+      name: "元大台灣50",
+      market: "上市",
+      instrumentType: "ETF",
+      category: "台灣大型股",
+      allocationRole: "長期投資",
+      quantity: 3_000,
+      averageCost: 52.4,
+      referencePrice: 54.8,
+    },
+    {
+      positionId: "position-twse-2330",
+      instrumentId: "twse-2330",
+      symbol: "2330",
+      name: "台積電",
+      market: "上市",
+      instrumentType: "個股",
+      category: "半導體",
+      allocationRole: "成長投資",
+      quantity: 100,
+      averageCost: 980,
+      referencePrice: 1_040,
+    },
+    {
+      positionId: "position-twse-2881",
+      instrumentId: "twse-2881",
+      symbol: "2881",
+      name: "富邦金",
+      market: "上市",
+      instrumentType: "個股",
+      category: "金融",
+      allocationRole: "長期投資",
+      quantity: 900,
+      averageCost: 87.5,
+      referencePrice: 92,
+    },
+  ],
+};

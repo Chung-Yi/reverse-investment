@@ -111,3 +111,34 @@ export interface ThesisCard {
   status: "追蹤中" | "需要檢視";
   updatedAt: string;
 }
+
+export type PortfolioAllocationRole = "長期投資" | "成長投資";
+
+export interface PortfolioPosition {
+  positionId: string;
+  instrumentId: string;
+  symbol: string;
+  name: string;
+  market: TaiwanMarket;
+  instrumentType: ResearchInstrumentType;
+  category: string;
+  allocationRole: PortfolioAllocationRole;
+  quantity: number;
+  averageCost: number;
+  referencePrice: number;
+}
+
+export interface SimulatedPortfolio {
+  cashBalance: number;
+  priceAsOf: string;
+  positions: PortfolioPosition[];
+}
+
+export interface PortfolioPositionInput {
+  positionId?: string;
+  instrumentId: string;
+  allocationRole: PortfolioAllocationRole;
+  quantity: number;
+  averageCost: number;
+  referencePrice: number;
+}

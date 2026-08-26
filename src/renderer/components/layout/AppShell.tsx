@@ -5,14 +5,16 @@ import { Button } from "../ui/Button";
 interface AppShellProps {
   route: RouteId;
   navigate: (route: RouteId) => void;
+  onPrimaryNavigate: (route: RouteId) => void;
   backLabel?: string;
   onBack: () => void;
   openAssistant: () => void;
 }
 
-export function AppShell({ route, navigate, backLabel, onBack, openAssistant, children }: PropsWithChildren<AppShellProps>) {
+export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack, openAssistant, children }: PropsWithChildren<AppShellProps>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const go = (next: RouteId) => { navigate(next); setMenuOpen(false); };
+  const goPrimary = (next: RouteId) => { onPrimaryNavigate(next); setMenuOpen(false); };
 
   return (
     <>
@@ -22,7 +24,7 @@ export function AppShell({ route, navigate, backLabel, onBack, openAssistant, ch
         <aside className={`sidebar ${menuOpen ? "open" : ""}`} aria-label="主要導覽">
           <button className="brand" onClick={() => go("welcome")} aria-label="回到產品介紹"><span className="brand-mark">逆</span><span><strong>逆思投資</strong><small>AI 決策陪伴</small></span></button>
           <nav className="nav-list">
-            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => go(item.id)}><span>{item.icon}</span>{item.label}</button>)}
+            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => goPrimary(item.id)}><span>{item.icon}</span>{item.label}</button>)}
           </nav>
           <div className="sidebar-footer">
             <Button variant="secondary" full onClick={openAssistant}>✦ 問問 AI</Button>
@@ -42,7 +44,7 @@ export function AppShell({ route, navigate, backLabel, onBack, openAssistant, ch
           </header>
           <main id="main-content" tabIndex={-1}>{children}</main>
           <nav className="bottom-nav" aria-label="手機版主要導覽">
-            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => go(item.id)}><span>{item.icon}</span>{item.label}</button>)}
+            {primaryNavigation.map((item) => <button key={item.id} className={route === item.id ? "active" : ""} onClick={() => goPrimary(item.id)}><span>{item.icon}</span>{item.label}</button>)}
           </nav>
         </div>
       </div>

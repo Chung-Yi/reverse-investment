@@ -31,7 +31,6 @@
   box-shadow: var(--shadow-sm);
 }
 
-.directionIntro,
 .candidateIntro {
   display: flex;
   align-items: flex-start;
@@ -42,17 +41,62 @@
   background: var(--brand-50);
 }
 
-.directionIntro h2,
 .candidateIntro h2 {
   margin: 5px 0;
   font-size: 19px;
 }
 
-.directionIntro p,
 .candidateIntro p {
   max-width: 800px;
   margin: 0;
   font-size: 11px;
+}
+
+.directionContext {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 24px;
+  margin-bottom: 10px;
+  padding: 4px 2px 14px;
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.directionContext h2 {
+  margin: 5px 0 3px;
+  font-size: 18px;
+}
+
+.directionContext p {
+  margin: 0;
+  color: var(--neutral-600);
+  font-size: 10px;
+}
+
+.directionFacts {
+  display: grid;
+  grid-template-columns: repeat(4, auto);
+  gap: 0;
+  margin: 0;
+}
+
+.directionFacts div {
+  min-width: 94px;
+  padding: 0 14px;
+  border-left: 1px solid var(--neutral-200);
+}
+
+.directionFacts dt {
+  color: var(--neutral-600);
+  font-size: 8px;
+}
+
+.directionFacts dd {
+  margin: 3px 0 0;
+  color: var(--neutral-900);
+  font-size: 10px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .directionGrid {
@@ -61,33 +105,65 @@
   gap: 14px;
 }
 
-.directionPagination {
+.compactPagination {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 16px;
+  justify-content: flex-end;
+  gap: 14px;
+  min-height: 40px;
+}
+
+.directionPagination {
   margin-bottom: 14px;
   padding: 0 2px;
 }
 
-.directionPagination p {
-  margin: 0;
+.candidatePagination {
+  margin-top: 16px;
+  padding: 13px 2px 0;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.paginationRange {
   color: var(--neutral-600);
   font-size: 10px;
+  white-space: nowrap;
 }
 
-.directionPagination > div {
+.paginationActions {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 2px;
 }
 
-.directionPagination span {
-  min-width: 76px;
+.paginationActions button {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
   color: var(--neutral-700);
-  font-size: 10px;
-  font-weight: 750;
-  text-align: center;
+  cursor: pointer;
+  font-size: 20px;
+  transition: background-color 140ms ease, color 140ms ease;
+}
+
+.paginationActions button:hover:not(:disabled) {
+  background: var(--neutral-100);
+  color: var(--brand-800);
+}
+
+.paginationActions button:focus-visible {
+  outline: 2px solid var(--brand-600);
+  outline-offset: 2px;
+}
+
+.paginationActions button:disabled {
+  color: var(--neutral-300);
+  cursor: not-allowed;
 }
 
 .directionCard {
@@ -177,36 +253,6 @@
 .candidateList {
   display: grid;
   gap: 12px;
-}
-
-.pagination {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  margin-top: 16px;
-  padding: 13px 15px;
-  border-top: 1px solid var(--neutral-200);
-}
-
-.pagination p {
-  margin: 0;
-  color: var(--neutral-600);
-  font-size: 10px;
-}
-
-.pagination > div {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
-.pagination span {
-  min-width: 76px;
-  color: var(--neutral-700);
-  font-size: 10px;
-  font-weight: 750;
-  text-align: center;
 }
 
 .candidateCard {
@@ -485,18 +531,16 @@
   .tabs { width: 100%; }
   .tabs button { flex: 1; }
   .toolbar > button { width: 100%; }
-  .directionIntro, .candidateIntro { flex-direction: column; }
+  .directionContext, .candidateIntro { align-items: stretch; flex-direction: column; }
+  .directionFacts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
+  .directionFacts div { padding-inline: 12px; }
   .directionGrid { grid-template-columns: 1fr; }
-  .directionPagination { align-items: stretch; flex-direction: column; }
-  .directionPagination > div { display: grid; grid-template-columns: 1fr auto 1fr; }
   .directionCard > p { min-height: 0; }
   .candidateCard { grid-template-columns: 1fr; gap: 15px; }
   .candidateActions { grid-column: auto; display: grid; }
   .candidateActions > button { width: 100%; }
   .filterBar { align-items: stretch; flex-direction: column; }
   .filterBar select { width: 100%; }
-  .pagination { align-items: stretch; flex-direction: column; }
-  .pagination > div { justify-content: space-between; }
   .dialogOverlay { padding: 0; }
   .dialog { width: 100%; height: 100%; max-height: none; border-radius: 0; }
   .searchControls { grid-template-columns: 1fr 1fr; }
@@ -505,9 +549,7 @@
 
 @media (max-width: 520px) {
   .candidateAssessment { grid-template-columns: 1fr 1fr; }
-  .directionPagination button { padding-inline: 9px; }
-  .pagination > div { display: grid; grid-template-columns: 1fr auto 1fr; }
-  .pagination button { padding-inline: 9px; }
+  .compactPagination { justify-content: space-between; }
   .dialog > header, .dialog > footer { padding: 16px; }
   .dialog > footer { align-items: stretch; flex-direction: column; }
   .dialog > footer button { width: 100%; }

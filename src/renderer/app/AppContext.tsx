@@ -11,8 +11,10 @@ interface AppContextValue {
   agentProvider: AgentProvider;
   onboardingMode: OnboardingMode;
   onboardingAnswers: Record<string, string>;
+  thesisObservation: string;
   startOnboarding: (mode: OnboardingMode) => void;
   saveOnboardingAnswers: (answers: Record<string, string>) => void;
+  saveThesisObservation: (value: string) => void;
 }
 
 export const AppContext = createContext<AppContextValue | null>(null);

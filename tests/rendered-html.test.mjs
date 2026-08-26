@@ -20,13 +20,14 @@ test("renderer has a product-specific React entry", async () => {
   assert.match(app, /mockInvestmentRepository/);
 });
 
-test("preserves 12 UI workspaces and 17 story-node traceability without exposing internal IDs", async () => {
+test("preserves the documented UI workspaces and adds portfolio without exposing internal IDs", async () => {
   const productPagePaths = [
     "welcome/pages/WelcomePage.tsx",
     "onboarding/pages/OnboardingPage.tsx",
     "profile/pages/ProfilePage.tsx",
     "plan/pages/PlanPage.tsx",
     "explore/pages/ExplorePage.tsx",
+    "portfolio/pages/PortfolioPage.tsx",
     "instrument/pages/InstrumentPage.tsx",
     "decision/pages/DecisionPage.tsx",
     "thesis/pages/ThesisPage.tsx",
@@ -39,12 +40,62 @@ test("preserves 12 UI workspaces and 17 story-node traceability without exposing
     ...productPagePaths.map((path) => readProjectFile(`src/renderer/features/${path}`)),
   ]);
 
-  for (const route of ["welcome", "home", "onboarding", "profile", "plan", "explore", "instrument", "decision", "thesis", "tracking", "change"]) {
+  for (const route of ["welcome", "home", "onboarding", "profile", "plan", "explore", "portfolio", "instrument", "decision", "thesis", "tracking", "change"]) {
     assert.match(metadata, new RegExp(`id: "${route}"`));
   }
   assert.match(drawer, /AI 對話助理/);
   assert.match(metadata, /story: "15–17"/);
   assert.doesNotMatch(productPages.join("\n"), /Screen\s+\d/i);
+});
+
+test("simulated portfolio is editable through a replaceable repository", async () => {
+  const [metadata, app, page, dialog, card, checkbox, repository, contract, fixture, domain, formatter] = await Promise.all([
+    readProjectFile("src/renderer/app/routeMetadata.ts"),
+    readProjectFile("src/renderer/app/App.tsx"),
+    readProjectFile("src/renderer/features/portfolio/pages/PortfolioPage.tsx"),
+    readProjectFile("src/renderer/features/portfolio/components/PortfolioPositionDialog.tsx"),
+    readProjectFile("src/renderer/features/portfolio/components/PortfolioPositionCard.tsx"),
+    readProjectFile("src/renderer/features/portfolio/components/SelectionCheckbox.tsx"),
+    readProjectFile("src/renderer/data/repositories/mockPortfolioRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/PortfolioRepository.ts"),
+    readProjectFile("src/renderer/data/fixtures/demoPortfolio.ts"),
+    readProjectFile("src/shared/domain/investment.ts"),
+    readProjectFile("src/renderer/utils/formatTwd.ts"),
+  ]);
+
+  assert.match(metadata, /id: "portfolio", label: "我的資產"/);
+  assert.match(metadata, /id: "portfolio", label: "資產"/);
+  assert.doesNotMatch(metadata, /id: "thesis", label: "論點", icon:/);
+  assert.match(app, /PortfolioPage/);
+  assert.match(app, /mockPortfolioRepository/);
+  assert.match(page, /總資產/);
+  assert.match(page, /totalAssetValue/);
+  assert.match(page, /formatTwd\(totals\.totalAssets\)/);
+  assert.match(page, /目前配置是否符合原始規劃/);
+  assert.match(page, /新增模擬持倉/);
+  assert.match(page, /singlePositionLimitPercentage/);
+  assert.match(page, /window\.confirm/);
+  assert.match(page, /selectedPositionIds/);
+  assert.match(page, /indeterminate=\{partiallySelected\}/);
+  assert.match(page, /移除已選取的/);
+  assert.match(dialog, /role="dialog"/);
+  assert.match(dialog, /參考價格由使用者輸入/);
+  assert.match(card, /未實現損益/);
+  assert.match(card, /trashIcon/);
+  assert.match(card, /aria-label=\{`移除/);
+  assert.match(checkbox, /inputRef\.current\.indeterminate/);
+  assert.match(checkbox, /checkboxVisual/);
+  assert.match(contract, /savePosition/);
+  assert.match(contract, /removePosition/);
+  assert.match(contract, /removePositions/);
+  assert.match(repository, /portfolioState/);
+  assert.match(repository, /new Set\(positionIds\)/);
+  assert.doesNotMatch(repository, /localStorage|fetch\(/);
+  assert.match(fixture, /position-twse-0050/);
+  assert.match(fixture, /position-twse-2330/);
+  assert.match(domain, /interface SimulatedPortfolio/);
+  assert.match(domain, /interface PortfolioPositionInput/);
+  assert.match(formatter, /return `NT\$ \$\{twdAmount\.format\(value\)\}`/);
 });
 
 test("Electron renderer keeps privileged APIs behind preload", async () => {
@@ -153,10 +204,11 @@ test("investment exploration uses plan directions and a replaceable candidate re
 });
 
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {
-  const [planSuggestions, planPage, explorePage, planFixture, instrumentFixture] = await Promise.all([
+  const [planSuggestions, planPage, explorePage, compactPagination, planFixture, instrumentFixture] = await Promise.all([
     readProjectFile("src/renderer/features/plan/components/PlanResearchSuggestions.tsx"),
     readProjectFile("src/renderer/features/plan/pages/PlanPage.tsx"),
     readProjectFile("src/renderer/features/explore/pages/ExplorePage.tsx"),
+    readProjectFile("src/renderer/features/explore/components/CompactPagination.tsx"),
     readProjectFile("src/renderer/data/fixtures/demoInvestment.ts"),
     readProjectFile("src/renderer/data/fixtures/instrumentCatalog.ts"),
   ]);
@@ -173,10 +225,21 @@ test("plan research directions scale without mixing abstract types or duplicate 
   assert.match(explorePage, /getDirectionPageSize/);
   assert.match(explorePage, /pagedDirections\.map/);
   assert.match(explorePage, /投資方向分頁/);
-  assert.match(explorePage, /上一組/);
-  assert.match(explorePage, /下一組/);
-  assert.match(explorePage, /上一頁/);
-  assert.match(explorePage, /下一頁/);
+  assert.match(explorePage, /CompactPagination/);
+  assert.match(explorePage, /上一組研究方向/);
+  assert.match(explorePage, /下一組研究方向/);
+  assert.match(explorePage, /上一頁候選研究標的/);
+  assert.match(explorePage, /下一頁候選研究標的/);
+  assert.match(compactPagination, /aria-live="polite"/);
+  assert.match(compactPagination, /aria-hidden="true">←/);
+  assert.match(compactPagination, /aria-hidden="true">→/);
+  assert.doesNotMatch(explorePage, /第 \{currentDirectionPage\}／|第 \{currentCandidatePage\}／/);
+  assert.match(explorePage, /依目前規劃整理/);
+  assert.match(explorePage, /目標期限/);
+  assert.match(explorePage, /每月投入/);
+  assert.match(explorePage, /風險意願/);
+  assert.doesNotMatch(explorePage, /查看全部候選標的/);
+  assert.doesNotMatch(explorePage, /directionIntro/);
   assert.ok(explorePage.includes('{tab === "candidates" && <Button variant="secondary" onClick={() => setDialogOpen(true)}>＋ 新增研究標的</Button>}'));
   assert.equal(explorePage.match(/＋ 新增研究標的/g)?.length, 1);
   for (const directionId of ["diversified-core", "semiconductor-ai", "financial-quality", "power-efficiency", "display-materials"]) {
@@ -236,6 +299,24 @@ test("contextual back navigation preserves the investment exploration view", asy
   assert.match(exploreTypes, /tab: "directions"/);
   assert.match(exploreTypes, /selectedDirection/);
   assert.match(exploreTypes, /candidatePage/);
+});
+
+test("primary navigation reopens exploration at its default directions view", async () => {
+  const [app, shell, exploreTypes] = await Promise.all([
+    readProjectFile("src/renderer/app/App.tsx"),
+    readProjectFile("src/renderer/components/layout/AppShell.tsx"),
+    readProjectFile("src/renderer/features/explore/types.ts"),
+  ]);
+
+  assert.match(app, /const navigateFromPrimary/);
+  assert.match(app, /next === "explore"/);
+  assert.match(app, /setExploreViewState\(\{ \.\.\.initialExploreViewState \}\)/);
+  assert.match(app, /onPrimaryNavigate=\{navigateFromPrimary\}/);
+  assert.match(shell, /const goPrimary/);
+  assert.equal(shell.match(/onClick=\{\(\) => goPrimary\(item\.id\)\}/g)?.length, 2);
+  assert.match(exploreTypes, /tab: "directions"/);
+  assert.match(exploreTypes, /directionPage: 1/);
+  assert.match(exploreTypes, /candidatePage: 1/);
 });
 
 test("decision validation is an actionable gated five-step flow", async () => {
