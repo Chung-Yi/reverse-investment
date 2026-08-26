@@ -1,3 +1,4 @@
+import { useMemo, useState } from "react";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Button } from "../../../components/ui/Button";
 
@@ -11,7 +12,7 @@ type SectorPoint = {
   note: string;
 };
 
-const sectors: SectorPoint[] = [
+const sectorSeeds: SectorPoint[] = [
   { id: "ai", name: "AI / 半導體設備", change: 8.6, volumeChange: 18.2, size: 22, color: "#2f7d6d", note: "資金流入" },
   { id: "fin", name: "金融", change: 2.1, volumeChange: 9.4, size: 16, color: "#77b9ac", note: "穩定上移" },
   { id: "auto", name: "自動化 / 工業電腦", change: 6.3, volumeChange: -3.8, size: 18, color: "#e0a040", note: "價格走強" },
@@ -29,6 +30,17 @@ function toPercent(value: number) {
   return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
 }
 
+function seedFromIndex(seedIndex: number, seed: SectorPoint): SectorPoint {
+  const shift = ((seedIndex % 5) - 2) * 0.8;
+  return {
+    ...seed,
+    change: Number((seed.change + shift).toFixed(1)),
+    volumeChange: Number((seed.volumeChange + (seedIndex % 3 - 1) * 1.4).toFixed(1)),
+    size: Math.max(11, Math.min(24, seed.size + (seedIndex % 4) - 1)),
+    note: ["資金流入", "穩定上移", "價格走強", "量增價弱", "資金撤出", "均衡轉強", "觀望整理", "價穩量縮"][seedIndex % 8],
+  };
+}
+
 function toX(change: number) {
   return 10 + ((change - axisMin) / (axisMax - axisMin)) * 80;
 }
@@ -38,10 +50,13 @@ function toY(volumeChange: number) {
 }
 
 export function RotationPage() {
+  const [refreshCount, setRefreshCount] = useState(0);
+  const sectors = useMemo(() => sectorSeeds.map((seed, index) => seedFromIndex(refreshCount + index, seed)), [refreshCount]);
   const topRight = sectors.filter((item) => item.change >= 0 && item.volumeChange >= 0);
   const topLeft = sectors.filter((item) => item.change < 0 && item.volumeChange >= 0);
   const bottomRight = sectors.filter((item) => item.change >= 0 && item.volumeChange < 0);
   const bottomLeft = sectors.filter((item) => item.change < 0 && item.volumeChange < 0);
+  const refreshedAt = new Date(Date.now() + refreshCount * 60_000).toLocaleTimeString("zh-TW", { hour: "2-digit", minute: "2-digit" });
 
   return (
     <section>
@@ -49,7 +64,7 @@ export function RotationPage() {
         eyebrow="台股板塊輪動"
         title="看見資金正在往哪個象限移動"
         description="X 軸代表板塊漲跌幅，Y 軸代表成交量變化率；越靠右代表價格越強，越靠上代表量能越活躍。"
-        action={<Button variant="secondary">更新板塊資料</Button>}
+        action={<Button variant="secondary" onClick={() => setRefreshCount((value) => value + 1)}>更新板塊資料</Button>}
       />
 
       <div className="rotation-layout">
@@ -58,6 +73,7 @@ export function RotationPage() {
             <span className="card-label">四象限解讀</span>
             <h2>一眼看出資金流向與市場熱度</h2>
             <p>這張圖不是報酬預測，而是幫你快速分辨：哪些板塊同時「價強量增」，哪些是「量增價弱」或「價弱量縮」。</p>
+            <small className="rotation-refresh-note">目前資料更新時間：{refreshedAt}</small>
           </div>
           <div className="rotation-legend">
             <div><i className="legend-dot positive" />價強量增</div>
