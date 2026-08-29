@@ -6,6 +6,7 @@ export const routes = [
   { id: "plan", label: "我的規劃", story: "06" },
   { id: "explore", label: "投資探索", story: "07–08" },
   { id: "rotation", label: "板塊輪動", story: "Market" },
+  { id: "news", label: "新聞脈動", story: "Signal" },
   { id: "portfolio", label: "我的資產", story: "Asset" },
   { id: "instrument", label: "標的分析", story: "09" },
   { id: "decision", label: "決策驗證", story: "11–12" },
@@ -20,6 +21,7 @@ export const routeMetadata = Object.fromEntries(routes.map((route) => [route.id,
 
 export const secondaryRouteBackNavigation: Partial<Record<RouteId, { label: string; fallback: RouteId }>> = {
   rotation: { label: "返回首頁總覽", fallback: "home" },
+  news: { label: "返回首頁總覽", fallback: "home" },
   instrument: { label: "返回候選研究標的", fallback: "explore" },
   decision: { label: "返回標的分析", fallback: "instrument" },
   change: { label: "返回心跳追蹤", fallback: "tracking" },
@@ -29,6 +31,7 @@ export const primaryNavigation: Array<{ id: RouteId; label: string; icon: string
   { id: "home", label: "首頁", icon: "⌂" },
   { id: "plan", label: "規劃", icon: "◎" },
   { id: "explore", label: "探索", icon: "◇" },
+  { id: "news", label: "新聞", icon: "✦" },
   { id: "portfolio", label: "資產", icon: "▤" },
   { id: "tracking", label: "追蹤", icon: "⌁" },
 ];

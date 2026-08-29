@@ -21,6 +21,7 @@ import { ExplorePage } from "../features/explore/pages/ExplorePage";
 import { initialExploreViewState } from "../features/explore/types";
 import { PortfolioPage } from "../features/portfolio/pages/PortfolioPage";
 import { RotationPage } from "../features/rotation/pages/RotationPage";
+import { NewsPage } from "../features/news/pages/NewsPage";
 import { InstrumentPage } from "../features/instrument/pages/InstrumentPage";
 import { DecisionPage } from "../features/decision/pages/DecisionPage";
 import { ThesisPage } from "../features/thesis/pages/ThesisPage";
@@ -94,6 +95,7 @@ export function App() {
       profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
+      news: <NewsPage data={personalizedData} />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
       tracking: <TrackingPage data={personalizedData} />, change: <ChangePage />,
     };
