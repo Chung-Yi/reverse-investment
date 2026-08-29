@@ -81,7 +81,6 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
         eyebrow="持倉與目標對照"
         title="我的資產"
         description="把目前持倉與原始規劃放在一起，確認資金是否仍朝目標前進。"
-        action={<Button onClick={openAddDialog}>＋ 新增模擬持倉</Button>}
       />
 
       <div className={styles.simulationNotice}>
@@ -129,6 +128,7 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
 
       <div className={styles.positionHeading}>
         <div><span className="card-label">模擬持倉</span><h2>目前持有 {portfolio.positions.length} 個標的</h2></div>
+        <Button onClick={openAddDialog}>＋ 新增模擬持倉</Button>
         <span>估算市值以手動輸入的參考價格計算</span>
       </div>
       {portfolio.positions.length > 0 && (
