@@ -95,7 +95,7 @@ export function App() {
       profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
-      news: <NewsPage data={personalizedData} />,
+      news: <NewsPage data={personalizedData} repository={mockResearchCandidateRepository} />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
       tracking: <TrackingPage data={personalizedData} />, change: <ChangePage />,
     };
