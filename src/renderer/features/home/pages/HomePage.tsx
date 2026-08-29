@@ -82,11 +82,11 @@ export function HomePage({ data }: { data: InvestmentData }) {
           <div className="card-head">
             <div>
               <span className="card-label">新聞脈動</span>
-              <h3>把外部訊號對回你的三個模組</h3>
+              <h3>把外部訊號對回你的研究脈絡</h3>
             </div>
             <span className="status stable">Signal</span>
           </div>
-          <p>先看新聞如何影響探索方向、論點卡與心跳追蹤，再決定要不要回頭檢視。</p>
+          <p>先看新聞如何影響探索方向、追蹤條件與重要變化，再決定是否需要重新檢視。</p>
           <button className="text-button" onClick={() => navigate("news")}>查看新聞脈動 →</button>
         </article>
       </div>
