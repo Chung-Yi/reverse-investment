@@ -51,6 +51,7 @@ function toY(volumeChange: number) {
 
 export function RotationPage() {
   const [refreshCount, setRefreshCount] = useState(0);
+  const scenarioLabel = ["資金偏向防禦", "資金追價升溫", "資金換手整理", "資金分散輪動"][refreshCount % 4];
   const sectors = useMemo(() => sectorSeeds.map((seed, index) => seedFromIndex(refreshCount + index, seed)), [refreshCount]);
   const rotatedSectors = useMemo(() => {
     const offset = refreshCount % sectors.length;
@@ -78,6 +79,7 @@ export function RotationPage() {
             <span className="card-label">四象限解讀</span>
             <h2>一眼看出資金流向與市場熱度</h2>
             <p>這張圖不是報酬預測，而是幫你快速分辨：哪些板塊同時「價強量增」，哪些是「量增價弱」或「價弱量縮」。</p>
+            <strong className="rotation-scenario">目前示意情境：{scenarioLabel}</strong>
             <span className="rotation-status-pill">{refreshLabel}</span>
             <small className="rotation-refresh-note">目前資料更新時間：{refreshedAt}</small>
           </div>
@@ -118,6 +120,7 @@ export function RotationPage() {
                 <div key={sector.id} className="scatter-point" style={{ left: `${x}%`, top: `${y}%` }}>
                   <span className="scatter-bubble" style={{ width: `${sector.size * 2.1}px`, height: `${sector.size * 2.1}px`, background: sector.color }} />
                   <strong>{sector.name}</strong>
+                  <small className="scatter-change">{toPercent(sector.change)} / {toPercent(sector.volumeChange)}</small>
                 </div>
               );
             })}
