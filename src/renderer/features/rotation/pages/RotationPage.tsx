@@ -26,19 +26,63 @@ const sectorSeeds: SectorPoint[] = [
 const axisMin = -12;
 const axisMax = 12;
 
+const scenarioConfigs = [
+  {
+    label: "資金追價升溫",
+    deltas: [
+      [1.4, 2.0],
+      [0.6, 1.3],
+      [1.8, -1.2],
+      [-0.7, 1.6],
+      [-1.1, -0.8],
+      [1.2, 0.9],
+      [-0.4, -0.9],
+      [0.5, -1.8],
+    ] as Array<[number, number]>,
+  },
+  {
+    label: "資金偏向防禦",
+    deltas: [
+      [-1.3, -0.8],
+      [0.4, 0.5],
+      [-0.7, 1.1],
+      [0.3, 0.8],
+      [0.2, 0.4],
+      [-0.5, -0.3],
+      [0.1, 0.2],
+      [-0.2, 0.9],
+    ] as Array<[number, number]>,
+  },
+  {
+    label: "資金換手整理",
+    deltas: [
+      [0.2, -1.2],
+      [-0.8, 1.4],
+      [0.9, 0.4],
+      [-1.6, 0.9],
+      [0.6, -0.7],
+      [-0.3, 0.6],
+      [1.1, -1.1],
+      [-0.5, 0.5],
+    ] as Array<[number, number]>,
+  },
+  {
+    label: "資金分散輪動",
+    deltas: [
+      [0.9, 0.3],
+      [-0.6, -0.4],
+      [1.2, 1.5],
+      [-1.0, 1.0],
+      [-0.4, -1.0],
+      [0.8, 1.1],
+      [-0.9, -0.6],
+      [0.7, -1.3],
+    ] as Array<[number, number]>,
+  },
+];
+
 function toPercent(value: number) {
   return `${value > 0 ? "+" : ""}${value.toFixed(1)}%`;
-}
-
-function seedFromIndex(seedIndex: number, seed: SectorPoint): SectorPoint {
-  const shift = ((seedIndex % 5) - 2) * 0.8;
-  return {
-    ...seed,
-    change: Number((seed.change + shift).toFixed(1)),
-    volumeChange: Number((seed.volumeChange + (seedIndex % 3 - 1) * 1.4).toFixed(1)),
-    size: Math.max(11, Math.min(24, seed.size + (seedIndex % 4) - 1)),
-    note: ["資金流入", "穩定上移", "價格走強", "量增價弱", "資金撤出", "均衡轉強", "觀望整理", "價穩量縮"][seedIndex % 8],
-  };
 }
 
 function toX(change: number) {
@@ -51,10 +95,31 @@ function toY(volumeChange: number) {
 
 export function RotationPage() {
   const [refreshCount, setRefreshCount] = useState(0);
-  const scenarioLabel = ["資金偏向防禦", "資金追價升溫", "資金換手整理", "資金分散輪動"][refreshCount % 4];
-  const sectors = useMemo(() => sectorSeeds.map((seed, index) => seedFromIndex(refreshCount + index, seed)), [refreshCount]);
+  const scenario = scenarioConfigs[refreshCount % scenarioConfigs.length];
+  const sectors = useMemo(() => {
+    return sectorSeeds.map((seed, index) => {
+      const [deltaChange, deltaVolume] = scenario.deltas[index];
+      const refreshBias = ((refreshCount + index) % 3) - 1;
+      return {
+        ...seed,
+        change: Number((seed.change + deltaChange + refreshBias * 0.4).toFixed(1)),
+        volumeChange: Number((seed.volumeChange + deltaVolume + refreshBias * 0.7).toFixed(1)),
+        size: Math.max(11, Math.min(25, seed.size + ((refreshCount + index) % 4) - 1)),
+        note: [
+          "資金流入",
+          "穩定上移",
+          "價格走強",
+          "量增價弱",
+          "資金撤出",
+          "均衡轉強",
+          "觀望整理",
+          "價穩量縮",
+        ][(refreshCount + index) % 8],
+      };
+    });
+  }, [refreshCount, scenario]);
   const rotatedSectors = useMemo(() => {
-    const offset = refreshCount % sectors.length;
+    const offset = (refreshCount * 2) % sectors.length;
     return [...sectors.slice(offset), ...sectors.slice(0, offset)];
   }, [refreshCount, sectors]);
   const refreshLabel = refreshCount === 0 ? "尚未更新" : `已更新 ${refreshCount} 次`;
@@ -79,7 +144,7 @@ export function RotationPage() {
             <span className="card-label">四象限解讀</span>
             <h2>一眼看出資金流向與市場熱度</h2>
             <p>這張圖不是報酬預測，而是幫你快速分辨：哪些板塊同時「價強量增」，哪些是「量增價弱」或「價弱量縮」。</p>
-            <strong className="rotation-scenario">目前示意情境：{scenarioLabel}</strong>
+            <strong className="rotation-scenario">目前示意情境：{scenario.label}</strong>
             <span className="rotation-status-pill">{refreshLabel}</span>
             <small className="rotation-refresh-note">目前資料更新時間：{refreshedAt}</small>
           </div>
