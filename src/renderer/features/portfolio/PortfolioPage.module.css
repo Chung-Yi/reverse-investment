@@ -192,21 +192,14 @@
   margin-bottom: 8px;
 }
 
-.positionTitleRow {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 12px;
-  margin-top: 5px;
-}
-
 .positionHeading h2 {
-  margin: 0;
+  margin: 5px 0 0;
   font-size: 20px;
 }
 
 .positionPrimaryAction {
   flex: 0 0 auto;
+  margin-left: auto;
 }
 
 .positionHint {
@@ -221,7 +214,7 @@
   align-items: center;
   gap: 10px;
   margin-bottom: 12px;
-  padding: 4px 8px;
+  padding: 4px 0 4px 8px;
   border: 1px solid transparent;
   border-radius: 12px;
   color: var(--neutral-600);
@@ -234,10 +227,6 @@
   background: var(--brand-50);
   color: var(--brand-800);
   font-weight: 800;
-}
-
-.selectionToolbar .iconButton {
-  margin-left: auto;
 }
 
 .selectionCheckbox {
@@ -600,8 +589,8 @@
   .summaryGrid article { min-height: 112px; }
   .allocationPanel { padding: 18px; }
   .allocationPanel > header { align-items: flex-start; flex-direction: column; }
-  .positionTitleRow { align-items: stretch; flex-direction: column; }
-  .positionPrimaryAction { width: 100%; }
+  .positionPrimaryAction { margin-left: 0; width: 100%; }
+  .selectionToolbar { flex-wrap: wrap; padding-left: 0; }
   .positionMetrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .positionMetrics div:nth-child(odd) { border-left: 0; }
   .positionMetrics div:nth-child(4) { border-left: 1px solid var(--neutral-200); }

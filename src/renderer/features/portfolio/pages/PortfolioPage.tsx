@@ -128,28 +128,28 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
 
       <div className={styles.positionHeading}>
         <span className="card-label">模擬持倉</span>
-        <div className={styles.positionTitleRow}>
-          <h2>目前持有 {portfolio.positions.length} 個標的</h2>
-          <Button className={styles.positionPrimaryAction} onClick={openAddDialog}>＋ 新增模擬持倉</Button>
-        </div>
+        <h2>目前持有 {portfolio.positions.length} 個標的</h2>
         <p className={styles.positionHint}>估算市值以手動輸入的參考價格計算</p>
       </div>
-      {portfolio.positions.length > 0 && (
-        <div className={`${styles.selectionToolbar} ${selectedPositionIds.length > 0 ? styles.selectionToolbarActive : ""}`}>
-          <SelectionCheckbox
-            label="選取全部模擬持倉"
-            checked={allSelected}
-            indeterminate={partiallySelected}
-            onChange={toggleAll}
-          />
-          <span>{selectedPositionIds.length > 0 ? `已選取 ${selectedPositionIds.length} 筆` : "選取全部"}</span>
-          {selectedPositionIds.length > 0 && (
-            <button className={`${styles.iconButton} ${styles.dangerIconButton}`} type="button" onClick={() => void confirmRemoveSelected()} aria-label={`移除已選取的 ${selectedPositionIds.length} 筆持倉`} title="移除選取項目">
-              <span className={styles.trashIcon} aria-hidden="true" />
-            </button>
-          )}
-        </div>
-      )}
+      <div className={`${styles.selectionToolbar} ${selectedPositionIds.length > 0 ? styles.selectionToolbarActive : ""}`}>
+        {portfolio.positions.length > 0 && (
+          <>
+            <SelectionCheckbox
+              label="選取全部模擬持倉"
+              checked={allSelected}
+              indeterminate={partiallySelected}
+              onChange={toggleAll}
+            />
+            <span>{selectedPositionIds.length > 0 ? `已選取 ${selectedPositionIds.length} 筆` : "選取全部"}</span>
+            {selectedPositionIds.length > 0 && (
+              <button className={`${styles.iconButton} ${styles.dangerIconButton}`} type="button" onClick={() => void confirmRemoveSelected()} aria-label={`移除已選取的 ${selectedPositionIds.length} 筆持倉`} title="移除選取項目">
+                <span className={styles.trashIcon} aria-hidden="true" />
+              </button>
+            )}
+          </>
+        )}
+        <Button className={styles.positionPrimaryAction} onClick={openAddDialog}>＋ 新增模擬持倉</Button>
+      </div>
       <div className={styles.positionList}>
         {portfolio.positions.map((position) => (
           <PortfolioPositionCard
@@ -163,7 +163,7 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
           />
         ))}
         {portfolio.positions.length === 0 && (
-          <div className={`card ${styles.emptyState}`}><h3>還沒有模擬持倉</h3><p>加入第一個標的後，就能開始比較實際配置與原始規劃。</p><Button onClick={openAddDialog}>＋ 新增模擬持倉</Button></div>
+          <div className={`card ${styles.emptyState}`}><h3>還沒有模擬持倉</h3><p>加入第一個標的後，就能開始比較實際配置與原始規劃。</p></div>
         )}
       </div>
 
