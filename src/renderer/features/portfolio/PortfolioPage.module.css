@@ -189,23 +189,28 @@
 }
 
 .positionHeading {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  gap: 20px;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
-.positionHeading > :nth-child(2) {
-  margin-left: auto;
+.positionTitleRow {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 5px;
 }
 
 .positionHeading h2 {
-  margin: 5px 0 0;
+  margin: 0;
   font-size: 20px;
 }
 
-.positionHeading > span {
+.positionPrimaryAction {
+  flex: 0 0 auto;
+}
+
+.positionHint {
+  margin: 7px 0 0;
   color: var(--neutral-600);
   font-size: 9px;
 }
@@ -583,7 +588,6 @@
   .simulationNotice span { width: 100%; flex-basis: 100%; order: 3; }
   .simulationNotice small { margin-left: auto; }
   .allocationRows { grid-template-columns: 1fr; }
-  .positionHeading { align-items: flex-start; flex-direction: column; }
   .positionCard { grid-template-columns: 1fr; }
   .positionMetrics { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .positionMetrics div:nth-child(4) { border-left: 0; }
@@ -596,6 +600,8 @@
   .summaryGrid article { min-height: 112px; }
   .allocationPanel { padding: 18px; }
   .allocationPanel > header { align-items: flex-start; flex-direction: column; }
+  .positionTitleRow { align-items: stretch; flex-direction: column; }
+  .positionPrimaryAction { width: 100%; }
   .positionMetrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .positionMetrics div:nth-child(odd) { border-left: 0; }
   .positionMetrics div:nth-child(4) { border-left: 1px solid var(--neutral-200); }

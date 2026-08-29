@@ -127,9 +127,12 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
       </section>
 
       <div className={styles.positionHeading}>
-        <div><span className="card-label">模擬持倉</span><h2>目前持有 {portfolio.positions.length} 個標的</h2></div>
-        <Button onClick={openAddDialog}>＋ 新增模擬持倉</Button>
-        <span>估算市值以手動輸入的參考價格計算</span>
+        <span className="card-label">模擬持倉</span>
+        <div className={styles.positionTitleRow}>
+          <h2>目前持有 {portfolio.positions.length} 個標的</h2>
+          <Button className={styles.positionPrimaryAction} onClick={openAddDialog}>＋ 新增模擬持倉</Button>
+        </div>
+        <p className={styles.positionHint}>估算市值以手動輸入的參考價格計算</p>
       </div>
       {portfolio.positions.length > 0 && (
         <div className={`${styles.selectionToolbar} ${selectedPositionIds.length > 0 ? styles.selectionToolbarActive : ""}`}>
