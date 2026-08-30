@@ -203,24 +203,35 @@ test("investment exploration uses plan directions and a replaceable candidate re
   assert.match(fixture, /環球晶/);
 });
 
-test("news feed is source-transparent and replaceable without changing the page", async () => {
-  const [page, fixture, contract, repository, hook, shell] = await Promise.all([
-    readProjectFile("src/renderer/features/news/pages/NewsPage.tsx"),
-    readProjectFile("src/renderer/data/fixtures/researchNewsFeed.ts"),
-    readProjectFile("src/renderer/data/repositories/NewsRepository.ts"),
-    readProjectFile("src/renderer/data/repositories/mockNewsRepository.ts"),
-    readProjectFile("src/renderer/features/news/hooks/useNewsFeed.ts"),
-    readProjectFile("src/renderer/components/layout/AppShell.tsx"),
+test("related events live in tracking and use a replaceable data source", async () => {
+  const [metadata, app, home, tracking, change, fixture, contract, repository, hook] = await Promise.all([
+    readProjectFile("src/renderer/app/routeMetadata.ts"),
+    readProjectFile("src/renderer/app/App.tsx"),
+    readProjectFile("src/renderer/features/home/pages/HomePage.tsx"),
+    readProjectFile("src/renderer/features/tracking/pages/TrackingPage.tsx"),
+    readProjectFile("src/renderer/features/change/pages/ChangePage.tsx"),
+    readProjectFile("src/renderer/data/fixtures/relatedEvents.ts"),
+    readProjectFile("src/renderer/data/repositories/RelatedEventRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/mockRelatedEventRepository.ts"),
+    readProjectFile("src/renderer/features/tracking/hooks/useRelatedEvents.ts"),
   ]);
 
-  assert.match(contract, /interface NewsRepository/);
-  assert.match(contract, /getFeed\(request/);
-  assert.match(repository, /buildResearchNewsFeed/);
-  assert.match(hook, /repository\.getFeed\(request\)/);
-  assert.match(page, /newsRepository/);
-  assert.match(page, /資料來源與更新狀態標示於各則內容/);
+  assert.doesNotMatch(metadata, /id: "news"|label: "新聞"/);
+  assert.doesNotMatch(home, /新聞脈動|navigate\("news"\)/);
+  assert.doesNotMatch(app, /NewsPage|mockNewsRepository/);
+  assert.match(contract, /interface RelatedEventRepository/);
+  assert.match(contract, /getRelatedEvents\(request/);
+  assert.match(repository, /buildRelatedEventFeed/);
+  assert.match(hook, /repository\.getRelatedEvents\(request\)/);
+  assert.match(tracking, /關聯事件/);
+  assert.match(tracking, /受影響標的/);
+  assert.match(tracking, /受影響假設/);
+  assert.match(tracking, /資料截至/);
+  assert.match(tracking, /onOpenEvent/);
+  assert.match(change, /event\.affectedAssumption/);
+  assert.match(change, /event\.goalImpact/);
   assert.match(fixture, /dataStatus: "非即時資訊"/);
-  assert.doesNotMatch([page, fixture, shell].join("\n"), /demo|mock/i);
+  assert.doesNotMatch([home, tracking, change].join("\n"), /demo|mock/i);
 });
 
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {

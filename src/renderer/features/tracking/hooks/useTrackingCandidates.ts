@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import type { ResearchCandidate } from "@shared/domain/investment";
 import type { ResearchCandidateRepository } from "../../../data/repositories/ResearchCandidateRepository";
 
-export function useNewsCandidates(repository: ResearchCandidateRepository) {
+export function useTrackingCandidates(repository: ResearchCandidateRepository) {
   const [candidates, setCandidates] = useState<ResearchCandidate[]>([]);
 
   useEffect(() => {

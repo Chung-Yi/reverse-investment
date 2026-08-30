@@ -15,7 +15,7 @@ export function HomePage({ data }: { data: InvestmentData }) {
       <PageHeader
         eyebrow="回訪首頁｜決策總覽"
         title="今天，從最重要的下一步開始"
-        description="聚焦你的目標、規劃、論點、新聞與重要變化，不呈現市場噪音。"
+        description="聚焦你的目標、規劃、論點與重要變化，不呈現市場噪音。"
         action={<Button onClick={() => navigate("explore")}>繼續研究 →</Button>}
       />
 
@@ -76,18 +76,6 @@ export function HomePage({ data }: { data: InvestmentData }) {
           </div>
           <p>台積電已公布第三季毛利率展望，可能影響原始獲利能力假設。</p>
           <button className="text-button" onClick={() => navigate("tracking")}>前往追蹤中心 →</button>
-        </article>
-
-        <article className="card news-summary-card">
-          <div className="card-head">
-            <div>
-              <span className="card-label">新聞脈動</span>
-              <h3>把外部訊號對回你的研究脈絡</h3>
-            </div>
-            <span className="status stable">Signal</span>
-          </div>
-          <p>先看新聞如何影響探索方向、追蹤條件與重要變化，再決定是否需要重新檢視。</p>
-          <button className="text-button" onClick={() => navigate("news")}>查看新聞脈動 →</button>
         </article>
       </div>
     </section>

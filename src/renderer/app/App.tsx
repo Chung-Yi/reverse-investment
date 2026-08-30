@@ -1,12 +1,13 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import type { ResearchCandidate } from "@shared/domain/investment";
+import type { RelatedEvent } from "@shared/domain/relatedEvent";
 import { AppContext, type OnboardingMode } from "./AppContext";
 import { routes, secondaryRouteBackNavigation, type RouteId } from "./routeMetadata";
 import { AppShell } from "../components/layout/AppShell";
 import { AiDrawer } from "../components/layout/AiDrawer";
 import { mockInvestmentRepository } from "../data/repositories/mockInvestmentRepository";
 import { mockResearchCandidateRepository } from "../data/repositories/mockResearchCandidateRepository";
-import { mockNewsRepository } from "../data/repositories/mockNewsRepository";
+import { mockRelatedEventRepository } from "../data/repositories/mockRelatedEventRepository";
 import { mockPortfolioRepository } from "../data/repositories/mockPortfolioRepository";
 import { localOnboardingProfileRepository } from "../data/repositories/localOnboardingProfileRepository";
 import { buildPersonalizedInvestmentData } from "../data/personalization/buildPersonalizedInvestmentData";
@@ -22,7 +23,6 @@ import { ExplorePage } from "../features/explore/pages/ExplorePage";
 import { initialExploreViewState } from "../features/explore/types";
 import { PortfolioPage } from "../features/portfolio/pages/PortfolioPage";
 import { RotationPage } from "../features/rotation/pages/RotationPage";
-import { NewsPage } from "../features/news/pages/NewsPage";
 import { InstrumentPage } from "../features/instrument/pages/InstrumentPage";
 import { DecisionPage } from "../features/decision/pages/DecisionPage";
 import { ThesisPage } from "../features/thesis/pages/ThesisPage";
@@ -44,6 +44,7 @@ export function App() {
     localOnboardingProfileRepository.load()?.answers ?? { ...demoOnboardingAnswers }
   ));
   const [thesisObservation, setThesisObservation] = useState("");
+  const [selectedRelatedEvent, setSelectedRelatedEvent] = useState<RelatedEvent | null>(null);
   const agentProvider = useMemo(() => new MockAgentProvider(), []);
   const { data, error } = useInvestmentData(mockInvestmentRepository);
   const navigate = useCallback((next: RouteId) => {
@@ -74,6 +75,10 @@ export function App() {
     setSelectedCandidate(candidate);
     navigate("instrument");
   }, [navigate]);
+  const openRelatedEvent = useCallback((event: RelatedEvent) => {
+    setSelectedRelatedEvent(event);
+    navigate("change");
+  }, [navigate]);
   const openAssistant = useCallback((prompt = "") => setAssistant({ open: true, prompt }), []);
   const startOnboarding = useCallback((mode: OnboardingMode) => {
     setOnboardingMode(mode);
@@ -96,9 +101,9 @@ export function App() {
       profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
-      news: <NewsPage data={personalizedData} candidateRepository={mockResearchCandidateRepository} newsRepository={mockNewsRepository} />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
-      tracking: <TrackingPage data={personalizedData} />, change: <ChangePage />,
+      tracking: <TrackingPage data={personalizedData} candidateRepository={mockResearchCandidateRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,
+      change: <ChangePage event={selectedRelatedEvent} />,
     };
     content = pages[route];
   }
