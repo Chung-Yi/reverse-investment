@@ -204,7 +204,7 @@ test("investment exploration uses plan directions and a replaceable candidate re
 });
 
 test("multiple tracking targets keep related events scoped and replaceable", async () => {
-  const [metadata, app, home, tracking, change, eventFixture, eventContract, eventRepository, eventHook, targetFixture, targetContract, targetRepository, targetHook] = await Promise.all([
+  const [metadata, app, home, tracking, change, eventFixture, eventContract, eventRepository, eventHook, eventCountHook, targetFixture, targetDomain, targetContract, targetRepository, targetHook] = await Promise.all([
     readProjectFile("src/renderer/app/routeMetadata.ts"),
     readProjectFile("src/renderer/app/App.tsx"),
     readProjectFile("src/renderer/features/home/pages/HomePage.tsx"),
@@ -214,7 +214,9 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
     readProjectFile("src/renderer/data/repositories/RelatedEventRepository.ts"),
     readProjectFile("src/renderer/data/repositories/mockRelatedEventRepository.ts"),
     readProjectFile("src/renderer/features/tracking/hooks/useRelatedEvents.ts"),
+    readProjectFile("src/renderer/features/tracking/hooks/useRelatedEventCounts.ts"),
     readProjectFile("src/renderer/data/fixtures/trackingTargets.ts"),
+    readProjectFile("src/shared/domain/tracking.ts"),
     readProjectFile("src/renderer/data/repositories/TrackingRepository.ts"),
     readProjectFile("src/renderer/data/repositories/mockTrackingRepository.ts"),
     readProjectFile("src/renderer/features/tracking/hooks/useTrackingTargets.ts"),
@@ -227,6 +229,11 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
   assert.match(eventContract, /target: TrackingTarget/);
   assert.match(eventRepository, /buildRelatedEventFeed/);
   assert.match(eventHook, /repository\.getRelatedEvents\(request\)/);
+  assert.match(eventCountHook, /repository\.getRelatedEvents\(\{ target \}\)/);
+  assert.match(eventCountHook, /feed\.events\.length/);
+  assert.match(tracking, /eventCounts\[target\.trackingId\]/);
+  assert.doesNotMatch(targetDomain, /relatedEventCount/);
+  assert.doesNotMatch(targetFixture, /relatedEventCount/);
   assert.match(targetContract, /interface TrackingRepository/);
   assert.match(targetRepository, /buildTrackingTargets/);
   assert.match(targetHook, /repository\.getTrackingTargets\(request\)/);

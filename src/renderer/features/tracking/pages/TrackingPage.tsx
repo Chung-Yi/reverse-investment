@@ -7,6 +7,7 @@ import { Button } from "../../../components/ui/Button";
 import type { RelatedEventRepository } from "../../../data/repositories/RelatedEventRepository";
 import type { TrackingRepository } from "../../../data/repositories/TrackingRepository";
 import type { InvestmentData } from "../../../hooks/useInvestmentData";
+import { useRelatedEventCounts } from "../hooks/useRelatedEventCounts";
 import { useRelatedEvents } from "../hooks/useRelatedEvents";
 import { useTrackingTargets } from "../hooks/useTrackingTargets";
 
@@ -25,10 +26,12 @@ function attentionClass(level: TrackingTarget["attentionLevel"]) {
 
 function TrackingTargetCard({
   target,
+  eventCount,
   selected,
   onSelect,
 }: {
   target: TrackingTarget;
+  eventCount: number | undefined;
   selected: boolean;
   onSelect: (trackingId: string) => void;
 }) {
@@ -41,7 +44,7 @@ function TrackingTargetCard({
     >
       <div className="tracking-target-head">
         <span className={`severity ${attentionClass(target.attentionLevel)}`}>{target.attentionLevel}</span>
-        <small>{target.relatedEventCount} 項事件</small>
+        <small>{eventCount === undefined ? "事件載入中" : `${eventCount} 項事件`}</small>
       </div>
       <span className="tracking-target-symbol">{target.instrument.symbol}</span>
       <strong>{target.instrument.name}</strong>
@@ -85,6 +88,7 @@ export function TrackingPage({ data, trackingRepository, eventRepository, onOpen
     primaryObservation: thesisObservation,
   }), [data.thesis, primaryInstrument, thesisObservation]);
   const { targets, error: targetsError } = useTrackingTargets(trackingRepository, trackingRequest);
+  const eventCounts = useRelatedEventCounts(eventRepository, targets);
   const [selectedTrackingId, setSelectedTrackingId] = useState("");
 
   useEffect(() => {
@@ -121,6 +125,7 @@ export function TrackingPage({ data, trackingRepository, eventRepository, onOpen
             <TrackingTargetCard
               key={target.trackingId}
               target={target}
+              eventCount={eventCounts[target.trackingId]}
               selected={target.trackingId === selectedTarget?.trackingId}
               onSelect={setSelectedTrackingId}
             />

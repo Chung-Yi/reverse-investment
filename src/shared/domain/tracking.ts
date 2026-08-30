@@ -14,6 +14,5 @@ export interface TrackingTarget {
   suitabilityScore: number;
   observation: string;
   attentionLevel: TrackingAttentionLevel;
-  relatedEventCount: number;
   updatedAt: string;
 }
