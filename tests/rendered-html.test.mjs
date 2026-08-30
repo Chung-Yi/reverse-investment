@@ -203,8 +203,8 @@ test("investment exploration uses plan directions and a replaceable candidate re
   assert.match(fixture, /環球晶/);
 });
 
-test("related events live in tracking and use a replaceable data source", async () => {
-  const [metadata, app, home, tracking, change, fixture, contract, repository, hook] = await Promise.all([
+test("multiple tracking targets keep related events scoped and replaceable", async () => {
+  const [metadata, app, home, tracking, change, eventFixture, eventContract, eventRepository, eventHook, targetFixture, targetContract, targetRepository, targetHook] = await Promise.all([
     readProjectFile("src/renderer/app/routeMetadata.ts"),
     readProjectFile("src/renderer/app/App.tsx"),
     readProjectFile("src/renderer/features/home/pages/HomePage.tsx"),
@@ -214,15 +214,28 @@ test("related events live in tracking and use a replaceable data source", async 
     readProjectFile("src/renderer/data/repositories/RelatedEventRepository.ts"),
     readProjectFile("src/renderer/data/repositories/mockRelatedEventRepository.ts"),
     readProjectFile("src/renderer/features/tracking/hooks/useRelatedEvents.ts"),
+    readProjectFile("src/renderer/data/fixtures/trackingTargets.ts"),
+    readProjectFile("src/renderer/data/repositories/TrackingRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/mockTrackingRepository.ts"),
+    readProjectFile("src/renderer/features/tracking/hooks/useTrackingTargets.ts"),
   ]);
 
   assert.doesNotMatch(metadata, /id: "news"|label: "新聞"/);
   assert.doesNotMatch(home, /新聞脈動|navigate\("news"\)/);
   assert.doesNotMatch(app, /NewsPage|mockNewsRepository/);
-  assert.match(contract, /interface RelatedEventRepository/);
-  assert.match(contract, /getRelatedEvents\(request/);
-  assert.match(repository, /buildRelatedEventFeed/);
-  assert.match(hook, /repository\.getRelatedEvents\(request\)/);
+  assert.match(eventContract, /interface RelatedEventRepository/);
+  assert.match(eventContract, /target: TrackingTarget/);
+  assert.match(eventRepository, /buildRelatedEventFeed/);
+  assert.match(eventHook, /repository\.getRelatedEvents\(request\)/);
+  assert.match(targetContract, /interface TrackingRepository/);
+  assert.match(targetRepository, /buildTrackingTargets/);
+  assert.match(targetHook, /repository\.getTrackingTargets\(request\)/);
+  assert.match(targetFixture, /tracking-twse-0050/);
+  assert.match(targetFixture, /tracking-twse-2881/);
+  assert.match(tracking, /tracking-target-grid/);
+  assert.match(tracking, /aria-pressed=\{selected\}/);
+  assert.match(tracking, /selectedTrackingId/);
+  assert.match(tracking, /每個標的都有獨立論點、觀察條件與事件/);
   assert.match(tracking, /關聯事件/);
   assert.match(tracking, /受影響標的/);
   assert.match(tracking, /受影響假設/);
@@ -230,7 +243,8 @@ test("related events live in tracking and use a replaceable data source", async 
   assert.match(tracking, /onOpenEvent/);
   assert.match(change, /event\.affectedAssumption/);
   assert.match(change, /event\.goalImpact/);
-  assert.match(fixture, /dataStatus: "非即時資訊"/);
+  assert.doesNotMatch(tracking, /正方、反方、重要觀察分開看/);
+  assert.match(eventFixture, /dataStatus: "非即時資訊"/);
   assert.doesNotMatch([home, tracking, change].join("\n"), /demo|mock/i);
 });
 

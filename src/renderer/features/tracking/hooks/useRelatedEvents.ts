@@ -5,13 +5,17 @@ import type {
   RelatedEventRepository,
 } from "../../../data/repositories/RelatedEventRepository";
 
-export function useRelatedEvents(repository: RelatedEventRepository, request: RelatedEventFeedRequest) {
+export function useRelatedEvents(repository: RelatedEventRepository, request: RelatedEventFeedRequest | null) {
   const [feed, setFeed] = useState<RelatedEventFeed | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
     setError(null);
+    if (!request) {
+      setFeed(null);
+      return () => { active = false; };
+    }
 
     repository.getRelatedEvents(request)
       .then((nextFeed) => {
