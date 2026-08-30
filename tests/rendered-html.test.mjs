@@ -255,6 +255,18 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
   assert.doesNotMatch([home, tracking, change].join("\n"), /demo|mock/i);
 });
 
+test("Sites build packages the current renderer instead of stale client assets", async () => {
+  const [packageJson, prepareScript] = await Promise.all([
+    readProjectFile("package.json"),
+    readProjectFile("scripts/prepare-sites-dist.mjs"),
+  ]);
+
+  assert.match(packageJson, /"build:sites"/);
+  assert.match(packageJson, /prepare-sites-dist\.mjs/);
+  assert.match(prepareScript, /await cp\(rendererOutput, clientOutput/);
+  assert.match(prepareScript, /await rm\(clientOutput/);
+});
+
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {
   const [planSuggestions, planPage, explorePage, compactPagination, planFixture, instrumentFixture] = await Promise.all([
     readProjectFile("src/renderer/features/plan/components/PlanResearchSuggestions.tsx"),
