@@ -144,7 +144,7 @@ export function RotationPage() {
             <span className="card-label">四象限解讀</span>
             <h2>一眼看出資金流向與市場熱度</h2>
             <p>這張圖不是報酬預測，而是幫你快速分辨：哪些板塊同時「價強量增」，哪些是「量增價弱」或「價弱量縮」。</p>
-            <strong className="rotation-scenario">目前示意情境：{scenario.label}</strong>
+            <strong className="rotation-scenario">目前市場情境：{scenario.label}</strong>
             <span className="rotation-status-pill">{refreshLabel}</span>
             <small className="rotation-refresh-note">目前資料更新時間：{refreshedAt}</small>
           </div>
@@ -222,7 +222,7 @@ export function RotationPage() {
             <span className="card-label">板塊清單</span>
             <h3>每個板塊的相對位置</h3>
           </div>
-          <small className="rotation-refresh-note">清單順序也會跟著更新，方便看出示意資料已變動。</small>
+          <small className="rotation-refresh-note">清單順序也會跟著更新，方便檢視資料變動。</small>
         </div>
         <div className="rotation-list">
           {rotatedSectors.map((sector) => (

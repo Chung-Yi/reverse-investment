@@ -6,6 +6,7 @@ import { AppShell } from "../components/layout/AppShell";
 import { AiDrawer } from "../components/layout/AiDrawer";
 import { mockInvestmentRepository } from "../data/repositories/mockInvestmentRepository";
 import { mockResearchCandidateRepository } from "../data/repositories/mockResearchCandidateRepository";
+import { mockNewsRepository } from "../data/repositories/mockNewsRepository";
 import { mockPortfolioRepository } from "../data/repositories/mockPortfolioRepository";
 import { localOnboardingProfileRepository } from "../data/repositories/localOnboardingProfileRepository";
 import { buildPersonalizedInvestmentData } from "../data/personalization/buildPersonalizedInvestmentData";
@@ -87,7 +88,7 @@ export function App() {
   const personalizedData = useMemo(() => data ? buildPersonalizedInvestmentData(data, onboardingAnswers) : null, [data, onboardingAnswers]);
 
   let content: React.ReactNode;
-  if (error) content = <div className="feedback-state error"><h1>目前無法載入 Demo</h1><p>{error}</p></div>;
+  if (error) content = <div className="feedback-state error"><h1>目前無法載入投資研究資料</h1><p>{error}</p></div>;
   else if (!personalizedData) content = <div className="feedback-state"><span className="loader" /><h1>正在準備你的投資旅程</h1><p>載入投資研究資料中…</p></div>;
   else {
     const pages: Record<RouteId, React.ReactNode> = {
@@ -95,7 +96,7 @@ export function App() {
       profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
-      news: <NewsPage data={personalizedData} repository={mockResearchCandidateRepository} />,
+      news: <NewsPage data={personalizedData} candidateRepository={mockResearchCandidateRepository} newsRepository={mockNewsRepository} />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
       tracking: <TrackingPage data={personalizedData} />, change: <ChangePage />,
     };

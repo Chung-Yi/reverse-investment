@@ -19,7 +19,7 @@ export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack
   return (
     <>
       <a className="skip-link" href="#main-content">跳至主要內容</a>
-      <div className="demo-banner"><strong>資料透明</strong><span>市場資料均標示來源與截止日；內容用於研究與決策整理，不構成投資建議</span></div>
+      <div className="transparency-banner"><strong>資料透明</strong><span>市場資料均標示來源與截止日；內容用於研究與決策整理，不構成投資建議</span></div>
       <div className="app-shell">
         <aside className={`sidebar ${menuOpen ? "open" : ""}`} aria-label="主要導覽">
           <button className="brand" onClick={() => go("welcome")} aria-label="回到產品介紹"><span className="brand-mark">逆</span><span><strong>逆思投資</strong><small>AI 決策陪伴</small></span></button>

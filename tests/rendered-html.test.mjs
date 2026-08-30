@@ -203,6 +203,26 @@ test("investment exploration uses plan directions and a replaceable candidate re
   assert.match(fixture, /環球晶/);
 });
 
+test("news feed is source-transparent and replaceable without changing the page", async () => {
+  const [page, fixture, contract, repository, hook, shell] = await Promise.all([
+    readProjectFile("src/renderer/features/news/pages/NewsPage.tsx"),
+    readProjectFile("src/renderer/data/fixtures/researchNewsFeed.ts"),
+    readProjectFile("src/renderer/data/repositories/NewsRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/mockNewsRepository.ts"),
+    readProjectFile("src/renderer/features/news/hooks/useNewsFeed.ts"),
+    readProjectFile("src/renderer/components/layout/AppShell.tsx"),
+  ]);
+
+  assert.match(contract, /interface NewsRepository/);
+  assert.match(contract, /getFeed\(request/);
+  assert.match(repository, /buildResearchNewsFeed/);
+  assert.match(hook, /repository\.getFeed\(request\)/);
+  assert.match(page, /newsRepository/);
+  assert.match(page, /資料來源與更新狀態標示於各則內容/);
+  assert.match(fixture, /dataStatus: "非即時資訊"/);
+  assert.doesNotMatch([page, fixture, shell].join("\n"), /demo|mock/i);
+});
+
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {
   const [planSuggestions, planPage, explorePage, compactPagination, planFixture, instrumentFixture] = await Promise.all([
     readProjectFile("src/renderer/features/plan/components/PlanResearchSuggestions.tsx"),
