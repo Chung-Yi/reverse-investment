@@ -102,12 +102,24 @@ export function TrackingConditionDialog({
 
         <form onSubmit={handleSubmit}>
           <fieldset className="tracking-condition-types">
-            <legend>追蹤種類</legend>
-            {setup.definitions.map((item) => (
-              <button type="button" key={item.kind} className={item.kind === kind ? "selected" : ""} onClick={() => selectDefinition(item)}>
-                <strong>{item.label}</strong><small>{item.description}</small>
-              </button>
-            ))}
+            <legend>
+              <span>追蹤種類</span>
+              <small>選擇一種要持續監測的訊號</small>
+            </legend>
+            <div className="tracking-condition-type-grid">
+              {setup.definitions.map((item) => (
+                <button
+                  type="button"
+                  key={item.kind}
+                  className={item.kind === kind ? "selected" : ""}
+                  aria-pressed={item.kind === kind}
+                  onClick={() => selectDefinition(item)}
+                >
+                  <strong>{item.label}</strong>
+                  <small>{item.description}</small>
+                </button>
+              ))}
+            </div>
           </fieldset>
 
           <div className="tracking-condition-fields">
