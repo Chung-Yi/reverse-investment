@@ -204,11 +204,17 @@ test("investment exploration uses plan directions and a replaceable candidate re
 });
 
 test("multiple tracking targets keep related events scoped and replaceable", async () => {
-  const [metadata, app, home, tracking, change, eventFixture, eventContract, eventRepository, eventHook, eventCountHook, targetFixture, targetDomain, targetContract, targetRepository, targetHook] = await Promise.all([
+  const [metadata, app, home, tracking, conditionDialog, conditionHook, conditionFixture, conditionDomain, conditionContract, conditionRepository, change, eventFixture, eventContract, eventRepository, eventHook, eventCountHook, targetFixture, targetDomain, targetContract, targetRepository, targetHook] = await Promise.all([
     readProjectFile("src/renderer/app/routeMetadata.ts"),
     readProjectFile("src/renderer/app/App.tsx"),
     readProjectFile("src/renderer/features/home/pages/HomePage.tsx"),
     readProjectFile("src/renderer/features/tracking/pages/TrackingPage.tsx"),
+    readProjectFile("src/renderer/features/tracking/components/TrackingConditionDialog.tsx"),
+    readProjectFile("src/renderer/features/tracking/hooks/useTrackingConditions.ts"),
+    readProjectFile("src/renderer/data/fixtures/trackingConditionCatalog.ts"),
+    readProjectFile("src/shared/domain/trackingCondition.ts"),
+    readProjectFile("src/renderer/data/repositories/TrackingConditionRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/localTrackingConditionRepository.ts"),
     readProjectFile("src/renderer/features/change/pages/ChangePage.tsx"),
     readProjectFile("src/renderer/data/fixtures/relatedEvents.ts"),
     readProjectFile("src/renderer/data/repositories/RelatedEventRepository.ts"),
@@ -244,6 +250,23 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
   assert.match(tracking, /selectedTrackingId/);
   assert.match(tracking, /每個標的都有獨立論點、觀察條件與事件/);
   assert.match(tracking, /關聯事件/);
+  assert.match(tracking, /目前追蹤條件/);
+  assert.match(tracking, /TrackingBellButton/);
+  assert.match(tracking, /TrackingConditionDialog/);
+  assert.match(conditionDialog, /設定追蹤條件/);
+  assert.match(conditionDialog, /條件成立後會產生提醒/);
+  assert.match(conditionHook, /repository\.getSetup\(target\)/);
+  assert.match(conditionHook, /repository\.save\(target, input\)/);
+  assert.match(conditionContract, /interface TrackingConditionRepository/);
+  assert.match(conditionContract, /getSetup/);
+  assert.match(conditionRepository, /buildTrackingConditionDefinitions/);
+  assert.match(conditionRepository, /window\.localStorage/);
+  assert.match(conditionDomain, /TrackingConditionKind/);
+  assert.match(conditionFixture, /price: \{ label: "價格門檻"/);
+  assert.match(conditionFixture, /importantEvent: \{ label: "重要事件"/);
+  assert.match(conditionFixture, /category\.includes\("ETF"\)/);
+  assert.match(conditionFixture, /月營收年增率/);
+  assert.match(conditionFixture, /追蹤差異/);
   assert.match(tracking, /受影響標的/);
   assert.match(tracking, /受影響假設/);
   assert.match(tracking, /資料截至/);

@@ -9,6 +9,7 @@ import { mockInvestmentRepository } from "../data/repositories/mockInvestmentRep
 import { mockResearchCandidateRepository } from "../data/repositories/mockResearchCandidateRepository";
 import { mockRelatedEventRepository } from "../data/repositories/mockRelatedEventRepository";
 import { mockTrackingRepository } from "../data/repositories/mockTrackingRepository";
+import { localTrackingConditionRepository } from "../data/repositories/localTrackingConditionRepository";
 import { mockPortfolioRepository } from "../data/repositories/mockPortfolioRepository";
 import { localOnboardingProfileRepository } from "../data/repositories/localOnboardingProfileRepository";
 import { buildPersonalizedInvestmentData } from "../data/personalization/buildPersonalizedInvestmentData";
@@ -103,7 +104,7 @@ export function App() {
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
-      tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,
+      tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} conditionRepository={localTrackingConditionRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,
       change: <ChangePage event={selectedRelatedEvent} />,
     };
     content = pages[route];

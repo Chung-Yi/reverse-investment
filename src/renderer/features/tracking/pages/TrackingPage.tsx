@@ -5,15 +5,19 @@ import { useAppContext } from "../../../app/AppContext";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Button } from "../../../components/ui/Button";
 import type { RelatedEventRepository } from "../../../data/repositories/RelatedEventRepository";
+import type { TrackingConditionRepository } from "../../../data/repositories/TrackingConditionRepository";
 import type { TrackingRepository } from "../../../data/repositories/TrackingRepository";
 import type { InvestmentData } from "../../../hooks/useInvestmentData";
+import { TrackingBellButton, TrackingConditionDialog } from "../components/TrackingConditionDialog";
 import { useRelatedEventCounts } from "../hooks/useRelatedEventCounts";
 import { useRelatedEvents } from "../hooks/useRelatedEvents";
+import { useTrackingConditions } from "../hooks/useTrackingConditions";
 import { useTrackingTargets } from "../hooks/useTrackingTargets";
 
 interface TrackingPageProps {
   data: InvestmentData;
   trackingRepository: TrackingRepository;
+  conditionRepository: TrackingConditionRepository;
   eventRepository: RelatedEventRepository;
   onOpenEvent: (event: RelatedEvent) => void;
 }
@@ -79,7 +83,7 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
   );
 }
 
-export function TrackingPage({ data, trackingRepository, eventRepository, onOpenEvent }: TrackingPageProps) {
+export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent }: TrackingPageProps) {
   const { thesisObservation } = useAppContext();
   const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
   const trackingRequest = useMemo(() => ({
@@ -99,6 +103,8 @@ export function TrackingPage({ data, trackingRepository, eventRepository, onOpen
   }, [selectedTrackingId, targets]);
 
   const selectedTarget = targets.find((target) => target.trackingId === selectedTrackingId) ?? null;
+  const { setup: conditionSetup, error: conditionsError, save: saveCondition, remove: removeCondition } = useTrackingConditions(conditionRepository, selectedTarget);
+  const [conditionDialogOpen, setConditionDialogOpen] = useState(false);
   const eventRequest = useMemo(() => selectedTarget ? { target: selectedTarget } : null, [selectedTarget]);
   const { feed, error: eventsError } = useRelatedEvents(eventRepository, eventRequest);
 
@@ -108,7 +114,7 @@ export function TrackingPage({ data, trackingRepository, eventRepository, onOpen
         eyebrow="心跳追蹤"
         title="集中管理每一項追蹤中的投資判斷"
         description="先選擇追蹤標的，再查看只和該標的、原始假設與觀察條件有關的事件。"
-        action={feed?.events[0] ? <Button variant="secondary" onClick={() => onOpenEvent(feed.events[0])}>查看最重要變化</Button> : undefined}
+        action={selectedTarget ? <TrackingBellButton count={conditionSetup?.activeConditions.length ?? 0} onClick={() => setConditionDialogOpen(true)} /> : undefined}
       />
 
       <div className="section-title tracking-targets-title">
@@ -137,16 +143,31 @@ export function TrackingPage({ data, trackingRepository, eventRepository, onOpen
         <article className="tracking-focus card">
           <div className="tracking-focus-main">
             <span className="card-label">目前查看・{selectedTarget.instrument.symbol} {selectedTarget.instrument.name}</span>
-            <h2>目前追蹤的投資判斷</h2>
-            <p>{selectedTarget.thesisReason}</p>
-            <small>最後整理：{selectedTarget.updatedAt}・內容用於研究與追蹤，不構成投資建議</small>
+            <h2>目前追蹤條件</h2>
+            <p>每一項條件都屬於目前選取的標的；達到門檻後才會形成提醒。</p>
+            {conditionsError ? <small className="tracking-conditions-error">{conditionsError}</small> : (
+              <div className="active-tracking-conditions">
+                {conditionSetup?.activeConditions.map((condition) => (
+                  <div key={condition.id}>
+                    <span>{condition.kindLabel}</span>
+                    <strong>{condition.summary}</strong>
+                    <button type="button" onClick={() => void removeCondition(condition.id)} aria-label={`移除 ${condition.summary}`}>移除</button>
+                  </div>
+                ))}
+                {conditionSetup?.activeConditions.length === 0 && <p>尚未設定條件，點選右上角鈴鐺開始設定。</p>}
+              </div>
+            )}
           </div>
           <div className="tracking-focus-observation">
-            <span>重新檢視條件</span>
-            <strong>{selectedTarget.observation}</strong>
-            <small>條件成立時，回到重要變化流程確認原始假設。</small>
+            <span>對應投資理由</span>
+            <strong>{selectedTarget.thesisReason}</strong>
+            <small>最後整理：{selectedTarget.updatedAt}・條件成立時，回到重要變化流程確認原始假設。</small>
           </div>
         </article>
+      )}
+
+      {conditionDialogOpen && conditionSetup && (
+        <TrackingConditionDialog open setup={conditionSetup} onClose={() => setConditionDialogOpen(false)} onSave={saveCondition} />
       )}
 
       <div className="section-title related-events-title">
