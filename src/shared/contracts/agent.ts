@@ -3,9 +3,24 @@ export type AgentEvent =
   | { type: "message.completed"; requestId: string; message: string }
   | { type: "agent.error"; requestId: string; message: string };
 
+export interface AgentContextFact {
+  key: string;
+  label: string;
+  value: string;
+}
+
+export interface AgentContextDetails {
+  focus?: {
+    kind: "trackingConditions";
+    id: string;
+    label: string;
+  };
+  facts?: AgentContextFact[];
+}
+
 export interface AgentMessagePayload {
   message: string;
-  context: {
+  context: AgentContextDetails & {
     route: string;
     screenTitle: string;
   };

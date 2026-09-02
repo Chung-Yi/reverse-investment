@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { AgentContextDetails } from "@shared/contracts/agent";
 import type { ResearchCandidate } from "@shared/domain/investment";
 import type { RelatedEvent } from "@shared/domain/relatedEvent";
 import { AppContext, type OnboardingMode } from "./AppContext";
@@ -38,7 +39,7 @@ export function App() {
   const [route, setRoute] = useState<RouteId>(validRoutes.has(initialRoute) ? initialRoute : "home");
   const routeRef = useRef(route);
   const routeHistoryRef = useRef<RouteId[]>([route]);
-  const [assistant, setAssistant] = useState({ open: false, prompt: "" });
+  const [assistant, setAssistant] = useState<{ open: boolean; prompt: string; context?: AgentContextDetails }>({ open: false, prompt: "" });
   const [selectedCandidate, setSelectedCandidate] = useState<ResearchCandidate | null>(null);
   const [exploreViewState, setExploreViewState] = useState(initialExploreViewState);
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>("edit");
@@ -81,7 +82,7 @@ export function App() {
     setSelectedRelatedEvent(event);
     navigate("change");
   }, [navigate]);
-  const openAssistant = useCallback((prompt = "") => setAssistant({ open: true, prompt }), []);
+  const openAssistant = useCallback((prompt = "", context?: AgentContextDetails) => setAssistant({ open: true, prompt, context }), []);
   const startOnboarding = useCallback((mode: OnboardingMode) => {
     setOnboardingMode(mode);
     navigate("onboarding");
@@ -110,5 +111,5 @@ export function App() {
     content = pages[route];
   }
 
-  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /></AppContext.Provider>;
+  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} context={assistant.context} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /></AppContext.Provider>;
 }

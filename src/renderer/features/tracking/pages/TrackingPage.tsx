@@ -84,7 +84,7 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
 }
 
 export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent }: TrackingPageProps) {
-  const { thesisObservation } = useAppContext();
+  const { thesisObservation, openAssistant } = useAppContext();
   const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
   const trackingRequest = useMemo(() => ({
     primaryInstrument,
@@ -107,6 +107,28 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
   const [conditionDialogOpen, setConditionDialogOpen] = useState(false);
   const eventRequest = useMemo(() => selectedTarget ? { target: selectedTarget } : null, [selectedTarget]);
   const { feed, error: eventsError } = useRelatedEvents(eventRepository, eventRequest);
+  const discussTrackingConditions = () => {
+    if (!selectedTarget) return;
+    const activeConditions = conditionSetup?.activeConditions ?? [];
+    openAssistant(
+      `請和我一起檢視 ${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的目前追蹤條件，說明已涵蓋哪些風險，以及還有哪些條件值得我進一步考慮。`,
+      {
+        focus: {
+          kind: "trackingConditions",
+          id: selectedTarget.trackingId,
+          label: `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的追蹤條件`,
+        },
+        facts: [
+          { key: "instrument", label: "目前標的", value: `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name}` },
+          {
+            key: "activeTrackingConditions",
+            label: "目前追蹤條件",
+            value: activeConditions.length > 0 ? activeConditions.map((condition) => condition.summary).join("；") : "尚未設定",
+          },
+        ],
+      },
+    );
+  };
 
   return (
     <section>
@@ -142,8 +164,13 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
       {selectedTarget && (
         <article className="tracking-focus card">
           <div className="tracking-focus-main">
-            <span className="card-label">目前查看・{selectedTarget.instrument.symbol} {selectedTarget.instrument.name}</span>
-            <h2>目前追蹤條件</h2>
+            <div className="tracking-focus-heading">
+              <div>
+                <span className="card-label">目前查看・{selectedTarget.instrument.symbol} {selectedTarget.instrument.name}</span>
+                <h2>目前追蹤條件</h2>
+              </div>
+              <Button variant="ghost" onClick={discussTrackingConditions}>✦ 與 AI 討論</Button>
+            </div>
             <p>每一項條件都屬於目前選取的標的；達到門檻後才會形成提醒。</p>
             {conditionsError ? <small className="tracking-conditions-error">{conditionsError}</small> : (
               <div className="active-tracking-conditions">

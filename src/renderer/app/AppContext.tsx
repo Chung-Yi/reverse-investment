@@ -1,4 +1,5 @@
 import { createContext, useContext } from "react";
+import type { AgentContextDetails } from "@shared/contracts/agent";
 import type { AgentProvider } from "../services/agent/AgentProvider";
 import type { RouteId } from "./routeMetadata";
 
@@ -7,7 +8,7 @@ export type OnboardingMode = "create" | "edit";
 interface AppContextValue {
   route: RouteId;
   navigate: (route: RouteId) => void;
-  openAssistant: (prompt?: string) => void;
+  openAssistant: (prompt?: string, context?: AgentContextDetails) => void;
   agentProvider: AgentProvider;
   onboardingMode: OnboardingMode;
   onboardingAnswers: Record<string, string>;
