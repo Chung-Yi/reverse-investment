@@ -158,11 +158,6 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
               </div>
             )}
           </div>
-          <div className="tracking-focus-observation">
-            <span>對應投資理由</span>
-            <strong>{selectedTarget.thesisReason}</strong>
-            <small>最後整理：{selectedTarget.updatedAt}・條件成立時，回到重要變化流程確認原始假設。</small>
-          </div>
         </article>
       )}
 
