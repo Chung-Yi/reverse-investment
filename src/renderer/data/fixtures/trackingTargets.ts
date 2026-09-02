@@ -31,7 +31,7 @@ export function buildTrackingTargets({
       validityScore: 82,
       suitabilityScore: 86,
       observation: "若前十大成分股集中度明顯上升，重新檢視分散效果。",
-      attentionLevel: "穩定",
+      attentionLevel: "注意",
       updatedAt: "2026-08-08",
     },
     {
@@ -42,7 +42,7 @@ export function buildTrackingTargets({
       validityScore: 74,
       suitabilityScore: 77,
       observation: "若資本適足率或股利政策明顯改變，重新檢視長期配置理由。",
-      attentionLevel: "注意",
+      attentionLevel: "穩定",
       updatedAt: "2026-08-08",
     },
   ];

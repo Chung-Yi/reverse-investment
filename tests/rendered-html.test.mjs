@@ -234,6 +234,9 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
   assert.match(eventContract, /interface RelatedEventRepository/);
   assert.match(eventContract, /target: TrackingTarget/);
   assert.match(eventRepository, /buildRelatedEventFeed/);
+  assert.match(eventFixture, /eventsByInstrument/);
+  assert.match(eventFixture, /"twse-2881": \[\]/);
+  assert.doesNotMatch(eventFixture, /related-event-observation|目前尚未確認條件已成立/);
   assert.match(eventHook, /repository\.getRelatedEvents\(request\)/);
   assert.match(eventCountHook, /repository\.getRelatedEvents\(\{ target \}\)/);
   assert.match(eventCountHook, /feed\.events\.length/);
@@ -250,6 +253,8 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
   assert.match(tracking, /selectedTrackingId/);
   assert.match(tracking, /每個標的都有獨立論點、觀察條件與事件/);
   assert.match(tracking, /關聯事件/);
+  assert.match(tracking, /event\.trigger\.label/);
+  assert.match(tracking, /目前沒有需要特別注意的新事件/);
   assert.match(tracking, /目前追蹤條件/);
   assert.match(tracking, /TrackingBellButton/);
   assert.match(tracking, /TrackingConditionDialog/);

@@ -65,8 +65,14 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
   return (
     <article className="card related-event-card">
       <div className="related-event-head">
-        <span className={`severity ${event.severity === "重要" ? "critical" : event.severity === "注意" ? "attention" : "info"}`}>{event.severity}</span>
-        <span className="related-event-status">{event.dataStatus}</span>
+        <div className="related-event-tags">
+          <span className={`severity ${event.severity === "重要" ? "critical" : event.severity === "注意" ? "attention" : "info"}`}>{event.severity}</span>
+          <span className="related-event-type">{event.eventType}</span>
+        </div>
+        <div className="related-event-state">
+          <span className={event.status === "已觸發" ? "triggered" : "pending"}>{event.status}</span>
+          <span className="related-event-status">{event.dataStatus}</span>
+        </div>
       </div>
       <h3>{event.title}</h3>
       <p>{event.happened}</p>
@@ -75,10 +81,11 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
         <span>資料截至：{event.dataAsOf}</span>
       </div>
       <div className="related-event-context">
+        <div><span>觸發條件</span><strong>{event.trigger.label}・{event.trigger.detail}</strong></div>
         <div><span>受影響標的</span><strong>{event.affectedInstrument.symbol} {event.affectedInstrument.name}</strong></div>
         <div><span>受影響假設</span><strong>{event.affectedAssumption}</strong></div>
       </div>
-      <Button variant="text" onClick={() => onOpen(event)}>查看重要變化 →</Button>
+      <Button variant="text" onClick={() => onOpen(event)}>{event.status === "待驗證" ? "查看並驗證 →" : "查看重要變化 →"}</Button>
     </article>
   );
 }
@@ -201,7 +208,15 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
         <span className="related-event-count">{feed?.events.length ?? 0} 項</span>
       </div>
 
-      {eventsError ? <div className="feedback-state error" role="alert"><p>{eventsError}</p></div> : (
+      {eventsError ? <div className="feedback-state error" role="alert"><p>{eventsError}</p></div> : !feed ? (
+        <div className="feedback-state"><span className="loader" /><p>正在載入關聯事件…</p></div>
+      ) : feed.events.length === 0 ? (
+        <div className="feedback-state related-events-empty">
+          <span aria-hidden="true">✓</span>
+          <h3>目前沒有需要特別注意的新事件</h3>
+          <p>已設定的追蹤條件仍會持續保留；出現符合條件或可能影響原始假設的變化時，會顯示在這裡。</p>
+        </div>
+      ) : (
         <div className="related-event-list" aria-label="所選標的的關聯事件">
           {feed?.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={onOpenEvent} />)}
         </div>
