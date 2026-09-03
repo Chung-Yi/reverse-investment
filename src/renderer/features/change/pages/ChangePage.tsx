@@ -52,7 +52,7 @@ export function ChangePage({ event, target, conditionRepository, reviewRepositor
 
   if (!event || !target) {
     return (
-      <section>
+      <section className="change-workspace">
         <PageHeader
           eyebrow="事件檢視與判斷更新"
           title="請先選擇一項關聯事件"
@@ -151,7 +151,7 @@ export function ChangePage({ event, target, conditionRepository, reviewRepositor
   };
 
   return (
-    <section>
+    <section className="change-workspace">
       <PageHeader
         eyebrow="事件檢視與判斷更新"
         title={`${event.affectedInstrument.symbol} ${event.affectedInstrument.name}｜${event.title}`}
@@ -161,7 +161,7 @@ export function ChangePage({ event, target, conditionRepository, reviewRepositor
 
       <div className="change-flow-tabs" role="tablist" aria-label="事件檢視步驟">
         {steps.map((label, index) => (
-          <button type="button" role="tab" aria-selected={step === index} key={label} className={step === index ? "active" : ""} onClick={() => setStep(index)}>
+          <button type="button" role="tab" aria-selected={step === index} aria-current={step === index ? "step" : undefined} key={label} className={step === index ? "active" : ""} onClick={() => setStep(index)}>
             <span>{index + 1}</span>{label}
           </button>
         ))}
