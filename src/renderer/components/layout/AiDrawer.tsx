@@ -48,6 +48,9 @@ export function AiDrawer({ open, route, initialPrompt, context, provider, onClos
             {context?.focus?.kind === "trackingConditions" ? <>
               <button onClick={() => setInput("目前條件涵蓋了哪些風險？")}>目前涵蓋哪些風險？</button>
               <button onClick={() => setInput("還有哪些追蹤條件值得我進一步考慮？")}>還有哪些條件值得考慮？</button>
+            </> : context?.focus?.kind === "relatedEvent" ? <>
+              <button onClick={() => setInput("這項事件有哪些已確認事實？")}>哪些是已確認事實？</button>
+              <button onClick={() => setInput("這項事件還有哪些資訊需要驗證？")}>還需要驗證什麼？</button>
             </> : <>
               <button onClick={() => setInput("這和我的目標有什麼關係？")}>與我的目標有何關係？</button>
               <button onClick={() => setInput("有哪些反方觀點？")}>有哪些反方觀點？</button>

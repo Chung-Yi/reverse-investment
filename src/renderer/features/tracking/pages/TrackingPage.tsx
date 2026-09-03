@@ -19,7 +19,7 @@ interface TrackingPageProps {
   trackingRepository: TrackingRepository;
   conditionRepository: TrackingConditionRepository;
   eventRepository: RelatedEventRepository;
-  onOpenEvent: (event: RelatedEvent) => void;
+  onOpenEvent: (event: RelatedEvent, target: TrackingTarget) => void;
 }
 
 function attentionClass(level: TrackingTarget["attentionLevel"]) {
@@ -218,7 +218,7 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
         </div>
       ) : (
         <div className="related-event-list" aria-label="所選標的的關聯事件">
-          {feed?.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={onOpenEvent} />)}
+          {feed.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={(selectedEvent) => { if (selectedTarget) onOpenEvent(selectedEvent, selectedTarget); }} />)}
         </div>
       )}
     </section>

@@ -2,6 +2,7 @@ import { useCallback, useMemo, useRef, useState } from "react";
 import type { AgentContextDetails } from "@shared/contracts/agent";
 import type { ResearchCandidate } from "@shared/domain/investment";
 import type { RelatedEvent } from "@shared/domain/relatedEvent";
+import type { TrackingTarget } from "@shared/domain/tracking";
 import { AppContext, type OnboardingMode } from "./AppContext";
 import { routes, secondaryRouteBackNavigation, type RouteId } from "./routeMetadata";
 import { AppShell } from "../components/layout/AppShell";
@@ -13,6 +14,7 @@ import { mockTrackingRepository } from "../data/repositories/mockTrackingReposit
 import { localTrackingConditionRepository } from "../data/repositories/localTrackingConditionRepository";
 import { mockPortfolioRepository } from "../data/repositories/mockPortfolioRepository";
 import { localOnboardingProfileRepository } from "../data/repositories/localOnboardingProfileRepository";
+import { localImportantChangeReviewRepository } from "../data/repositories/localImportantChangeReviewRepository";
 import { buildPersonalizedInvestmentData } from "../data/personalization/buildPersonalizedInvestmentData";
 import { useInvestmentData } from "../hooks/useInvestmentData";
 import { MockAgentProvider } from "../services/agent/MockAgentProvider";
@@ -48,6 +50,7 @@ export function App() {
   ));
   const [thesisObservation, setThesisObservation] = useState("");
   const [selectedRelatedEvent, setSelectedRelatedEvent] = useState<RelatedEvent | null>(null);
+  const [selectedRelatedEventTarget, setSelectedRelatedEventTarget] = useState<TrackingTarget | null>(null);
   const agentProvider = useMemo(() => new MockAgentProvider(), []);
   const { data, error } = useInvestmentData(mockInvestmentRepository);
   const navigate = useCallback((next: RouteId) => {
@@ -78,8 +81,9 @@ export function App() {
     setSelectedCandidate(candidate);
     navigate("instrument");
   }, [navigate]);
-  const openRelatedEvent = useCallback((event: RelatedEvent) => {
+  const openRelatedEvent = useCallback((event: RelatedEvent, target: TrackingTarget) => {
     setSelectedRelatedEvent(event);
+    setSelectedRelatedEventTarget(target);
     navigate("change");
   }, [navigate]);
   const openAssistant = useCallback((prompt = "", context?: AgentContextDetails) => setAssistant({ open: true, prompt, context }), []);
@@ -101,12 +105,12 @@ export function App() {
   else {
     const pages: Record<RouteId, React.ReactNode> = {
       welcome: <WelcomePage />, home: <HomePage data={personalizedData} />, onboarding: <OnboardingPage key={onboardingMode} />,
-      profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
+      profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
       rotation: <RotationPage />,
-      instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} />,
+      instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />,
       tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} conditionRepository={localTrackingConditionRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,
-      change: <ChangePage event={selectedRelatedEvent} />,
+      change: <ChangePage event={selectedRelatedEvent} target={selectedRelatedEventTarget} conditionRepository={localTrackingConditionRepository} reviewRepository={localImportantChangeReviewRepository} />,
     };
     content = pages[route];
   }

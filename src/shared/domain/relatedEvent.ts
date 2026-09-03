@@ -17,8 +17,15 @@ export interface RelatedEventInstrument {
 
 export interface RelatedEventTrigger {
   conditionId?: string;
+  conditionKind?: TrackingConditionKind;
+  optionId?: string;
+  comparator?: TrackingConditionComparator;
+  threshold?: number;
+  unit?: string;
   label: string;
   detail: string;
+  observed: string;
+  difference: string;
 }
 
 export interface RelatedEvent {
@@ -28,6 +35,8 @@ export interface RelatedEvent {
   title: string;
   happened: string;
   interpretation: string;
+  confirmedFacts: string[];
+  verificationItems: string[];
   impact: RelatedEventImpact;
   severity: RelatedEventSeverity;
   source: RelatedEventSource;
@@ -43,3 +52,4 @@ export interface RelatedEventFeed {
   events: RelatedEvent[];
   dataStatus: RelatedEventDataStatus;
 }
+import type { TrackingConditionComparator, TrackingConditionKind } from "./trackingCondition";

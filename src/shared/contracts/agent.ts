@@ -11,7 +11,7 @@ export interface AgentContextFact {
 
 export interface AgentContextDetails {
   focus?: {
-    kind: "trackingConditions";
+    kind: "trackingConditions" | "relatedEvent";
     id: string;
     label: string;
   };

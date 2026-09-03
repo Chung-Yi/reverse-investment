@@ -411,6 +411,42 @@ test("primary navigation reopens exploration at its default directions view", as
   assert.match(exploreTypes, /candidatePage: 1/);
 });
 
+test("important changes separate facts from AI interpretation and persist user decisions", async () => {
+  const [page, eventDomain, reviewDomain, reviewContract, reviewRepository, reviewHook, app, thesis, plan, drawer] = await Promise.all([
+    readProjectFile("src/renderer/features/change/pages/ChangePage.tsx"),
+    readProjectFile("src/shared/domain/relatedEvent.ts"),
+    readProjectFile("src/shared/domain/importantChangeReview.ts"),
+    readProjectFile("src/renderer/data/repositories/ImportantChangeReviewRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/localImportantChangeReviewRepository.ts"),
+    readProjectFile("src/renderer/hooks/useImportantChangeReviews.ts"),
+    readProjectFile("src/renderer/app/App.tsx"),
+    readProjectFile("src/renderer/features/thesis/pages/ThesisPage.tsx"),
+    readProjectFile("src/renderer/features/plan/pages/PlanPage.tsx"),
+    readProjectFile("src/renderer/components/layout/AiDrawer.tsx"),
+  ]);
+
+  assert.match(page, /title=\{`\$\{event\.affectedInstrument\.symbol\}/);
+  assert.match(page, /設定門檻/);
+  assert.match(page, /實際數值／狀態/);
+  assert.match(page, /已確認事實/);
+  assert.match(page, /AI 協助解讀/);
+  assert.match(page, /尚待驗證/);
+  assert.match(page, /conditionRepository\.save/);
+  assert.match(page, /reviewRepository\.save/);
+  assert.match(page, /與 AI 討論這項事件/);
+  assert.match(page, /kind: "relatedEvent"/);
+  assert.match(eventDomain, /confirmedFacts/);
+  assert.match(eventDomain, /verificationItems/);
+  assert.match(reviewDomain, /ImportantChangeReviewAction/);
+  assert.match(reviewContract, /interface ImportantChangeReviewRepository/);
+  assert.match(reviewRepository, /localStorage/);
+  assert.match(reviewHook, /repository\.list/);
+  assert.match(app, /localImportantChangeReviewRepository/);
+  assert.match(thesis, /重要變化後的論點更新/);
+  assert.match(plan, /重要變化後的規劃補充/);
+  assert.match(drawer, /context\?\.focus\?\.kind === "relatedEvent"/);
+});
+
 test("decision validation is an actionable gated five-step flow", async () => {
   const page = await readProjectFile("src/renderer/features/decision/pages/DecisionPage.tsx");
 
