@@ -18,9 +18,12 @@ export class MockAgentProvider implements AgentProvider {
     const requestId = crypto.randomUUID();
     const routeKey = payload.context.route;
     const trackingConditions = payload.context.facts?.find((fact) => fact.key === "activeTrackingConditions")?.value;
+    const trackingAlertSummary = payload.context.facts?.find((fact) => fact.key === "trackingAlertSummary")?.value;
     const eventTrigger = payload.context.facts?.find((fact) => fact.key === "trigger")?.value;
     const eventAssumption = payload.context.facts?.find((fact) => fact.key === "assumption")?.value;
-    const answer = payload.context.focus?.kind === "relatedEvent"
+    const answer = payload.context.focus?.kind === "trackingAlerts"
+      ? `${trackingAlertSummary ?? "目前沒有已觸發事件"}。我會先依重要程度、受影響假設與資料狀態排序；這些提醒用於協助你回到原始判斷檢視，不代表買賣建議。`
+      : payload.context.focus?.kind === "relatedEvent"
       ? `這次是由「${eventTrigger ?? "關聯事件"}」進入檢視，可能影響「${eventAssumption ?? "目前的原始假設"}」。${demoReplies.change}`
       : routeKey === "tracking" && trackingConditions
       ? `目前條件：${trackingConditions}。${demoReplies.tracking}`

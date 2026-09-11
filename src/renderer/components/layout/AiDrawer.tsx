@@ -37,15 +37,28 @@ export function AiDrawer({ open, route, initialPrompt, context, provider, onClos
     requestRef.current = request.requestId;
   };
 
+  const alertFacts = context?.focus?.kind === "trackingAlerts"
+    ? context.facts?.filter((fact) => fact.key.startsWith("alert-")) ?? []
+    : [];
+  const alertSummary = context?.facts?.find((fact) => fact.key === "trackingAlertSummary")?.value;
+
   return (
     <>
       <button className={`drawer-overlay ${open ? "open" : ""}`} onClick={onClose} aria-label="關閉 AI 對話助理" />
       <aside className={`ai-drawer ${open ? "open" : ""}`} aria-hidden={!open} aria-label="AI 對話助理">
         <header><div><span className="ai-spark">✦</span><span><strong>AI 對話助理</strong><small>目前情境：{routeMetadata[route].label}</small></span></div><button className="icon-button" onClick={onClose} aria-label="關閉 AI 面板">×</button></header>
         <div className="ai-body">
-          <div className="ai-message"><span>AI</span><div><strong>{answer ? "AI 整理" : "想先理解哪一部分？"}</strong><p>{answer || "我會承接目前畫面的脈絡，協助你整理重點與釐清問題。"}{running && <i className="typing-cursor" />}</p></div></div>
+          <div className="ai-message"><span>AI</span><div><strong>{answer ? "AI 整理" : context?.focus?.kind === "trackingAlerts" ? "追蹤提醒摘要" : "想先理解哪一部分？"}</strong><p>{answer || alertSummary || "我會承接目前畫面的脈絡，協助你整理重點與釐清問題。"}{running && <i className="typing-cursor" />}</p></div></div>
+          {context?.focus?.kind === "trackingAlerts" && alertFacts.length > 0 && !answer && (
+            <div className="ai-alert-digest" aria-label="已觸發事件摘要">
+              {alertFacts.map((fact) => <div key={fact.key}><strong>{fact.label}</strong><span>{fact.value}</span></div>)}
+            </div>
+          )}
           <div className="suggestions">
-            {context?.focus?.kind === "trackingConditions" ? <>
+            {context?.focus?.kind === "trackingAlerts" ? <>
+              <button onClick={() => setInput("哪些觸發事件需要優先處理？")}>哪些事件最優先？</button>
+              <button onClick={() => setInput("這些事件分別影響哪些原始假設？")}>影響哪些原始假設？</button>
+            </> : context?.focus?.kind === "trackingConditions" ? <>
               <button onClick={() => setInput("目前條件涵蓋了哪些風險？")}>目前涵蓋哪些風險？</button>
               <button onClick={() => setInput("還有哪些追蹤條件值得我進一步考慮？")}>還有哪些條件值得考慮？</button>
             </> : context?.focus?.kind === "relatedEvent" ? <>

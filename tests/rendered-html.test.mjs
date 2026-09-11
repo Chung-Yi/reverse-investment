@@ -295,6 +295,31 @@ test("Sites build packages the current renderer instead of stale client assets",
   assert.match(prepareScript, /await rm\(clientOutput/);
 });
 
+test("tracking alert assistant summarizes triggered events without duplicating the condition card action", async () => {
+  const [tracking, alertButton, alertHook, drawer, agentContract, mockAgent] = await Promise.all([
+    readProjectFile("src/renderer/features/tracking/pages/TrackingPage.tsx"),
+    readProjectFile("src/renderer/features/tracking/components/TrackingAlertAssistant.tsx"),
+    readProjectFile("src/renderer/features/tracking/hooks/useTrackingAlerts.ts"),
+    readProjectFile("src/renderer/components/layout/AiDrawer.tsx"),
+    readProjectFile("src/shared/contracts/agent.ts"),
+    readProjectFile("src/renderer/services/agent/MockAgentProvider.ts"),
+  ]);
+
+  assert.doesNotMatch(tracking, /discussTrackingConditions|與 AI 討論/);
+  assert.match(tracking, /TrackingAlertAssistant/);
+  assert.match(tracking, /kind: "trackingAlerts"/);
+  assert.match(tracking, /trackingAlertSummary/);
+  assert.match(tracking, /alerts\.slice\(0, 6\)/);
+  assert.match(alertButton, /追蹤提醒助理/);
+  assert.match(alertButton, /項觸發事件待查看/);
+  assert.match(alertHook, /event\.status === "已觸發"/);
+  assert.match(alertHook, /severityOrder/);
+  assert.match(drawer, /ai-alert-digest/);
+  assert.match(drawer, /哪些事件最優先/);
+  assert.match(agentContract, /"trackingAlerts"/);
+  assert.match(mockAgent, /trackingAlertSummary/);
+});
+
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {
   const [planSuggestions, planPage, explorePage, compactPagination, planFixture, instrumentFixture] = await Promise.all([
     readProjectFile("src/renderer/features/plan/components/PlanResearchSuggestions.tsx"),

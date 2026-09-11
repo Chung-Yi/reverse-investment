@@ -8,9 +8,11 @@ import type { RelatedEventRepository } from "../../../data/repositories/RelatedE
 import type { TrackingConditionRepository } from "../../../data/repositories/TrackingConditionRepository";
 import type { TrackingRepository } from "../../../data/repositories/TrackingRepository";
 import type { InvestmentData } from "../../../hooks/useInvestmentData";
+import { TrackingAlertAssistant } from "../components/TrackingAlertAssistant";
 import { TrackingBellButton, TrackingConditionDialog } from "../components/TrackingConditionDialog";
 import { useRelatedEventCounts } from "../hooks/useRelatedEventCounts";
 import { useRelatedEvents } from "../hooks/useRelatedEvents";
+import { useTrackingAlerts } from "../hooks/useTrackingAlerts";
 import { useTrackingConditions } from "../hooks/useTrackingConditions";
 import { useTrackingTargets } from "../hooks/useTrackingTargets";
 
@@ -100,6 +102,7 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
   }), [data.thesis, primaryInstrument, thesisObservation]);
   const { targets, error: targetsError } = useTrackingTargets(trackingRepository, trackingRequest);
   const eventCounts = useRelatedEventCounts(eventRepository, targets);
+  const { alerts, loading: alertsLoading, error: alertsError } = useTrackingAlerts(eventRepository, targets);
   const [selectedTrackingId, setSelectedTrackingId] = useState("");
 
   useEffect(() => {
@@ -114,24 +117,29 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
   const [conditionDialogOpen, setConditionDialogOpen] = useState(false);
   const eventRequest = useMemo(() => selectedTarget ? { target: selectedTarget } : null, [selectedTarget]);
   const { feed, error: eventsError } = useRelatedEvents(eventRepository, eventRequest);
-  const discussTrackingConditions = () => {
-    if (!selectedTarget) return;
-    const activeConditions = conditionSetup?.activeConditions ?? [];
+  const openTrackingAlertAssistant = () => {
+    const affectedInstruments = new Set(alerts.map(({ target }) => target.instrument.id)).size;
     openAssistant(
-      `請和我一起檢視 ${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的目前追蹤條件，說明已涵蓋哪些風險，以及還有哪些條件值得我進一步考慮。`,
+      alerts.length > 0
+        ? "請依重要程度整理目前已觸發的追蹤事件，說明各自影響的原始假設，以及我應該先檢視哪一項。"
+        : "請整理目前所有追蹤標的的狀態，並說明現在是否有需要優先處理的事件。",
       {
         focus: {
-          kind: "trackingConditions",
-          id: selectedTarget.trackingId,
-          label: `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的追蹤條件`,
+          kind: "trackingAlerts",
+          id: "tracking-alert-digest",
+          label: "所有追蹤標的的觸發提醒",
         },
         facts: [
-          { key: "instrument", label: "目前標的", value: `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name}` },
           {
-            key: "activeTrackingConditions",
-            label: "目前追蹤條件",
-            value: activeConditions.length > 0 ? activeConditions.map((condition) => condition.summary).join("；") : "尚未設定",
+            key: "trackingAlertSummary",
+            label: "提醒摘要",
+            value: alerts.length > 0 ? `${affectedInstruments} 個標的共有 ${alerts.length} 項已觸發事件` : "目前沒有已觸發事件",
           },
+          ...alerts.slice(0, 6).map(({ event, target }) => ({
+            key: `alert-${event.id}`,
+            label: `${target.instrument.symbol} ${target.instrument.name}`,
+            value: `${event.severity}｜${event.title}｜${event.trigger.label}：${event.trigger.observed}｜影響假設：${event.affectedAssumption}`,
+          })),
         ],
       },
     );
@@ -176,7 +184,6 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
                 <span className="card-label">目前查看・{selectedTarget.instrument.symbol} {selectedTarget.instrument.name}</span>
                 <h2>目前追蹤條件</h2>
               </div>
-              <Button variant="ghost" onClick={discussTrackingConditions}>✦ 與 AI 討論</Button>
             </div>
             <p>每一項條件都屬於目前選取的標的；達到門檻後才會形成提醒。</p>
             {conditionsError ? <small className="tracking-conditions-error">{conditionsError}</small> : (
@@ -221,6 +228,13 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
           {feed.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={(selectedEvent) => { if (selectedTarget) onOpenEvent(selectedEvent, selectedTarget); }} />)}
         </div>
       )}
+
+      <TrackingAlertAssistant
+        count={alerts.length}
+        loading={alertsLoading}
+        error={alertsError}
+        onClick={openTrackingAlertAssistant}
+      />
     </section>
   );
 }
