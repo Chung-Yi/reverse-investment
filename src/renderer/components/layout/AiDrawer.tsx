@@ -40,6 +40,12 @@ export function AiDrawer({ open, route, initialPrompt, context, provider, onClos
   const alertFacts = context?.focus?.kind === "trackingAlerts"
     ? context.facts?.filter((fact) => fact.key.startsWith("alert-")) ?? []
     : [];
+  const alertGroups = alertFacts.reduce<Array<{ label: string; facts: typeof alertFacts }>>((groups, fact) => {
+    const group = groups.find((item) => item.label === fact.label);
+    if (group) group.facts.push(fact);
+    else groups.push({ label: fact.label, facts: [fact] });
+    return groups;
+  }, []);
   const alertSummary = context?.facts?.find((fact) => fact.key === "trackingAlertSummary")?.value;
 
   return (
@@ -51,7 +57,12 @@ export function AiDrawer({ open, route, initialPrompt, context, provider, onClos
           <div className="ai-message"><span>AI</span><div><strong>{answer ? "AI 整理" : context?.focus?.kind === "trackingAlerts" ? "追蹤提醒摘要" : "想先理解哪一部分？"}</strong><p>{answer || alertSummary || "我會承接目前畫面的脈絡，協助你整理重點與釐清問題。"}{running && <i className="typing-cursor" />}</p></div></div>
           {context?.focus?.kind === "trackingAlerts" && alertFacts.length > 0 && !answer && (
             <div className="ai-alert-digest" aria-label="已觸發事件摘要">
-              {alertFacts.map((fact) => <div key={fact.key}><strong>{fact.label}</strong><span>{fact.value}</span></div>)}
+              {alertGroups.map((group) => (
+                <section key={group.label}>
+                  <header><strong>{group.label}</strong><small>{group.facts.length} 項觸發</small></header>
+                  {group.facts.map((fact) => <div key={fact.key}><span>{fact.value}</span></div>)}
+                </section>
+              ))}
             </div>
           )}
           <div className="suggestions">

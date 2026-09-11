@@ -135,7 +135,7 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
             label: "提醒摘要",
             value: alerts.length > 0 ? `${affectedInstruments} 個標的共有 ${alerts.length} 項已觸發事件` : "目前沒有已觸發事件",
           },
-          ...alerts.slice(0, 6).map(({ event, target }) => ({
+          ...alerts.map(({ event, target }) => ({
             key: `alert-${event.id}`,
             label: `${target.instrument.symbol} ${target.instrument.name}`,
             value: `${event.severity}｜${event.title}｜${event.trigger.label}：${event.trigger.observed}｜影響假設：${event.affectedAssumption}`,

@@ -4,7 +4,7 @@ import { importantChangeSnapshot } from "./demoInvestment";
 
 export function buildRelatedEventFeed({ target }: RelatedEventFeedRequest): RelatedEventFeed {
   const eventsByInstrument: Record<string, RelatedEvent[]> = {
-    "twse-2330": [
+    "tw-2330": [
       {
         id: "related-event-2330-margin-outlook",
         eventType: "官方重要事件",

@@ -36,7 +36,7 @@ const etfEvents: TrackingConditionDefinition["options"] = [
 ];
 
 const trackingInstrumentProfiles: Record<string, TrackingInstrumentProfile> = {
-  "twse-2330": {
+  "tw-2330": {
     referencePrice: 1040,
     portfolioWeightThreshold: 25,
     keyMetrics: [
@@ -126,7 +126,7 @@ export function buildTrackingConditionDefinitions(target: TrackingTarget): Track
 }
 
 const seededConditions: Record<string, Omit<TrackingCondition, "trackingId">[]> = {
-  "tracking-twse-2330": [
+  "tracking-tw-2330": [
     { id: "condition-2330-price", kind: "price", kindLabel: "價格門檻", optionId: "market-price", optionLabel: "市場價格", comparator: "below", threshold: 900, unit: "NT$", summary: "市場價格低於 NT$ 900", enabled: true, updatedAt: "2026-08-30" },
     { id: "condition-2330-event", kind: "importantEvent", kindLabel: "重要事件", optionId: "investor-conference", optionLabel: "法人說明會", comparator: "eventOccurs", summary: "法人說明會資料公布", enabled: true, updatedAt: "2026-08-30" },
   ],

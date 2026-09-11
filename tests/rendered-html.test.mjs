@@ -309,15 +309,31 @@ test("tracking alert assistant summarizes triggered events without duplicating t
   assert.match(tracking, /TrackingAlertAssistant/);
   assert.match(tracking, /kind: "trackingAlerts"/);
   assert.match(tracking, /trackingAlertSummary/);
-  assert.match(tracking, /alerts\.slice\(0, 6\)/);
+  assert.match(tracking, /alerts\.map/);
   assert.match(alertButton, /追蹤提醒助理/);
   assert.match(alertButton, /項觸發事件待查看/);
   assert.match(alertHook, /event\.status === "已觸發"/);
   assert.match(alertHook, /severityOrder/);
   assert.match(drawer, /ai-alert-digest/);
+  assert.match(drawer, /alertGroups/);
+  assert.match(drawer, /group\.facts\.length/);
   assert.match(drawer, /哪些事件最優先/);
   assert.match(agentContract, /"trackingAlerts"/);
   assert.match(mockAgent, /trackingAlertSummary/);
+});
+
+test("tracking fixtures use the same canonical instrument and tracking identifiers", async () => {
+  const [investmentFixture, eventFixture, conditionFixture] = await Promise.all([
+    readProjectFile("src/renderer/data/fixtures/demoInvestment.ts"),
+    readProjectFile("src/renderer/data/fixtures/relatedEvents.ts"),
+    readProjectFile("src/renderer/data/fixtures/trackingConditionCatalog.ts"),
+  ]);
+
+  assert.match(investmentFixture, /id: "tw-2330"/);
+  assert.match(eventFixture, /"tw-2330": \[/);
+  assert.match(conditionFixture, /"tw-2330": \{/);
+  assert.match(conditionFixture, /"tracking-tw-2330": \[/);
+  assert.doesNotMatch([eventFixture, conditionFixture].join("\n"), /twse-2330/);
 });
 
 test("plan research directions scale without mixing abstract types or duplicate next actions", async () => {
