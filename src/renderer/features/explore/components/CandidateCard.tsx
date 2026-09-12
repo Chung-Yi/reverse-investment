@@ -50,8 +50,8 @@ export function CandidateCard({ candidate, analyzing, journeyStages, onAnalyze, 
       <div className={styles.candidateAssessment}>
         {ready && candidate.researchFit !== undefined && candidate.suitability !== undefined ? (
           <>
-            <div><span>研究條件符合度</span><strong>{candidate.researchFit}/100</strong><small>{describeAssessmentScore(candidate.researchFit)}</small></div>
-            <div><span>個人初步適合度</span><strong>{candidate.suitability}/100</strong><small>{describeAssessmentScore(candidate.suitability)}</small></div>
+            <div><span>標的研究價值</span><strong>{candidate.researchFit}/100</strong><small>{describeAssessmentScore(candidate.researchFit)}｜評估標的本身</small></div>
+            <div><span>個人條件適配度</span><strong>{candidate.suitability}/100</strong><small>{describeAssessmentScore(candidate.suitability)}｜評估與你的目標及配置</small></div>
           </>
         ) : (
           <div className={styles.pendingAssessment}><span>分析狀態</span><strong>{analyzing ? "正在整理資料…" : "等待分析"}</strong><small>完成後才會顯示評估</small></div>

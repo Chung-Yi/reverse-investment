@@ -77,14 +77,14 @@ export function InstrumentPage({ data, selectedCandidate }: InstrumentPageProps)
 
       <div className={styles.assessmentGrid}>
         <article className="card">
-          <span>研究條件符合度</span>
+          <span>標的研究價值</span>
           <strong>{researchFit ?? "待補充"}</strong>
-          <small>{researchFit !== undefined ? `${describeAssessmentScore(researchFit)}｜看這支標的本身是否值得研究` : "資料完整後顯示"}</small>
+          <small>{researchFit !== undefined ? `${describeAssessmentScore(researchFit)}｜評估標的本身是否值得繼續深入研究` : "資料完整後顯示"}</small>
         </article>
         <article className="card">
-          <span>個人初步適合度</span>
+          <span>個人條件適配度</span>
           <strong>{suitability ?? "待補充"}</strong>
-          <small>{suitability !== undefined ? `${describeAssessmentScore(suitability)}｜看這支標的是否符合你的條件` : "資料完整後顯示"}</small>
+          <small>{suitability !== undefined ? `${describeAssessmentScore(suitability)}｜評估與你的目標、期限、風險及配置是否相符` : "資料完整後顯示"}</small>
         </article>
       </div>
 

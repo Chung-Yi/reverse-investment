@@ -203,6 +203,9 @@ test("investment exploration uses plan directions, journey states, and a replace
   assert.match(card, /已建立論點/);
   assert.match(card, /已持有/);
   assert.match(card, /追蹤中/);
+  assert.match(card, /標的研究價值/);
+  assert.match(card, /個人條件適配度/);
+  assert.doesNotMatch(card, /研究條件符合度|個人初步適合度/);
   assert.match(portfolioPage, /資產回答的是「目前持有什麼」/);
   assert.match(portfolioCard, /已持有/);
   assert.match(page, /AddInstrumentDialog/);
