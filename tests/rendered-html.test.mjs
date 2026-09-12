@@ -183,9 +183,12 @@ test("onboarding separates first-time creation from returning-user editing", asy
   assert.match(personalization, /data\.planResearchSuggestion =/);
 });
 
-test("investment exploration uses plan directions and a replaceable candidate repository", async () => {
-  const [page, dialog, repository, fixture] = await Promise.all([
+test("investment exploration uses plan directions, journey states, and a replaceable candidate repository", async () => {
+  const [page, card, portfolioPage, portfolioCard, dialog, repository, fixture] = await Promise.all([
     readProjectFile("src/renderer/features/explore/pages/ExplorePage.tsx"),
+    readProjectFile("src/renderer/features/explore/components/CandidateCard.tsx"),
+    readProjectFile("src/renderer/features/portfolio/pages/PortfolioPage.tsx"),
+    readProjectFile("src/renderer/features/portfolio/components/PortfolioPositionCard.tsx"),
     readProjectFile("src/renderer/features/explore/components/AddInstrumentDialog.tsx"),
     readProjectFile("src/renderer/data/repositories/ResearchCandidateRepository.ts"),
     readProjectFile("src/renderer/data/fixtures/instrumentCatalog.ts"),
@@ -193,6 +196,15 @@ test("investment exploration uses plan directions and a replaceable candidate re
 
   assert.match(page, /researchDirections = data\.planResearchSuggestion\.directions/);
   assert.match(page, /候選研究標的/);
+  assert.match(page, /探索回答的是「要研究什麼」/);
+  assert.match(page, /探索標的/);
+  assert.match(page, /heldInstrumentKeys/);
+  assert.match(card, /研究中/);
+  assert.match(card, /已建立論點/);
+  assert.match(card, /已持有/);
+  assert.match(card, /追蹤中/);
+  assert.match(portfolioPage, /資產回答的是「目前持有什麼」/);
+  assert.match(portfolioCard, /已持有/);
   assert.match(page, /AddInstrumentDialog/);
   assert.match(dialog, /role="dialog"/);
   assert.match(dialog, /上市、上櫃個股與 ETF/);
@@ -225,7 +237,7 @@ test("multiple tracking targets keep related events scoped and replaceable", asy
     readProjectFile("src/shared/domain/tracking.ts"),
     readProjectFile("src/renderer/data/repositories/TrackingRepository.ts"),
     readProjectFile("src/renderer/data/repositories/mockTrackingRepository.ts"),
-    readProjectFile("src/renderer/features/tracking/hooks/useTrackingTargets.ts"),
+    readProjectFile("src/renderer/hooks/useTrackingTargets.ts"),
   ]);
 
   assert.doesNotMatch(metadata, /id: "news"|label: "新聞"/);
@@ -401,7 +413,7 @@ test("all ready candidates use one analysis action without mixing instrument dat
   assert.match(instrumentPage, /selectedCandidate\?\.instrumentId/);
   assert.match(instrumentPage, /data\.candidates\.find/);
   assert.match(instrumentPage, /初步資料已整理/);
-  assert.match(instrumentPage, /資料完整前不會進入決策驗證/);
+  assert.match(instrumentPage, /開始決策驗證 →/);
 });
 
 test("contextual back navigation preserves the investment exploration view", async () => {
@@ -494,7 +506,7 @@ test("decision validation is an actionable gated five-step flow", async () => {
   assert.match(page, /const \[activeStep, setActiveStep\]/);
   assert.match(page, /onClick=\{\(\) => setActiveStep\(index\)\}/);
   assert.match(page, /disabled=\{locked\}/);
-  assert.match(page, /selectedEvidence\.length > 0/);
+  assert.match(page, /reason\.trim\(\)\.length >= 20/);
   assert.match(page, /selectedCounterEvidence\.length > 0/);
   assert.match(page, /selectedAssumptions\.length > 0/);
   assert.match(page, /disabled=\{!scored\}/);

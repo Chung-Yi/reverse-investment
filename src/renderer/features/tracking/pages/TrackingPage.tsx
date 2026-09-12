@@ -14,7 +14,7 @@ import { useRelatedEventCounts } from "../hooks/useRelatedEventCounts";
 import { useRelatedEvents } from "../hooks/useRelatedEvents";
 import { useTrackingAlerts } from "../hooks/useTrackingAlerts";
 import { useTrackingConditions } from "../hooks/useTrackingConditions";
-import { useTrackingTargets } from "../hooks/useTrackingTargets";
+import { useTrackingTargets } from "../../../hooks/useTrackingTargets";
 
 interface TrackingPageProps {
   data: InvestmentData;

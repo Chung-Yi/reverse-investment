@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import type { TrackingTarget } from "@shared/domain/tracking";
-import type { TrackingRepository, TrackingTargetRequest } from "../../../data/repositories/TrackingRepository";
+import type { TrackingRepository, TrackingTargetRequest } from "../data/repositories/TrackingRepository";
 
 export function useTrackingTargets(repository: TrackingRepository, request: TrackingTargetRequest) {
   const [targets, setTargets] = useState<TrackingTarget[]>([]);

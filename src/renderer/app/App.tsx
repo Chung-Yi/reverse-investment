@@ -105,8 +105,8 @@ export function App() {
   else {
     const pages: Record<RouteId, React.ReactNode> = {
       welcome: <WelcomePage />, home: <HomePage data={personalizedData} />, onboarding: <OnboardingPage key={onboardingMode} />,
-      profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
-      portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} />,
+      profile: <ProfilePage data={personalizedData} />, plan: <PlanPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />, explore: <ExplorePage data={personalizedData} repository={mockResearchCandidateRepository} portfolioRepository={mockPortfolioRepository} trackingRepository={mockTrackingRepository} onOpenCandidate={openCandidateAnalysis} viewState={exploreViewState} onViewStateChange={setExploreViewState} />,
+      portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} trackingRepository={mockTrackingRepository} />,
       rotation: <RotationPage />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />,
       tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} conditionRepository={localTrackingConditionRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,

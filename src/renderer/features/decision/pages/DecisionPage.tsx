@@ -16,7 +16,6 @@ export function DecisionPage({ data }: { data: InvestmentData }) {
   const instrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
   const [activeStep, setActiveStep] = useState(0);
   const [reason, setReason] = useState(data.thesis.reason);
-  const [selectedEvidence, setSelectedEvidence] = useState<string[]>([]);
   const [selectedCounterEvidence, setSelectedCounterEvidence] = useState<string[]>([]);
   const [selectedAssumptions, setSelectedAssumptions] = useState<string[]>([]);
   const [riskAssessment, setRiskAssessment] = useState("");
@@ -39,7 +38,6 @@ export function DecisionPage({ data }: { data: InvestmentData }) {
   const completedCount = completed.filter(Boolean).length;
 
   const changeReason = (value: string) => { setReason(value); setScored(false); };
-  const changeEvidence = (item: string) => { setSelectedEvidence((current) => toggleSelection(current, item)); setScored(false); };
   const changeCounterEvidence = (item: string) => { setSelectedCounterEvidence((current) => toggleSelection(current, item)); setScored(false); };
   const changeAssumption = (item: string) => { setSelectedAssumptions((current) => toggleSelection(current, item)); setScored(false); };
   const changeRiskAssessment = (value: string) => { setRiskAssessment(value); setScored(false); };

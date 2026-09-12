@@ -4,7 +4,10 @@ import { PageHeader } from "../../../components/layout/PageHeader";
 import { Button } from "../../../components/ui/Button";
 import { demoInstrumentCatalog } from "../../../data/fixtures/instrumentCatalog";
 import type { PortfolioRepository } from "../../../data/repositories/PortfolioRepository";
+import type { TrackingRepository } from "../../../data/repositories/TrackingRepository";
 import type { InvestmentData } from "../../../hooks/useInvestmentData";
+import { useTrackingTargets } from "../../../hooks/useTrackingTargets";
+import { useAppContext } from "../../../app/AppContext";
 import { formatTwd } from "../../../utils/formatTwd";
 import { PortfolioPositionCard } from "../components/PortfolioPositionCard";
 import { PortfolioPositionDialog } from "../components/PortfolioPositionDialog";
@@ -12,11 +15,20 @@ import { SelectionCheckbox } from "../components/SelectionCheckbox";
 import { usePortfolio } from "../hooks/usePortfolio";
 import styles from "../PortfolioPage.module.css";
 
-export function PortfolioPage({ data, repository }: { data: InvestmentData; repository: PortfolioRepository }) {
+export function PortfolioPage({ data, repository, trackingRepository }: { data: InvestmentData; repository: PortfolioRepository; trackingRepository: TrackingRepository }) {
+  const { thesisObservation } = useAppContext();
   const { portfolio, loading, error, clearError, savePosition, removePosition, removePositions } = usePortfolio(repository);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editingPosition, setEditingPosition] = useState<PortfolioPosition | null>(null);
   const [selectedPositionIds, setSelectedPositionIds] = useState<string[]>([]);
+  const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
+  const trackingRequest = useMemo(() => ({
+    primaryInstrument,
+    primaryThesis: data.thesis,
+    primaryObservation: thesisObservation,
+  }), [data.thesis, primaryInstrument, thesisObservation]);
+  const { targets: trackingTargets } = useTrackingTargets(trackingRepository, trackingRequest);
+  const trackedInstrumentKeys = useMemo(() => new Set(trackingTargets.flatMap((target) => [target.instrument.id, target.instrument.symbol])), [trackingTargets]);
 
   const totals = useMemo(() => {
     const positions = portfolio?.positions ?? [];
@@ -79,8 +91,8 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
     <section>
       <PageHeader
         eyebrow="持倉與目標對照"
-        title="我的資產"
-        description="把目前持倉與原始規劃放在一起，確認資金是否仍朝目標前進。"
+        title="我的資產與配置"
+        description="資產回答的是「目前持有什麼」；把持倉與原始規劃放在一起，確認配置是否仍朝目標前進。"
       />
 
       <div className={styles.simulationNotice}>
@@ -155,6 +167,7 @@ export function PortfolioPage({ data, repository }: { data: InvestmentData; repo
           <PortfolioPositionCard
             key={position.positionId}
             position={position}
+            tracked={trackedInstrumentKeys.has(position.instrumentId) || trackedInstrumentKeys.has(position.symbol)}
             portfolioValue={totals.totalAssets}
             selected={selectedPositionIds.includes(position.positionId)}
             onToggleSelection={toggleSelection}

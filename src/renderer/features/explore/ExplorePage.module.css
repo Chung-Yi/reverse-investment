@@ -6,6 +6,55 @@
   margin-bottom: 18px;
 }
 
+.journeyGuide {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 8px;
+  margin: 0 0 18px;
+  padding: 12px;
+  border: 1px solid var(--neutral-200);
+  border-radius: 14px;
+  background: var(--surface);
+  list-style: none;
+}
+
+.journeyGuide li {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  padding: 8px 10px;
+  border-radius: 10px;
+  color: var(--neutral-600);
+  font-size: 10px;
+}
+
+.journeyGuide li span {
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  border-radius: 50%;
+  background: var(--neutral-100);
+  font-size: 9px;
+  font-weight: 850;
+}
+
+.journeyGuide li strong {
+  white-space: nowrap;
+}
+
+.journeyGuide .current {
+  background: var(--brand-50);
+  color: var(--brand-800);
+}
+
+.journeyGuide .current span {
+  background: var(--brand-700);
+  color: var(--surface);
+}
+
 .tabs {
   display: inline-flex;
   gap: 4px;
@@ -297,6 +346,49 @@
   font-weight: 750;
 }
 
+.journeyStages {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.journeyStages .stageLabel {
+  color: var(--neutral-500);
+  font-size: 8px;
+  font-weight: 700;
+}
+
+.journeyStages > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+}
+
+.journeyStages > div > span {
+  padding: 4px 7px;
+  border-radius: 999px;
+  font-size: 8px;
+  font-weight: 800;
+}
+
+.journeyStages .researching {
+  background: var(--neutral-100);
+  color: var(--neutral-700);
+}
+
+.journeyStages .thesis,
+.journeyStages .holding {
+  background: var(--brand-50);
+  color: var(--brand-800);
+}
+
+.journeyStages .tracking {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
 .candidateTags {
   display: flex;
   flex-wrap: wrap;
@@ -531,6 +623,10 @@
   .tabs { width: 100%; }
   .tabs button { flex: 1; }
   .toolbar > button { width: 100%; }
+  .journeyGuide { grid-template-columns: 1fr; }
+  .journeyGuide li { display: none; }
+  .journeyGuide .current { display: flex; }
+  .journeyGuide .current::after { content: "下一步：深入分析 → 驗證理由 → 納入資產 → 追蹤"; margin-left: auto; color: var(--neutral-600); font-size: 9px; }
   .directionContext, .candidateIntro { align-items: stretch; flex-direction: column; }
   .directionFacts { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: 12px; }
   .directionFacts div { padding-inline: 12px; }

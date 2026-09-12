@@ -2,16 +2,25 @@ import { describeAssessmentScore } from "@shared/domain/assessment";
 import type { ResearchCandidate } from "@shared/domain/investment";
 import { Button } from "../../../components/ui/Button";
 import styles from "../ExplorePage.module.css";
+import type { CandidateJourneyStage } from "../types";
 
 interface CandidateCardProps {
   candidate: ResearchCandidate;
   analyzing: boolean;
+  journeyStages: CandidateJourneyStage[];
   onAnalyze: (candidateId: string) => void;
   onRemove: (candidateId: string) => void;
   onOpenAnalysis: (candidate: ResearchCandidate) => void;
 }
 
-export function CandidateCard({ candidate, analyzing, onAnalyze, onRemove, onOpenAnalysis }: CandidateCardProps) {
+const stageLabels: Record<CandidateJourneyStage, string> = {
+  researching: "研究中",
+  thesis: "已建立論點",
+  holding: "已持有",
+  tracking: "追蹤中",
+};
+
+export function CandidateCard({ candidate, analyzing, journeyStages, onAnalyze, onRemove, onOpenAnalysis }: CandidateCardProps) {
   const ready = candidate.analysisStatus === "ready";
   return (
     <article className={`card ${styles.candidateCard}`}>
@@ -23,6 +32,12 @@ export function CandidateCard({ candidate, analyzing, onAnalyze, onRemove, onOpe
           </div>
           <h2>{candidate.name}</h2>
           <small>{candidate.origin === "plan" ? "依我的規劃整理" : "我自行加入"}</small>
+          <div className={styles.journeyStages} aria-label={`${candidate.name}目前階段`}>
+            <span className={styles.stageLabel}>目前階段</span>
+            <div>
+              {journeyStages.map((stage) => <span className={styles[stage]} key={stage}>{stageLabels[stage]}</span>)}
+            </div>
+          </div>
         </div>
       </div>
 

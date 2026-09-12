@@ -4,18 +4,23 @@ import { useAppContext } from "../../../app/AppContext";
 import { PageHeader } from "../../../components/layout/PageHeader";
 import { Button } from "../../../components/ui/Button";
 import type { ResearchCandidateRepository } from "../../../data/repositories/ResearchCandidateRepository";
+import type { PortfolioRepository } from "../../../data/repositories/PortfolioRepository";
+import type { TrackingRepository } from "../../../data/repositories/TrackingRepository";
 import type { InvestmentData } from "../../../hooks/useInvestmentData";
+import { useTrackingTargets } from "../../../hooks/useTrackingTargets";
 import styles from "../ExplorePage.module.css";
 import { AddInstrumentDialog } from "../components/AddInstrumentDialog";
 import { CandidateCard } from "../components/CandidateCard";
 import { CompactPagination } from "../components/CompactPagination";
 import { ResearchDirectionCard } from "../components/ResearchDirectionCard";
 import { useResearchCandidates } from "../hooks/useResearchCandidates";
-import type { ExploreViewState } from "../types";
+import type { CandidateJourneyStage, ExploreViewState } from "../types";
 
 interface ExplorePageProps {
   data: InvestmentData;
   repository: ResearchCandidateRepository;
+  portfolioRepository: PortfolioRepository;
+  trackingRepository: TrackingRepository;
   onOpenCandidate: (candidate: ResearchCandidate) => void;
   viewState: ExploreViewState;
   onViewStateChange: (updater: (current: ExploreViewState) => ExploreViewState) => void;
@@ -30,11 +35,12 @@ function getDirectionPageSize() {
   return 3;
 }
 
-export function ExplorePage({ data, repository, onOpenCandidate, viewState, onViewStateChange }: ExplorePageProps) {
-  const { openAssistant } = useAppContext();
+export function ExplorePage({ data, repository, portfolioRepository, trackingRepository, onOpenCandidate, viewState, onViewStateChange }: ExplorePageProps) {
+  const { openAssistant, thesisObservation } = useAppContext();
   const { tab, selectedDirection, originFilter, directionPage, candidatePage } = viewState;
   const [directionPageSize, setDirectionPageSize] = useState(getDirectionPageSize);
   const [dialogOpen, setDialogOpen] = useState(false);
+  const [heldInstrumentKeys, setHeldInstrumentKeys] = useState<Set<string>>(new Set());
   const updateViewState = (patch: Partial<ExploreViewState>) => {
     onViewStateChange((current) => ({ ...current, ...patch }));
   };
@@ -49,6 +55,14 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
     requestAnalysis,
   } = useResearchCandidates(repository);
   const researchDirections = data.planResearchSuggestion.directions;
+  const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
+  const trackingRequest = useMemo(() => ({
+    primaryInstrument,
+    primaryThesis: data.thesis,
+    primaryObservation: thesisObservation,
+  }), [data.thesis, primaryInstrument, thesisObservation]);
+  const { targets: trackingTargets } = useTrackingTargets(trackingRepository, trackingRequest);
+  const trackedInstrumentKeys = useMemo(() => new Set(trackingTargets.flatMap((target) => [target.instrument.id, target.instrument.symbol])), [trackingTargets]);
   const totalDirectionPages = Math.max(1, Math.ceil(researchDirections.length / directionPageSize));
   const currentDirectionPage = Math.min(directionPage, totalDirectionPages);
   const pagedDirections = researchDirections.slice(
@@ -69,6 +83,16 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
     (currentCandidatePage - 1) * candidatesPerPage,
     currentCandidatePage * candidatesPerPage,
   );
+
+  useEffect(() => {
+    let active = true;
+    portfolioRepository.getPortfolio()
+      .then((portfolio) => {
+        if (active) setHeldInstrumentKeys(new Set(portfolio.positions.flatMap((position) => [position.instrumentId, position.symbol])));
+      })
+      .catch(() => { if (active) setHeldInstrumentKeys(new Set()); });
+    return () => { active = false; };
+  }, [portfolioRepository]);
 
   useEffect(() => {
     if (candidatePage > totalCandidatePages) updateViewState({ candidatePage: totalCandidatePages });
@@ -94,14 +118,34 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
     updateViewState({ selectedDirection: directionId, originFilter: "all", candidatePage: 1, tab: "candidates" });
   };
 
+  const getJourneyStages = (candidate: ResearchCandidate): CandidateJourneyStage[] => {
+    const keys = [candidate.id, candidate.instrumentId, candidate.symbol].filter((value): value is string => Boolean(value));
+    const isHeld = keys.some((key) => heldInstrumentKeys.has(key));
+    const isTracked = keys.some((key) => trackedInstrumentKeys.has(key));
+    return [
+      "researching",
+      ...(isTracked ? ["thesis" as const] : []),
+      ...(isHeld ? ["holding" as const] : []),
+      ...(isTracked ? ["tracking" as const] : []),
+    ];
+  };
+
   return (
     <section>
       <PageHeader
-        eyebrow="方向探索與候選標的"
-        title="從規劃出發，找到研究方向"
-        description="先理解與目標相關的研究方向，再挑選值得深入驗證的候選標的。"
+        eyebrow="投資前的研究清單"
+        title="研究方向與候選標的"
+        description="探索回答的是「要研究什麼」；加入研究清單不代表已持有，也不是買賣建議。"
         action={<Button variant="ghost" onClick={() => openAssistant("請幫我比較目前的投資研究方向")}>✦ 請 AI 協助比較</Button>}
       />
+
+      <ol className={styles.journeyGuide} aria-label="從研究到持續追蹤的流程">
+        <li className={styles.current}><span>1</span><strong>探索標的</strong></li>
+        <li><span>2</span><strong>深入分析</strong></li>
+        <li><span>3</span><strong>驗證投資理由</strong></li>
+        <li><span>4</span><strong>納入資產</strong></li>
+        <li><span>5</span><strong>持續追蹤</strong></li>
+      </ol>
 
       <div className={styles.toolbar}>
         <div className={styles.tabs} role="tablist" aria-label="投資探索內容">
@@ -203,6 +247,7 @@ export function ExplorePage({ data, repository, onOpenCandidate, viewState, onVi
                   key={candidate.candidateId}
                   candidate={candidate}
                   analyzing={analyzingIds.includes(candidate.candidateId)}
+                  journeyStages={getJourneyStages(candidate)}
                   onAnalyze={(candidateId) => void requestAnalysis(candidateId)}
                   onRemove={(candidateId) => void removeCandidate(candidateId)}
                   onOpenAnalysis={onOpenCandidate}

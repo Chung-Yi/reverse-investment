@@ -8,6 +8,7 @@ const decimal = new Intl.NumberFormat("zh-TW", { maximumFractionDigits: 2 });
 
 interface PortfolioPositionCardProps {
   position: PortfolioPosition;
+  tracked: boolean;
   portfolioValue: number;
   selected: boolean;
   onToggleSelection: (positionId: string, selected: boolean) => void;
@@ -15,7 +16,7 @@ interface PortfolioPositionCardProps {
   onRemove: (position: PortfolioPosition) => void;
 }
 
-export function PortfolioPositionCard({ position, portfolioValue, selected, onToggleSelection, onEdit, onRemove }: PortfolioPositionCardProps) {
+export function PortfolioPositionCard({ position, tracked, portfolioValue, selected, onToggleSelection, onEdit, onRemove }: PortfolioPositionCardProps) {
   const cost = position.quantity * position.averageCost;
   const marketValue = position.quantity * position.referencePrice;
   const gain = marketValue - cost;
@@ -35,7 +36,11 @@ export function PortfolioPositionCard({ position, portfolioValue, selected, onTo
         <div>
           <span>{position.market}・{position.instrumentType}・{position.category}</span>
           <h3>{position.name}</h3>
-          <small>{position.allocationRole}</small>
+          <div className={styles.positionStatus}>
+            <small>{position.allocationRole}</small>
+            <span>已持有</span>
+            {tracked && <span>追蹤中</span>}
+          </div>
         </div>
       </div>
       <dl className={styles.positionMetrics}>

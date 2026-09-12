@@ -1,4 +1,6 @@
 export type ExploreTab = "directions" | "candidates";
+
+export type CandidateJourneyStage = "researching" | "thesis" | "holding" | "tracking";
 export type CandidateOriginFilter = "all" | "plan" | "user";
 
 export interface ExploreViewState {
