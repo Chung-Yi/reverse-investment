@@ -33,6 +33,8 @@ import { DecisionPage } from "../features/decision/pages/DecisionPage";
 import { ThesisPage } from "../features/thesis/pages/ThesisPage";
 import { TrackingPage } from "../features/tracking/pages/TrackingPage";
 import { ChangePage } from "../features/change/pages/ChangePage";
+import { SatisfactionDialog } from "../features/feedback/components/SatisfactionDialog";
+import { localUserFeedbackRepository } from "../data/repositories/localUserFeedbackRepository";
 
 const validRoutes = new Set<RouteId>(routes.map((route) => route.id));
 const initialRoute = location.hash.slice(1) as RouteId;
@@ -42,6 +44,7 @@ export function App() {
   const routeRef = useRef(route);
   const routeHistoryRef = useRef<RouteId[]>([route]);
   const [assistant, setAssistant] = useState<{ open: boolean; prompt: string; context?: AgentContextDetails }>({ open: false, prompt: "" });
+  const [feedbackOpen, setFeedbackOpen] = useState(false);
   const [selectedCandidate, setSelectedCandidate] = useState<ResearchCandidate | null>(null);
   const [exploreViewState, setExploreViewState] = useState(initialExploreViewState);
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>("edit");
@@ -115,5 +118,5 @@ export function App() {
     content = pages[route];
   }
 
-  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} context={assistant.context} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /></AppContext.Provider>;
+  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()} openFeedback={() => setFeedbackOpen(true)}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} context={assistant.context} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /><SatisfactionDialog open={feedbackOpen} route={route} repository={localUserFeedbackRepository} onClose={() => setFeedbackOpen(false)} /></AppContext.Provider>;
 }

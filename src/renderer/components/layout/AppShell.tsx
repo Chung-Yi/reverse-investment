@@ -9,9 +9,10 @@ interface AppShellProps {
   backLabel?: string;
   onBack: () => void;
   openAssistant: () => void;
+  openFeedback: () => void;
 }
 
-export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack, openAssistant, children }: PropsWithChildren<AppShellProps>) {
+export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack, openAssistant, openFeedback, children }: PropsWithChildren<AppShellProps>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const go = (next: RouteId) => { navigate(next); setMenuOpen(false); };
   const goPrimary = (next: RouteId) => { onPrimaryNavigate(next); setMenuOpen(false); };
@@ -40,7 +41,12 @@ export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack
               <div className="breadcrumb"><span>我的投資旅程</span><b>/</b><strong>{routeMetadata[route].label}</strong></div>
               <strong className="mobile-page-title">{routeMetadata[route].label}</strong>
             </div>
-            <div className="top-actions"><button className="text-button" onClick={() => go("profile")}>投資輪廓</button><span className="avatar" aria-label="使用者">使</span></div>
+            <div className="top-actions">
+              <button className="text-button feedback-text-button" onClick={openFeedback}>☆ 使用回饋</button>
+              <button className="icon-button mobile-feedback-button" onClick={openFeedback} aria-label="開啟使用回饋">☆</button>
+              <button className="text-button" onClick={() => go("profile")}>投資輪廓</button>
+              <span className="avatar" aria-label="使用者">使</span>
+            </div>
           </header>
           <main id="main-content" tabIndex={-1}>{children}</main>
           <nav className="bottom-nav" aria-label="手機版主要導覽">

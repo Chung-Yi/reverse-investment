@@ -1,0 +1,205 @@
+.layer {
+  position: fixed;
+  z-index: 80;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  border: 0;
+  background: rgba(16, 47, 45, .42);
+  backdrop-filter: blur(3px);
+}
+
+.dialog {
+  position: relative;
+  width: min(520px, 100%);
+  max-height: min(720px, calc(100vh - 48px));
+  overflow: auto;
+  padding: 28px;
+  border: 1px solid var(--neutral-200);
+  border-radius: 20px;
+  background: var(--surface);
+  box-shadow: var(--shadow-lg);
+}
+
+.dialog > header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.dialog > header span {
+  color: var(--brand-600);
+  font-size: 10px;
+  font-weight: 850;
+  letter-spacing: .08em;
+}
+
+.dialog h2 {
+  margin: 6px 0 0;
+  font-size: 26px;
+  letter-spacing: -.025em;
+}
+
+.close {
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: 10px;
+  background: var(--neutral-100);
+  cursor: pointer;
+  font-size: 24px;
+}
+
+.prompt {
+  margin: 26px 0 20px;
+  color: var(--neutral-800);
+  font-weight: 700;
+}
+
+.ratingGroup {
+  margin: 0;
+  padding: 22px;
+  border: 1px solid var(--neutral-200);
+  border-radius: 14px;
+  background: var(--neutral-50);
+  text-align: center;
+}
+
+.ratingGroup legend {
+  padding: 0 8px;
+  color: var(--neutral-600);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.ratingGroup > div {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.ratingGroup button {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--neutral-200);
+  cursor: pointer;
+  font-size: 38px;
+  line-height: 1;
+  transition: color .15s, transform .15s;
+}
+
+.ratingGroup button:hover,
+.ratingGroup button:focus-visible {
+  transform: translateY(-2px);
+}
+
+.ratingGroup button.activeStar {
+  color: #e2a329;
+}
+
+.ratingGroup p {
+  min-height: 20px;
+  margin: 10px 0 0;
+  color: var(--attention);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.comment {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+}
+
+.comment > span {
+  color: var(--neutral-800);
+  font-size: 11px;
+  font-weight: 750;
+}
+
+.comment > span small {
+  margin-left: 7px;
+  color: var(--neutral-400);
+  font-weight: 500;
+}
+
+.comment textarea {
+  width: 100%;
+  min-height: 104px;
+  resize: vertical;
+  padding: 12px 14px;
+  border: 1px solid var(--neutral-200);
+  border-radius: 11px;
+  color: var(--neutral-950);
+  line-height: 1.6;
+}
+
+.comment textarea:focus {
+  border-color: var(--brand-600);
+}
+
+.comment > small {
+  justify-self: end;
+  color: var(--neutral-400);
+  font-size: 9px;
+}
+
+.dialog form > footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 22px;
+  padding-top: 18px;
+  border-top: 1px solid var(--neutral-200);
+}
+
+.success {
+  display: grid;
+  justify-items: center;
+  padding: 42px 18px 10px;
+  text-align: center;
+}
+
+.success > span {
+  width: 54px;
+  height: 54px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--success-bg);
+  color: var(--success);
+  font-size: 26px;
+  font-weight: 850;
+}
+
+.success h3 {
+  margin: 18px 0 6px;
+  font-size: 20px;
+}
+
+.success p {
+  max-width: 360px;
+  margin-bottom: 22px;
+}
+
+@media (max-width: 560px) {
+  .layer { align-items: end; padding: 0; }
+  .dialog { width: 100%; max-height: calc(100vh - 24px); padding: 22px 18px calc(22px + env(safe-area-inset-bottom)); border-radius: 20px 20px 0 0; }
+  .ratingGroup { padding: 18px 10px; }
+  .ratingGroup > div { gap: 3px; }
+  .ratingGroup button { width: 44px; height: 44px; font-size: 34px; }
+  .dialog form > footer { align-items: stretch; flex-direction: column-reverse; }
+  .dialog form > footer button { width: 100%; }
+}

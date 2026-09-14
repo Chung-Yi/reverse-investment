@@ -26,6 +26,7 @@ ul { padding-left: 20px; color: var(--neutral-600); line-height: 1.8; }
 .breadcrumb { display: flex; align-items: center; gap: 9px; color: var(--neutral-400); font-size: 12px; }.breadcrumb strong { color: var(--neutral-800); }.breadcrumb b { font-weight: 400; }
 .mobile-page-title { display: none; }
 .top-actions { display: flex; align-items: center; gap: 14px; }.avatar { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 50%; background: var(--brand-100); color: var(--brand-800); font-size: 12px; font-weight: 800; }
+.top-actions .mobile-feedback-button { display: none; color: var(--brand-700); font-size: 20px; }
 .text-button { padding: 5px; border: 0; background: transparent; color: var(--brand-700); cursor: pointer; font-size: 12px; font-weight: 750; }
 .icon-button { width: 36px; height: 36px; display: grid; place-items: center; border: 0; border-radius: 10px; background: var(--neutral-100); cursor: pointer; font-size: 19px; }.mobile-menu { display: none; }
 .app-back-button { min-height: 36px; display: inline-flex; align-items: center; gap: 7px; padding: 0 9px; border: 0; border-radius: 10px; background: transparent; color: var(--brand-700); cursor: pointer; font-size: 12px; font-weight: 800; }

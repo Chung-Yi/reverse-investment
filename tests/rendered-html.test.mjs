@@ -514,3 +514,27 @@ test("decision validation is an actionable gated five-step flow", async () => {
   assert.match(page, /selectedAssumptions\.length > 0/);
   assert.match(page, /disabled=\{!scored\}/);
 });
+
+test("satisfaction feedback uses an accessible five-star control and a replaceable repository", async () => {
+  const [app, shell, dialog, contract, repository, domain] = await Promise.all([
+    readProjectFile("src/renderer/app/App.tsx"),
+    readProjectFile("src/renderer/components/layout/AppShell.tsx"),
+    readProjectFile("src/renderer/features/feedback/components/SatisfactionDialog.tsx"),
+    readProjectFile("src/renderer/data/repositories/UserFeedbackRepository.ts"),
+    readProjectFile("src/renderer/data/repositories/localUserFeedbackRepository.ts"),
+    readProjectFile("src/shared/domain/userFeedback.ts"),
+  ]);
+
+  assert.match(app, /SatisfactionDialog/);
+  assert.match(app, /localUserFeedbackRepository/);
+  assert.match(shell, /使用回饋/);
+  assert.match(shell, /mobile-feedback-button/);
+  assert.match(dialog, /role="radiogroup"/);
+  assert.match(dialog, /role="radio"/);
+  assert.match(dialog, /ratingOptions\.map/);
+  assert.match(dialog, /repository\.save\(\{ rating, comment, route \}\)/);
+  assert.match(dialog, /maxLength=\{300\}/);
+  assert.match(contract, /interface UserFeedbackRepository/);
+  assert.match(repository, /window\.localStorage/);
+  assert.match(domain, /SatisfactionRating = 1 \| 2 \| 3 \| 4 \| 5/);
+});
