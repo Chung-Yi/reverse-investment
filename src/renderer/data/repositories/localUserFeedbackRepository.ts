@@ -2,6 +2,7 @@ import type { SatisfactionRating, UserFeedback } from "@shared/domain/userFeedba
 import type { UserFeedbackRepository } from "./UserFeedbackRepository";
 
 const storageKey = "reverse-investment:user-feedback:v1";
+const promptUnlockedStorageKey = "reverse-investment:user-feedback-prompt-unlocked:v1";
 
 function isRating(value: unknown): value is SatisfactionRating {
   return Number.isInteger(value) && Number(value) >= 1 && Number(value) <= 5;
@@ -46,5 +47,19 @@ export const localUserFeedbackRepository: UserFeedbackRepository = {
       // Keep the current interaction usable when local device storage is unavailable.
     }
     return feedback;
+  },
+  isPromptUnlocked() {
+    try {
+      return window.localStorage.getItem(promptUnlockedStorageKey) === "true";
+    } catch {
+      return false;
+    }
+  },
+  unlockPrompt() {
+    try {
+      window.localStorage.setItem(promptUnlockedStorageKey, "true");
+    } catch {
+      // The current React state still unlocks the entry when device storage is unavailable.
+    }
   },
 };

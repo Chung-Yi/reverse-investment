@@ -15,6 +15,7 @@ import { useRelatedEvents } from "../hooks/useRelatedEvents";
 import { useTrackingAlerts } from "../hooks/useTrackingAlerts";
 import { useTrackingConditions } from "../hooks/useTrackingConditions";
 import { useTrackingTargets } from "../../../hooks/useTrackingTargets";
+import { FeedbackInvitation } from "../../feedback/components/FeedbackInvitation";
 
 interface TrackingPageProps {
   data: InvestmentData;
@@ -22,6 +23,10 @@ interface TrackingPageProps {
   conditionRepository: TrackingConditionRepository;
   eventRepository: RelatedEventRepository;
   onOpenEvent: (event: RelatedEvent, target: TrackingTarget) => void;
+  feedbackInvitationVisible: boolean;
+  onFeedbackEligible: () => void;
+  onOpenFeedback: () => void;
+  onDismissFeedback: () => void;
 }
 
 function attentionClass(level: TrackingTarget["attentionLevel"]) {
@@ -92,7 +97,7 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
   );
 }
 
-export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent }: TrackingPageProps) {
+export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent, feedbackInvitationVisible, onFeedbackEligible, onOpenFeedback, onDismissFeedback }: TrackingPageProps) {
   const { thesisObservation, openAssistant } = useAppContext();
   const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
   const trackingRequest = useMemo(() => ({
@@ -117,6 +122,11 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
   const [conditionDialogOpen, setConditionDialogOpen] = useState(false);
   const eventRequest = useMemo(() => selectedTarget ? { target: selectedTarget } : null, [selectedTarget]);
   const { feed, error: eventsError } = useRelatedEvents(eventRepository, eventRequest);
+
+  useEffect(() => {
+    if (!selectedTarget || !feed) return;
+    onFeedbackEligible();
+  }, [feed, onFeedbackEligible, selectedTarget]);
   const openTrackingAlertAssistant = () => {
     const affectedInstruments = new Set(alerts.map(({ target }) => target.instrument.id)).size;
     openAssistant(
@@ -206,28 +216,32 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
         <TrackingConditionDialog open setup={conditionSetup} onClose={() => setConditionDialogOpen(false)} onSave={saveCondition} />
       )}
 
-      <div className="section-title related-events-title">
-        <div>
-          <span>關聯事件</span>
-          <h2>{selectedTarget ? `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的追蹤事件` : "選擇標的後顯示事件"}</h2>
-          <p>只顯示會影響目前標的或原始假設的事件，並保留來源與資料時間。</p>
+      <div>
+        <div className="section-title related-events-title">
+          <div>
+            <span>關聯事件</span>
+            <h2>{selectedTarget ? `${selectedTarget.instrument.symbol} ${selectedTarget.instrument.name} 的追蹤事件` : "選擇標的後顯示事件"}</h2>
+            <p>只顯示會影響目前標的或原始假設的事件，並保留來源與資料時間。</p>
+          </div>
+          <span className="related-event-count">{feed?.events.length ?? 0} 項</span>
         </div>
-        <span className="related-event-count">{feed?.events.length ?? 0} 項</span>
-      </div>
 
-      {eventsError ? <div className="feedback-state error" role="alert"><p>{eventsError}</p></div> : !feed ? (
-        <div className="feedback-state"><span className="loader" /><p>正在載入關聯事件…</p></div>
-      ) : feed.events.length === 0 ? (
-        <div className="feedback-state related-events-empty">
-          <span aria-hidden="true">✓</span>
-          <h3>目前沒有需要特別注意的新事件</h3>
-          <p>已設定的追蹤條件仍會持續保留；出現符合條件或可能影響原始假設的變化時，會顯示在這裡。</p>
-        </div>
-      ) : (
-        <div className="related-event-list" aria-label="所選標的的關聯事件">
-          {feed.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={(selectedEvent) => { if (selectedTarget) onOpenEvent(selectedEvent, selectedTarget); }} />)}
-        </div>
-      )}
+        {eventsError ? <div className="feedback-state error" role="alert"><p>{eventsError}</p></div> : !feed ? (
+          <div className="feedback-state"><span className="loader" /><p>正在載入關聯事件…</p></div>
+        ) : feed.events.length === 0 ? (
+          <div className="feedback-state related-events-empty">
+            <span aria-hidden="true">✓</span>
+            <h3>目前沒有需要特別注意的新事件</h3>
+            <p>已設定的追蹤條件仍會持續保留；出現符合條件或可能影響原始假設的變化時，會顯示在這裡。</p>
+          </div>
+        ) : (
+          <div className="related-event-list" aria-label="所選標的的關聯事件">
+            {feed.events.map((event) => <RelatedEventCard key={event.id} event={event} onOpen={(selectedEvent) => { if (selectedTarget) onOpenEvent(selectedEvent, selectedTarget); }} />)}
+          </div>
+        )}
+
+        {feedbackInvitationVisible && <FeedbackInvitation onOpen={onOpenFeedback} onDismiss={onDismissFeedback} />}
+      </div>
 
       <TrackingAlertAssistant
         count={alerts.length}

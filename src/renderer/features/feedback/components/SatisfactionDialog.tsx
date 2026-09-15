@@ -10,6 +10,8 @@ interface SatisfactionDialogProps {
   route: RouteId;
   repository: UserFeedbackRepository;
   onClose: () => void;
+  onDefer: () => void;
+  onSubmitted: () => void;
 }
 
 const ratingOptions: Array<{ value: SatisfactionRating; label: string }> = [
@@ -20,7 +22,7 @@ const ratingOptions: Array<{ value: SatisfactionRating; label: string }> = [
   { value: 5, label: "非常滿意" },
 ];
 
-export function SatisfactionDialog({ open, route, repository, onClose }: SatisfactionDialogProps) {
+export function SatisfactionDialog({ open, route, repository, onClose, onDefer, onSubmitted }: SatisfactionDialogProps) {
   const [rating, setRating] = useState<SatisfactionRating | null>(null);
   const [hoveredRating, setHoveredRating] = useState<SatisfactionRating | null>(null);
   const [comment, setComment] = useState("");
@@ -49,6 +51,7 @@ export function SatisfactionDialog({ open, route, repository, onClose }: Satisfa
     if (!rating) return;
     repository.save({ rating, comment, route });
     setSubmitted(true);
+    onSubmitted();
   };
 
   return (
@@ -97,7 +100,7 @@ export function SatisfactionDialog({ open, route, repository, onClose }: Satisfa
               <small>{comment.length} / 300</small>
             </label>
             <footer>
-              <Button type="button" variant="ghost" onClick={onClose}>稍後再說</Button>
+              <Button type="button" variant="ghost" onClick={onDefer}>稍後再說</Button>
               <Button type="submit" disabled={!rating}>送出回饋</Button>
             </footer>
           </form>

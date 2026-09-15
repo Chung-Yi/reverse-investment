@@ -45,6 +45,9 @@ export function App() {
   const routeHistoryRef = useRef<RouteId[]>([route]);
   const [assistant, setAssistant] = useState<{ open: boolean; prompt: string; context?: AgentContextDetails }>({ open: false, prompt: "" });
   const [feedbackOpen, setFeedbackOpen] = useState(false);
+  const [feedbackUnlocked, setFeedbackUnlocked] = useState(() => localUserFeedbackRepository.isPromptUnlocked());
+  const [feedbackPromptDismissed, setFeedbackPromptDismissed] = useState(false);
+  const [feedbackSubmitted, setFeedbackSubmitted] = useState(() => localUserFeedbackRepository.list().length > 0);
   const [selectedCandidate, setSelectedCandidate] = useState<ResearchCandidate | null>(null);
   const [exploreViewState, setExploreViewState] = useState(initialExploreViewState);
   const [onboardingMode, setOnboardingMode] = useState<OnboardingMode>("edit");
@@ -90,6 +93,14 @@ export function App() {
     navigate("change");
   }, [navigate]);
   const openAssistant = useCallback((prompt = "", context?: AgentContextDetails) => setAssistant({ open: true, prompt, context }), []);
+  const unlockFeedback = useCallback(() => {
+    localUserFeedbackRepository.unlockPrompt();
+    setFeedbackUnlocked(true);
+  }, []);
+  const deferFeedback = useCallback(() => {
+    setFeedbackOpen(false);
+    setFeedbackPromptDismissed(true);
+  }, []);
   const startOnboarding = useCallback((mode: OnboardingMode) => {
     setOnboardingMode(mode);
     navigate("onboarding");
@@ -112,11 +123,11 @@ export function App() {
       portfolio: <PortfolioPage data={personalizedData} repository={mockPortfolioRepository} trackingRepository={mockTrackingRepository} />,
       rotation: <RotationPage />,
       instrument: <InstrumentPage data={personalizedData} selectedCandidate={selectedCandidate} />, decision: <DecisionPage data={personalizedData} />, thesis: <ThesisPage data={personalizedData} reviewRepository={localImportantChangeReviewRepository} />,
-      tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} conditionRepository={localTrackingConditionRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} />,
+      tracking: <TrackingPage data={personalizedData} trackingRepository={mockTrackingRepository} conditionRepository={localTrackingConditionRepository} eventRepository={mockRelatedEventRepository} onOpenEvent={openRelatedEvent} feedbackInvitationVisible={feedbackUnlocked && !feedbackPromptDismissed && !feedbackSubmitted} onFeedbackEligible={unlockFeedback} onOpenFeedback={() => setFeedbackOpen(true)} onDismissFeedback={() => setFeedbackPromptDismissed(true)} />,
       change: <ChangePage event={selectedRelatedEvent} target={selectedRelatedEventTarget} conditionRepository={localTrackingConditionRepository} reviewRepository={localImportantChangeReviewRepository} />,
     };
     content = pages[route];
   }
 
-  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()} openFeedback={() => setFeedbackOpen(true)}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} context={assistant.context} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /><SatisfactionDialog open={feedbackOpen} route={route} repository={localUserFeedbackRepository} onClose={() => setFeedbackOpen(false)} /></AppContext.Provider>;
+  return <AppContext.Provider value={context}><AppShell route={route} navigate={navigate} onPrimaryNavigate={navigateFromPrimary} backLabel={secondaryRouteBackNavigation[route]?.label} onBack={goBack} openAssistant={() => openAssistant()} openFeedback={() => setFeedbackOpen(true)} showFeedback={feedbackUnlocked}>{content}</AppShell><AiDrawer open={assistant.open} route={route} initialPrompt={assistant.prompt} context={assistant.context} provider={agentProvider} onClose={() => setAssistant((current) => ({ ...current, open: false }))} /><SatisfactionDialog open={feedbackOpen} route={route} repository={localUserFeedbackRepository} onClose={() => setFeedbackOpen(false)} onDefer={deferFeedback} onSubmitted={() => setFeedbackSubmitted(true)} /></AppContext.Provider>;
 }

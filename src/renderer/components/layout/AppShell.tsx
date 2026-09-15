@@ -10,9 +10,10 @@ interface AppShellProps {
   onBack: () => void;
   openAssistant: () => void;
   openFeedback: () => void;
+  showFeedback: boolean;
 }
 
-export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack, openAssistant, openFeedback, children }: PropsWithChildren<AppShellProps>) {
+export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack, openAssistant, openFeedback, showFeedback, children }: PropsWithChildren<AppShellProps>) {
   const [menuOpen, setMenuOpen] = useState(false);
   const go = (next: RouteId) => { navigate(next); setMenuOpen(false); };
   const goPrimary = (next: RouteId) => { onPrimaryNavigate(next); setMenuOpen(false); };
@@ -42,8 +43,8 @@ export function AppShell({ route, navigate, onPrimaryNavigate, backLabel, onBack
               <strong className="mobile-page-title">{routeMetadata[route].label}</strong>
             </div>
             <div className="top-actions">
-              <button className="text-button feedback-text-button" onClick={openFeedback}>☆ 使用回饋</button>
-              <button className="icon-button mobile-feedback-button" onClick={openFeedback} aria-label="開啟使用回饋">☆</button>
+              {showFeedback && <button className="text-button feedback-text-button" onClick={openFeedback}>☆ 使用回饋</button>}
+              {showFeedback && <button className="icon-button mobile-feedback-button" onClick={openFeedback} aria-label="開啟使用回饋">☆</button>}
               <button className="text-button" onClick={() => go("profile")}>投資輪廓</button>
               <span className="avatar" aria-label="使用者">使</span>
             </div>
