@@ -515,7 +515,7 @@ test("decision validation is an actionable gated five-step flow", async () => {
   assert.match(page, /disabled=\{!scored\}/);
 });
 
-test("satisfaction feedback unlocks after the tracking experience and uses a replaceable repository", async () => {
+test("satisfaction feedback stays available globally and adds a contextual tracking invitation", async () => {
   const [app, shell, tracking, invitation, dialog, contract, repository, domain] = await Promise.all([
     readProjectFile("src/renderer/app/App.tsx"),
     readProjectFile("src/renderer/components/layout/AppShell.tsx"),
@@ -529,17 +529,13 @@ test("satisfaction feedback unlocks after the tracking experience and uses a rep
 
   assert.match(app, /SatisfactionDialog/);
   assert.match(app, /localUserFeedbackRepository/);
-  assert.match(app, /feedbackUnlocked/);
   assert.match(app, /feedbackPromptDismissed/);
   assert.match(app, /feedbackSubmitted/);
-  assert.match(app, /showFeedback=\{feedbackUnlocked\}/);
   assert.match(shell, /使用回饋/);
-  assert.match(shell, /showFeedback &&/);
   assert.match(shell, /mobile-feedback-button/);
-  assert.match(tracking, /if \(!selectedTarget \|\| !feed\) return/);
-  assert.match(tracking, /onFeedbackEligible\(\)/);
+  assert.doesNotMatch(shell, /showFeedback/);
+  assert.match(tracking, /feed && feedbackInvitationVisible/);
   assert.match(tracking, /FeedbackInvitation/);
-  assert.match(tracking, /onFeedbackEligible/);
   assert.match(invitation, /完成心跳追蹤體驗/);
   assert.match(invitation, /這段追蹤流程對你有幫助嗎/);
   assert.match(dialog, /role="radiogroup"/);
@@ -548,9 +544,6 @@ test("satisfaction feedback unlocks after the tracking experience and uses a rep
   assert.match(dialog, /repository\.save\(\{ rating, comment, route \}\)/);
   assert.match(dialog, /maxLength=\{300\}/);
   assert.match(contract, /interface UserFeedbackRepository/);
-  assert.match(contract, /isPromptUnlocked/);
-  assert.match(contract, /unlockPrompt/);
   assert.match(repository, /window\.localStorage/);
-  assert.match(repository, /promptUnlockedStorageKey/);
   assert.match(domain, /SatisfactionRating = 1 \| 2 \| 3 \| 4 \| 5/);
 });

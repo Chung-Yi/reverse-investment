@@ -24,7 +24,6 @@ interface TrackingPageProps {
   eventRepository: RelatedEventRepository;
   onOpenEvent: (event: RelatedEvent, target: TrackingTarget) => void;
   feedbackInvitationVisible: boolean;
-  onFeedbackEligible: () => void;
   onOpenFeedback: () => void;
   onDismissFeedback: () => void;
 }
@@ -97,7 +96,7 @@ function RelatedEventCard({ event, onOpen }: { event: RelatedEvent; onOpen: (eve
   );
 }
 
-export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent, feedbackInvitationVisible, onFeedbackEligible, onOpenFeedback, onDismissFeedback }: TrackingPageProps) {
+export function TrackingPage({ data, trackingRepository, conditionRepository, eventRepository, onOpenEvent, feedbackInvitationVisible, onOpenFeedback, onDismissFeedback }: TrackingPageProps) {
   const { thesisObservation, openAssistant } = useAppContext();
   const primaryInstrument = data.candidates.find((item) => item.id === data.thesis.instrumentId) ?? data.candidates[0];
   const trackingRequest = useMemo(() => ({
@@ -122,11 +121,6 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
   const [conditionDialogOpen, setConditionDialogOpen] = useState(false);
   const eventRequest = useMemo(() => selectedTarget ? { target: selectedTarget } : null, [selectedTarget]);
   const { feed, error: eventsError } = useRelatedEvents(eventRepository, eventRequest);
-
-  useEffect(() => {
-    if (!selectedTarget || !feed) return;
-    onFeedbackEligible();
-  }, [feed, onFeedbackEligible, selectedTarget]);
   const openTrackingAlertAssistant = () => {
     const affectedInstruments = new Set(alerts.map(({ target }) => target.instrument.id)).size;
     openAssistant(
@@ -240,7 +234,7 @@ export function TrackingPage({ data, trackingRepository, conditionRepository, ev
           </div>
         )}
 
-        {feedbackInvitationVisible && <FeedbackInvitation onOpen={onOpenFeedback} onDismiss={onDismissFeedback} />}
+        {feed && feedbackInvitationVisible && <FeedbackInvitation onOpen={onOpenFeedback} onDismiss={onDismissFeedback} />}
       </div>
 
       <TrackingAlertAssistant
